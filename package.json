@@ -1,0 +1,36 @@
+{
+  "name": "rei-aios",
+  "version": "0.5.0",
+  "description": "Rei-AIOS: Axiomatic Operating System — D-FUMT理論に基づく知的計算基盤",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "clean": "rimraf dist",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "rei",
+    "aios",
+    "dfumt",
+    "axiom",
+    "operating-system",
+    "agi"
+  ],
+  "author": "Nobuki Fujimoto",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/fc0web/rei-aios.git"
+  },
+  "devDependencies": {
+    "typescript": "^5.3.0",
+    "rimraf": "^5.0.0"
+  },
+  "files": [
+    "dist",
+    "src",
+    "README.md",
+    "LICENSE"
+  ]
+}

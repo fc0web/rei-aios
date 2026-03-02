@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta http-equiv="Content-Security-Policy"
+  content="default-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+           font-src 'self' https://fonts.gstatic.com; script-src 'self' 'unsafe-inline';">
+<title>Knowledge Network — Rei-AIOS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400&family=Zen+Kaku+Gothic+New:wght@300;400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg-void:#06060b;--bg-deep:#0a0a12;--bg-mid:#10101a;
+  --bg-surface:#16161f;--bg-raised:#1c1c28;
+  --silver-dim:#4a4a5a;--silver-mid:#7a7a90;
+  --silver-bright:#a8a8c0;--silver-pure:#d0d0e0;
+  --rei:#6e9ecf;--dfumt:#9b7ecf;--gold:#c4a85a;
+  --green:#4caf7d;--danger:#cf6e7e;--teal:#4ec9b0;
+  --glow-rei:rgba(110,158,207,.14);--glow-dfumt:rgba(155,126,207,.14);
+  --border-sub:rgba(160,160,200,.07);--border-dim:rgba(160,160,200,.14);
+  --mono:'JetBrains Mono','Courier New',monospace;
+  --jp:'Zen Kaku Gothic New',sans-serif;
+  --r:220ms cubic-bezier(.4,0,.2,1);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html,body{width:100%;height:100%;overflow:hidden;background:var(--bg-void);
+  color:var(--silver-bright);font-family:var(--jp);font-size:13px;
+  -webkit-font-smoothing:antialiased;user-select:none;}
+body::before{content:'';position:fixed;inset:0;z-index:0;
+  background-image:linear-gradient(rgba(110,158,207,.02) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(110,158,207,.02) 1px,transparent 1px);
+  background-size:40px 40px;pointer-events:none;}
+
+/* ── レイアウト ── */
+#app{position:relative;z-index:1;width:100vw;height:100vh;
+  display:grid;grid-template-rows:44px 1fr 32px;
+  animation:fadeIn .5s ease both;}
+@keyframes fadeIn{from{opacity:0;filter:blur(4px)}to{opacity:1;filter:blur(0)}}
+
+/* ── トップバー ── */
+#topbar{display:flex;align-items:center;gap:10px;padding:0 18px;
+  background:var(--bg-deep);border-bottom:1px solid var(--border-sub);
+  -webkit-app-region:drag;}
+#topbar>*{-webkit-app-region:no-drag;}
+.tb-title{font-family:var(--mono);font-size:11px;letter-spacing:.15em;
+  color:var(--teal);display:flex;align-items:center;gap:7px;}
+.tb-dot{width:7px;height:7px;border-radius:50%;background:var(--teal);
+  box-shadow:0 0 8px var(--teal);animation:blink 2s infinite;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+.tab-btn{padding:6px 14px;background:transparent;border:1px solid var(--border-dim);
+  border-radius:4px;color:var(--silver-dim);cursor:pointer;
+  font-family:var(--mono);font-size:10px;letter-spacing:.08em;transition:var(--r);}
+.tab-btn:hover{color:var(--silver-bright);}
+.tab-btn.active{background:rgba(78,201,176,.12);border-color:rgba(78,201,176,.3);
+  color:var(--teal);}
+.tb-close{margin-left:auto;width:28px;height:28px;
+  background:rgba(207,110,126,.1);border:1px solid rgba(207,110,126,.25);
+  border-radius:50%;cursor:pointer;display:flex;align-items:center;
+  justify-content:center;color:var(--danger);font-size:13px;transition:var(--r);}
+.tb-close:hover{background:rgba(207,110,126,.25);}
+
+/* ── メインエリア（3ペイン） ── */
+#main{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0;overflow:hidden;}
+
+/* ── パネル共通 ── */
+.panel{background:var(--bg-deep);border-right:1px solid var(--border-sub);
+  display:flex;flex-direction:column;overflow:hidden;}
+.panel:last-child{border-right:none;}
+.panel-hd{padding:10px 16px;border-bottom:1px solid var(--border-sub);
+  display:flex;align-items:center;gap:8px;flex-shrink:0;}
+.panel-hd-title{font-family:var(--mono);font-size:10px;letter-spacing:.15em;}
+.panel-body{flex:1;overflow-y:auto;padding:12px 14px;}
+.panel-body::-webkit-scrollbar{width:3px;}
+.panel-body::-webkit-scrollbar-thumb{background:var(--border-dim);border-radius:2px;}
+.layer-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+.dot-teal {background:var(--teal); box-shadow:0 0 5px var(--teal);}
+.dot-dfumt{background:var(--dfumt);box-shadow:0 0 5px var(--dfumt);}
+.dot-gold {background:var(--gold); box-shadow:0 0 5px var(--gold);}
+.dot-rei  {background:var(--rei);  box-shadow:0 0 5px var(--rei);}
+.dot-green{background:var(--green);box-shadow:0 0 5px var(--green);}
+
+/* ── 検索バー ── */
+.search-row{display:flex;gap:6px;margin-bottom:10px;}
+.search-input{flex:1;background:var(--bg-raised);border:1px solid var(--border-dim);
+  border-radius:4px;padding:6px 10px;color:var(--silver-bright);
+  font-family:var(--mono);font-size:11px;outline:none;transition:var(--r);}
+.search-input:focus{border-color:var(--teal);box-shadow:0 0 0 2px rgba(78,201,176,.12);}
+.search-input::placeholder{color:var(--silver-dim);}
+.search-btn{padding:6px 14px;background:rgba(78,201,176,.12);
+  border:1px solid rgba(78,201,176,.28);border-radius:4px;color:var(--teal);
+  cursor:pointer;font-family:var(--mono);font-size:10px;
+  white-space:nowrap;transition:var(--r);}
+.search-btn:hover{background:rgba(78,201,176,.22);}
+.preset-row{display:flex;gap:5px;margin-bottom:10px;flex-wrap:wrap;}
+.preset-btn{padding:3px 9px;background:var(--bg-raised);border:1px solid var(--border-dim);
+  border-radius:3px;color:var(--silver-dim);cursor:pointer;
+  font-family:var(--mono);font-size:9px;transition:var(--r);}
+.preset-btn:hover{color:var(--silver-bright);}
+
+/* ── arXiv カード ── */
+.arxiv-card{background:var(--bg-mid);border:1px solid var(--border-sub);
+  border-radius:6px;padding:10px 12px;margin-bottom:8px;transition:var(--r);}
+.arxiv-card:hover{border-color:rgba(78,201,176,.25);background:var(--bg-surface);}
+.card-title{font-size:12px;color:var(--silver-pure);margin-bottom:4px;
+  line-height:1.5;cursor:pointer;}
+.card-title:hover{color:var(--teal);}
+.card-meta{font-family:var(--mono);font-size:9px;color:var(--silver-dim);margin-bottom:5px;}
+.card-summary{font-size:11px;color:var(--silver-mid);line-height:1.6;margin-bottom:6px;}
+.card-cats{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:6px;}
+.cat-tag{padding:1px 6px;background:rgba(78,201,176,.1);
+  border:1px solid rgba(78,201,176,.2);border-radius:2px;
+  font-family:var(--mono);font-size:9px;color:var(--teal);}
+.card-actions{display:flex;gap:6px;}
+.card-btn{padding:3px 10px;background:transparent;border:1px solid var(--border-dim);
+  border-radius:3px;color:var(--silver-dim);cursor:pointer;
+  font-family:var(--mono);font-size:9px;transition:var(--r);}
+.card-btn:hover{color:var(--silver-bright);border-color:var(--dfumt);}
+
+/* ── シミュレーター ── */
+.sim-section{margin-bottom:14px;}
+.sim-label{font-family:var(--mono);font-size:10px;color:var(--silver-dim);
+  letter-spacing:.1em;margin-bottom:6px;display:flex;justify-content:space-between;}
+.slider-row{display:grid;grid-template-columns:90px 1fr 44px;
+  align-items:center;gap:6px;margin-bottom:5px;}
+.slider-name{font-family:var(--mono);font-size:10px;color:var(--silver-dim);}
+input[type=range]{width:100%;accent-color:var(--dfumt);cursor:pointer;height:3px;}
+.slider-val{font-family:var(--mono);font-size:10px;color:var(--dfumt);text-align:right;}
+.scenario-row{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px;}
+.scen-btn{padding:4px 10px;background:var(--bg-raised);
+  border:1px solid var(--border-dim);border-radius:3px;
+  color:var(--silver-dim);cursor:pointer;font-family:var(--mono);font-size:9px;
+  transition:var(--r);}
+.scen-btn:hover{color:var(--gold);border-color:rgba(196,168,90,.3);}
+#simCanvas{width:100%;display:block;border-radius:4px;
+  background:var(--bg-mid);border:1px solid var(--border-sub);}
+.sim-metrics{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:8px;}
+.metric-box{background:var(--bg-mid);border:1px solid var(--border-sub);
+  border-radius:4px;padding:8px 10px;text-align:center;}
+.metric-box-val{font-family:var(--mono);font-size:16px;margin-bottom:2px;}
+.metric-box-lbl{font-family:var(--mono);font-size:9px;color:var(--silver-dim);}
+.dfumt-result{background:var(--bg-mid);border:1px solid rgba(155,126,207,.2);
+  border-radius:6px;padding:10px 12px;margin-top:10px;
+  font-family:var(--mono);font-size:10px;color:var(--silver-mid);line-height:1.8;}
+.dfumt-result-title{color:var(--dfumt);font-size:10px;letter-spacing:.1em;margin-bottom:6px;}
+
+/* ── OEIS ── */
+.oeis-card{background:var(--bg-mid);border:1px solid var(--border-sub);
+  border-radius:6px;padding:10px 12px;margin-bottom:8px;transition:var(--r);}
+.oeis-card:hover{border-color:rgba(196,168,90,.25);background:var(--bg-surface);}
+.oeis-id{font-family:var(--mono);font-size:11px;color:var(--gold);font-weight:bold;}
+.oeis-name{font-size:12px;color:var(--silver-pure);margin:3px 0 5px;}
+.oeis-values{font-family:var(--mono);font-size:10px;color:var(--silver-mid);
+  background:var(--bg-raised);border-radius:3px;padding:5px 8px;
+  overflow-x:auto;white-space:nowrap;margin-bottom:5px;}
+.oeis-formula{font-family:var(--mono);font-size:9px;color:var(--teal);
+  margin-bottom:5px;word-break:break-all;}
+.oeis-actions{display:flex;gap:6px;}
+
+/* ── ステータスバー ── */
+#statusbar{background:var(--bg-deep);border-top:1px solid var(--border-sub);
+  display:flex;align-items:center;padding:0 16px;gap:0;
+  font-family:var(--mono);font-size:10px;}
+.st{display:flex;align-items:center;gap:5px;padding:0 10px;
+  color:var(--silver-dim);border-right:1px solid var(--border-sub);height:100%;}
+.st-spacer{flex:1;}
+
+/* ローディング */
+.loading{display:flex;align-items:center;gap:8px;padding:20px;
+  font-family:var(--mono);font-size:11px;color:var(--silver-dim);}
+.spin{width:14px;height:14px;border:2px solid var(--border-dim);
+  border-top-color:var(--teal);border-radius:50%;animation:spin .8s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg)}}
+.empty-msg{padding:20px;font-family:var(--mono);font-size:11px;
+  color:var(--silver-dim);text-align:center;}
+</style>
+</head>
+<body>
+<div id="app">
+
+<!-- ── トップバー ── -->
+<header id="topbar">
+  <div class="tb-title">
+    <span class="tb-dot"></span>
+    KNOWLEDGE NETWORK — REI-AIOS
+  </div>
+  <button class="tab-btn active" id="tab-all"  onclick="setView('all')">統合ビュー</button>
+  <button class="tab-btn"        id="tab-arxiv" onclick="setView('arxiv')">arXiv</button>
+  <button class="tab-btn"        id="tab-sim"   onclick="setView('sim')">シミュレーター</button>
+  <button class="tab-btn"        id="tab-oeis"  onclick="setView('oeis')">OEIS</button>
+  <button class="tb-close" onclick="closeWin()" title="閉じる">✕</button>
+</header>
+
+<!-- ── メイン3ペイン ── -->
+<div id="main">
+
+  <!-- ── 左: arXiv ── -->
+  <div class="panel" id="panel-arxiv">
+    <div class="panel-hd">
+      <span class="layer-dot dot-teal"></span>
+      <span class="panel-hd-title" style="color:var(--teal)">arXiv PAPERS</span>
+      <span id="arxiv-count" style="margin-left:auto;font-family:var(--mono);
+        font-size:9px;color:var(--silver-dim);">0件</span>
+    </div>
+    <div class="panel-body">
+      <div class="search-row">
+        <input class="search-input" id="arxiv-input"
+          placeholder="キーワード (例: dimension theory)" value="mathematics dimension">
+        <button class="search-btn" onclick="fetchArxiv()">検索</button>
+      </div>
+      <div class="preset-row">
+        <button class="preset-btn" onclick="arxivPreset('general')">一般数学</button>
+        <button class="preset-btn" onclick="arxivPreset('number-theory')">数論</button>
+        <button class="preset-btn" onclick="arxivPreset('ai-math')">AI×数学</button>
+        <button class="preset-btn" onclick="arxivPreset('topology')">位相幾何</button>
+      </div>
+      <div id="arxiv-list"><div class="empty-msg">検索またはプリセットを選択</div></div>
+    </div>
+  </div>
+
+  <!-- ── 中央: 数式シミュレーター ── -->
+  <div class="panel" id="panel-sim">
+    <div class="panel-hd">
+      <span class="layer-dot dot-dfumt"></span>
+      <span class="panel-hd-title" style="color:var(--dfumt)">MATH SIMULATOR</span>
+      <span style="margin-left:auto;font-family:var(--mono);font-size:9px;
+        color:var(--silver-dim);">藤本伸樹 note記事 数式</span>
+    </div>
+    <div class="panel-body">
+
+      <!-- シナリオ -->
+      <div class="sim-label">📋 プリセットシナリオ</div>
+      <div class="scenario-row">
+        <button class="scen-btn" onclick="loadScenario('ai-disruption')">AI破壊</button>
+        <button class="scen-btn" onclick="loadScenario('innovation')">イノベ爆発</button>
+        <button class="scen-btn" onclick="loadScenario('balance')">ハイブリッド均衡</button>
+        <button class="scen-btn" onclick="loadScenario('human-focus')">人間価値重視</button>
+      </div>
+
+      <!-- 教育価値パラメータ -->
+      <div class="sim-section">
+        <div class="sim-label">
+          V(t) = V₀ × e<sup>-λt</sup> × (1 + α×I(t))
+          <span style="color:var(--dfumt)">教育価値関数</span>
+        </div>
+        <div class="slider-row">
+          <span class="slider-name">V₀ 初期価値</span>
+          <input type="range" id="sl-V0" min="10" max="200" value="100" oninput="onSlider()">
+          <span class="slider-val" id="v-V0">100</span>
+        </div>
+        <div class="slider-row">
+          <span class="slider-name">λ 減衰率</span>
+          <input type="range" id="sl-lambda" min="1" max="100" value="30" oninput="onSlider()">
+          <span class="slider-val" id="v-lambda">0.30</span>
+        </div>
+        <div class="slider-row">
+          <span class="slider-name">α 革新係数</span>
+          <input type="range" id="sl-alpha" min="1" max="100" value="50" oninput="onSlider()">
+          <span class="slider-val" id="v-alpha">0.50</span>
+        </div>
+        <div class="slider-row">
+          <span class="slider-name">I(t) 流入率</span>
+          <input type="range" id="sl-innov" min="1" max="100" value="40" oninput="onSlider()">
+          <span class="slider-val" id="v-innov">0.40</span>
+        </div>
+      </div>
+
+      <!-- 収益化困難度パラメータ -->
+      <div class="sim-section">
+        <div class="sim-label">
+          D = (AI能力×アクセス性)/(独自性×人間価値)
+          <span style="color:var(--gold)">収益化困難度</span>
+        </div>
+        <div class="slider-row">
+          <span class="slider-name">AI能力</span>
+          <input type="range" id="sl-ai" min="1" max="100" value="70" oninput="onSlider()">
+          <span class="slider-val" id="v-ai">0.70</span>
+        </div>
+        <div class="slider-row">
+          <span class="slider-name">アクセス性</span>
+          <input type="range" id="sl-acc" min="1" max="100" value="80" oninput="onSlider()">
+          <span class="slider-val" id="v-acc">0.80</span>
+        </div>
+        <div class="slider-row">
+          <span class="slider-name">独自性</span>
+          <input type="range" id="sl-uniq" min="1" max="100" value="40" oninput="onSlider()">
+          <span class="slider-val" id="v-uniq">0.40</span>
+        </div>
+        <div class="slider-row">
+          <span class="slider-name">人間価値</span>
+          <input type="range" id="sl-hv" min="1" max="100" value="60" oninput="onSlider()">
+          <span class="slider-val" id="v-hv">0.60</span>
+        </div>
+      </div>
+
+      <!-- ネットワーク -->
+      <div class="sim-section">
+        <div class="sim-label">
+          D_nw = 2|E| / (|V|(|V|-1))
+          <span style="color:var(--green)">ネットワーク密度</span>
+        </div>
+        <div class="slider-row">
+          <span class="slider-name">ノード数 |V|</span>
+          <input type="range" id="sl-nodes" min="3" max="200" value="50" oninput="onSlider()">
+          <span class="slider-val" id="v-nodes">50</span>
+        </div>
+        <div class="slider-row">
+          <span class="slider-name">エッジ数 |E|</span>
+          <input type="range" id="sl-edges" min="1" max="1000" value="120" oninput="onSlider()">
+          <span class="slider-val" id="v-edges">120</span>
+        </div>
+      </div>
+
+      <!-- グラフ -->
+      <canvas id="simCanvas" height="160"></canvas>
+
+      <!-- メトリクスボックス -->
+      <div class="sim-metrics">
+        <div class="metric-box">
+          <div class="metric-box-val" id="m-vt" style="color:var(--dfumt)">—</div>
+          <div class="metric-box-lbl">V(10) 教育価値</div>
+        </div>
+        <div class="metric-box">
+          <div class="metric-box-val" id="m-diff" style="color:var(--gold)">—</div>
+          <div class="metric-box-lbl">D 収益化困難度</div>
+        </div>
+        <div class="metric-box">
+          <div class="metric-box-val" id="m-ent" style="color:var(--teal)">—</div>
+          <div class="metric-box-lbl">H(M) エントロピー</div>
+        </div>
+        <div class="metric-box">
+          <div class="metric-box-val" id="m-net" style="color:var(--green)">—</div>
+          <div class="metric-box-lbl">D_nw ネット密度</div>
+        </div>
+      </div>
+
+      <!-- D-FUMTエンジン連携ボタン -->
+      <button onclick="runDfumtFromSim()" style="width:100%;margin-top:8px;padding:8px;
+        background:rgba(155,126,207,.15);border:1px solid rgba(155,126,207,.3);
+        border-radius:4px;color:var(--dfumt);cursor:pointer;
+        font-family:var(--mono);font-size:11px;letter-spacing:.08em;transition:var(--r);">
+        ⟁ D-FUMTエンジンで分析
+      </button>
+      <div id="dfumt-result-sim" class="dfumt-result" style="display:none;"></div>
+
+    </div>
+  </div>
+
+  <!-- ── 右: OEIS ── -->
+  <div class="panel" id="panel-oeis">
+    <div class="panel-hd">
+      <span class="layer-dot dot-gold"></span>
+      <span class="panel-hd-title" style="color:var(--gold)">OEIS SEQUENCES</span>
+      <span id="oeis-count" style="margin-left:auto;font-family:var(--mono);
+        font-size:9px;color:var(--silver-dim);">0件</span>
+    </div>
+    <div class="panel-body">
+      <div class="search-row">
+        <input class="search-input" id="oeis-input"
+          placeholder="数列名 / キーワード" value="Fibonacci">
+        <button class="search-btn" style="background:rgba(196,168,90,.12);
+          border-color:rgba(196,168,90,.28);color:var(--gold);"
+          onclick="fetchOeis()">検索</button>
+      </div>
+      <div class="preset-row">
+        <button class="preset-btn" onclick="oeisPreset('fibonacci')">Fibonacci</button>
+        <button class="preset-btn" onclick="oeisPreset('primes')">素数</button>
+        <button class="preset-btn" onclick="oeisPreset('pi-digits')">π桁数</button>
+        <button class="preset-btn" onclick="oeisPreset('phi-continued')">φ連分数</button>
+        <button class="preset-btn" onclick="oeisPreset('factorial')">階乗</button>
+      </div>
+      <div id="oeis-list"><div class="empty-msg">検索またはプリセットを選択</div></div>
+    </div>
+  </div>
+
+</div><!-- /main -->
+
+<!-- ── ステータスバー ── -->
+<footer id="statusbar">
+  <div class="st">
+    <span class="layer-dot dot-teal" style="width:5px;height:5px;"></span>
+    KNOWLEDGE NET
+  </div>
+  <div class="st" id="st-arxiv">arXiv: 0件</div>
+  <div class="st" id="st-oeis">OEIS: 0件</div>
+  <div class="st" id="st-sim">SIM: 待機</div>
+  <div class="st-spacer"></div>
+  <div class="st" id="st-time" style="border-right:none;">テーマI v1.0</div>
+</footer>
+
+</div><!-- /app -->
+
+<script>
+// ============================================================
+// 状態
+// ============================================================
+let _state  = null;
+let _simRes = null;
+let _rafId  = null;
+const PHI = 1.6180339887;
+
+// ============================================================
+// 初期化
+// ============================================================
+window.addEventListener('DOMContentLoaded', () => {
+  if (!window.knowledgeBridge) return;
+  window.knowledgeBridge.onStateUpdate(s => applyState(s));
+  window.knowledgeBridge.ready();
+  drawChart(); // 初期描画
+});
+
+// ============================================================
+// 状態適用
+// ============================================================
+function applyState(s) {
+  _state = s;
+  renderArxiv(s.arxiv);
+  renderOeis(s.oeis);
+  if (s.sim) { _simRes = s.sim; drawChart(); updateMetrics(s.sim); }
+  updateStatus(s);
+}
+
+function updateStatus(s) {
+  setText('st-arxiv', `arXiv: ${s.arxiv.papers.length}件`);
+  setText('st-oeis',  `OEIS: ${s.oeis.sequences.length}件`);
+  setText('st-sim',   s.sim ? 'SIM: 実行済' : 'SIM: 待機');
+}
+
+// ============================================================
+// arXiv
+// ============================================================
+async function fetchArxiv() {
+  const q = document.getElementById('arxiv-input').value.trim();
+  if (!q || !window.knowledgeBridge) return;
+  showLoading('arxiv-list');
+  await window.knowledgeBridge.fetchArxiv({ query: q, maxResults: 8 });
+}
+
+async function arxivPreset(preset) {
+  if (!window.knowledgeBridge) return;
+  const map = {
+    general:       { query: 'mathematical theory framework',   category: 'math.GM', maxResults: 8 },
+    'number-theory':{ query: 'prime fibonacci golden ratio',   category: 'math.NT', maxResults: 8 },
+    'ai-math':     { query: 'neural network mathematics',      category: 'cs.LG',   maxResults: 8 },
+    topology:      { query: 'topology manifold dimension',     category: 'math.GT', maxResults: 8 },
+  };
+  showLoading('arxiv-list');
+  await window.knowledgeBridge.fetchArxiv(map[preset] || map.general);
+}
+
+function renderArxiv(arxiv) {
+  const el = document.getElementById('arxiv-list');
+  const cnt = document.getElementById('arxiv-count');
+  if (!el) return;
+  if (arxiv.isLoading) { showLoading('arxiv-list'); return; }
+  if (arxiv.error)     { el.innerHTML = `<div class="empty-msg" style="color:var(--danger)">${arxiv.error}</div>`; return; }
+  if (!arxiv.papers.length) { el.innerHTML = '<div class="empty-msg">結果なし</div>'; return; }
+  cnt.textContent = arxiv.papers.length + '件';
+  el.innerHTML = arxiv.papers.map(p => `
+    <div class="arxiv-card">
+      <div class="card-title" onclick="openLink('${p.link}')">${p.title}</div>
+      <div class="card-meta">${p.authors.slice(0,3).join(', ')}${p.authors.length>3?' et al.':''} · ${p.published?.slice(0,10)||''}</div>
+      <div class="card-summary">${p.summary?.slice(0,180)||''}…</div>
+      <div class="card-cats">${(p.categories||[]).slice(0,4).map(c=>`<span class="cat-tag">${c}</span>`).join('')}</div>
+      <div class="card-actions">
+        <button class="card-btn" onclick="openLink('${p.link}')">arXiv</button>
+        <button class="card-btn" onclick="runDfumtFromArxiv(${JSON.stringify(p.dfumtVector)})">⟁ D-FUMT</button>
+      </div>
+    </div>`).join('');
+}
+
+async function runDfumtFromArxiv(vec) {
+  if (!window.knowledgeBridge) return;
+  const r = await window.knowledgeBridge.runDfumt(vec);
+  showDfumtResult('dfumt-result-arxiv', r);
+}
+
+// ============================================================
+// OEIS
+// ============================================================
+async function fetchOeis() {
+  const q = document.getElementById('oeis-input').value.trim();
+  if (!q || !window.knowledgeBridge) return;
+  showLoading('oeis-list');
+  await window.knowledgeBridge.fetchOeis({ query: q, maxResults: 6 });
+}
+
+async function oeisPreset(preset) {
+  if (!window.knowledgeBridge) return;
+  const map = {
+    fibonacci:      'Fibonacci',
+    primes:         'prime numbers',
+    'pi-digits':    'decimal expansion of Pi',
+    'phi-continued':'continued fraction golden ratio',
+    factorial:      'factorial',
+  };
+  document.getElementById('oeis-input').value = map[preset] || preset;
+  showLoading('oeis-list');
+  await window.knowledgeBridge.fetchOeis({ query: map[preset] || preset, maxResults: 6 });
+}
+
+function renderOeis(oeis) {
+  const el  = document.getElementById('oeis-list');
+  const cnt = document.getElementById('oeis-count');
+  if (!el) return;
+  if (oeis.isLoading) { showLoading('oeis-list'); return; }
+  if (oeis.error)     { el.innerHTML = `<div class="empty-msg" style="color:var(--danger)">${oeis.error}</div>`; return; }
+  if (!oeis.sequences.length) { el.innerHTML = '<div class="empty-msg">結果なし</div>'; return; }
+  cnt.textContent = oeis.sequences.length + '件';
+  el.innerHTML = oeis.sequences.map(s => `
+    <div class="oeis-card">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:3px;">
+        <span class="oeis-id">${s.id}</span>
+        <span style="font-family:var(--mono);font-size:9px;color:var(--silver-dim);">
+          offset:${s.offset}</span>
+      </div>
+      <div class="oeis-name">${s.name}</div>
+      <div class="oeis-values">${(s.values||[]).slice(0,14).join(', ')}${(s.values||[]).length>14?', …':''}</div>
+      ${s.formula ? `<div class="oeis-formula">f: ${s.formula.slice(0,120)}</div>`:''}
+      <div class="oeis-actions">
+        <button class="card-btn" onclick="openLink('https://oeis.org/${s.id}')">OEIS</button>
+        <button class="card-btn" onclick="runDfumtFromOeis(${JSON.stringify(s.dfumtVector)})">⟁ D-FUMT</button>
+        <button class="card-btn" onclick="sendToSim(${JSON.stringify(s.dfumtVector)})">→ SIM</button>
+      </div>
+    </div>`).join('');
+}
+
+async function runDfumtFromOeis(vec) {
+  if (!window.knowledgeBridge) return;
+  const r = await window.knowledgeBridge.runDfumt(vec);
+  showDfumtResult('dfumt-result-oeis', r);
+}
+
+function sendToSim(vec) {
+  // OEIS数列をシミュレーターパラメータに変換して反映
+  if (!vec || vec.length < 4) return;
+  const clamp = (v, mn, mx) => Math.min(mx, Math.max(mn, v));
+  setSlider('sl-V0',    Math.round(clamp(Math.abs(vec[0])*100, 10, 200)));
+  setSlider('sl-lambda',Math.round(clamp(Math.abs(vec[1])*80, 1, 100)));
+  setSlider('sl-alpha', Math.round(clamp(Math.abs(vec[2]), 1, 100)));
+  setSlider('sl-innov', Math.round(clamp(Math.abs(vec[3]||0.4)*100, 1, 100)));
+  onSlider();
+}
+
+// ============================================================
+// シミュレーター
+// ============================================================
+function getParams() {
+  return {
+    edu: {
+      V0:       parseFloat(document.getElementById('sl-V0').value),
+      lambda:   parseFloat(document.getElementById('sl-lambda').value) / 100,
+      alpha:    parseFloat(document.getElementById('sl-alpha').value)  / 100,
+      innovRate:parseFloat(document.getElementById('sl-innov').value)  / 100,
+    },
+    mon: {
+      aiCapability:  parseFloat(document.getElementById('sl-ai').value)   / 100,
+      accessibility: parseFloat(document.getElementById('sl-acc').value)  / 100,
+      uniqueness:    parseFloat(document.getElementById('sl-uniq').value) / 100,
+      humanValue:    parseFloat(document.getElementById('sl-hv').value)   / 100,
+    },
+    net: {
+      nodes: parseInt(document.getElementById('sl-nodes').value),
+      edges: parseInt(document.getElementById('sl-edges').value),
+    },
+  };
+}
+
+function onSlider() {
+  // ラベル更新
+  setText('v-V0',    document.getElementById('sl-V0').value);
+  setText('v-lambda',(document.getElementById('sl-lambda').value/100).toFixed(2));
+  setText('v-alpha', (document.getElementById('sl-alpha').value/100).toFixed(2));
+  setText('v-innov', (document.getElementById('sl-innov').value/100).toFixed(2));
+  setText('v-ai',    (document.getElementById('sl-ai').value/100).toFixed(2));
+  setText('v-acc',   (document.getElementById('sl-acc').value/100).toFixed(2));
+  setText('v-uniq',  (document.getElementById('sl-uniq').value/100).toFixed(2));
+  setText('v-hv',    (document.getElementById('sl-hv').value/100).toFixed(2));
+  setText('v-nodes', document.getElementById('sl-nodes').value);
+  setText('v-edges', document.getElementById('sl-edges').value);
+  runSim();
+}
+
+async function runSim() {
+  if (!window.knowledgeBridge) { drawChartLocal(); return; }
+  const p = getParams();
+  await window.knowledgeBridge.runSim(p);
+}
+
+function drawChartLocal() {
+  // ブリッジなしでもローカル計算して描画
+  const p = getParams();
+  const PHI = 1.6180339887;
+  const timeline = [];
+  const ai = p.mon.aiCapability, ac = p.mon.accessibility;
+  const un = p.mon.uniqueness,   hv = p.mon.humanValue;
+  const diff = (un * hv) < 1e-10 ? 999 : (ai * ac) / (un * hv);
+  // エントロピー近似
+  const n = 8, alpha = p.edu.alpha;
+  const raw = Array.from({length:n},(_,i)=>{
+    const base = 1/n;
+    const bias = (alpha*PHI)/(i+PHI);
+    return base + bias*(i%2===0?1:-1)*0.1;
+  });
+  const sum = raw.reduce((a,b)=>a+Math.abs(b),0);
+  const probs = raw.map(v=>Math.abs(v)/sum);
+  const ent = -probs.reduce((h,p)=>h+(p>0?p*Math.log2(p):0),0);
+  const maxEdges = p.net.nodes*(p.net.nodes-1);
+  const netD = maxEdges===0 ? 0 : (2*p.net.edges)/maxEdges;
+  for (let t=0;t<21;t++){
+    const It = p.edu.innovRate/(1+Math.exp(-0.5*(t-10)));
+    const v  = Math.max(0, p.edu.V0 * Math.exp(-p.edu.lambda*t)*(1+p.edu.alpha*It));
+    timeline.push({t, value:v, difficulty:diff, entropy:ent, networkDensity:netD});
+  }
+  _simRes = { timeline, summary:{ peakValue:Math.max(...timeline.map(x=>x.value)),
+    minValue:Math.min(...timeline.map(x=>x.value)), avgDifficulty:diff, entropy:ent, networkDensity:netD }};
+  drawChart();
+  updateMetrics(_simRes);
+}
+
+function drawChart() {
+  const canvas = document.getElementById('simCanvas');
+  if (!canvas) return;
+  const W = canvas.offsetWidth || 400;
+  canvas.width  = W;
+  canvas.height = 160;
+  const ctx = canvas.getContext('2d');
+  const data = _simRes?.timeline || [];
+  ctx.clearRect(0,0,W,160);
+  // 背景
+  ctx.fillStyle='#0a0a12'; ctx.fillRect(0,0,W,160);
+  // グリッド
+  ctx.strokeStyle='rgba(160,160,200,.05)'; ctx.lineWidth=0.5;
+  for(let i=0;i<=4;i++){const y=10+140*(i/4); ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();}
+
+  if (data.length < 2) {
+    ctx.font='10px JetBrains Mono,monospace'; ctx.fillStyle='rgba(74,74,90,.6)';
+    ctx.textAlign='center'; ctx.fillText('スライダーを操作してください',W/2,80);
+    ctx.textAlign='left'; return;
+  }
+
+  const series = [
+    { key:'value',          color:'#9b7ecf', label:'V(t)' },
+    { key:'difficulty',     color:'#c4a85a', label:'D'    },
+    { key:'entropy',        color:'#4ec9b0', label:'H(M)' },
+    { key:'networkDensity', color:'#4caf7d', label:'D_nw' },
+  ];
+  const pad = {l:8,r:8,t:12,b:12};
+  for (const s of series) {
+    const vals  = data.map(d=>d[s.key]??0);
+    const max   = Math.max(...vals, 1);
+    const min   = Math.min(...vals, 0);
+    const range = Math.max(max-min, 1);
+    ctx.beginPath(); ctx.strokeStyle=s.color; ctx.lineWidth=1.8;
+    ctx.shadowColor=s.color; ctx.shadowBlur=4;
+    for(let i=0;i<vals.length;i++){
+      const x=pad.l+(i/(vals.length-1))*(W-pad.l-pad.r);
+      const y=pad.t+(1-(vals[i]-min)/range)*(160-pad.t-pad.b);
+      i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);
+    }
+    ctx.stroke(); ctx.shadowBlur=0;
+  }
+  // 凡例
+  const legend=[{c:'#9b7ecf',l:'V(t)'},{c:'#c4a85a',l:'D'},{c:'#4ec9b0',l:'H(M)'},{c:'#4caf7d',l:'D_nw'}];
+  legend.forEach((lg,i)=>{
+    ctx.fillStyle=lg.c; ctx.fillRect(pad.l+i*52,2,12,3);
+    ctx.font='9px JetBrains Mono,monospace'; ctx.fillStyle='rgba(160,160,180,.7)';
+    ctx.fillText(lg.l,pad.l+i*52+15,8);
+  });
+}
+
+function updateMetrics(sim) {
+  if (!sim) return;
+  const mid = sim.timeline?.[10];
+  if (!mid) return;
+  setText('m-vt',   mid.value.toFixed(2));
+  setText('m-diff', mid.difficulty.toFixed(3));
+  setText('m-ent',  mid.entropy.toFixed(3));
+  setText('m-net',  mid.networkDensity.toFixed(4));
+}
+
+async function runDfumtFromSim() {
+  if (!window.knowledgeBridge) return;
+  const sim = _simRes;
+  if (!sim) { runSim(); return; }
+  const mid = sim.timeline?.[10];
+  if (!mid) return;
+  const vec = [
+    mid.value/100, Math.min(1,1/Math.max(mid.difficulty,0.01)),
+    mid.entropy/3, mid.networkDensity, PHI*(mid.value/100),
+  ];
+  const r = await window.knowledgeBridge.runDfumt(vec);
+  const box = document.getElementById('dfumt-result-sim');
+  box.style.display = 'block';
+  showDfumtResult('dfumt-result-sim', r, true);
+}
+
+function loadScenario(name) {
+  const presets = {
+    'ai-disruption': { V0:100,lambda:60,alpha:20,innov:20, ai:95,acc:90,uniq:20,hv:30, nodes:80,edges:400 },
+    'innovation':    { V0:80, lambda:10,alpha:90,innov:80, ai:70,acc:60,uniq:80,hv:70, nodes:100,edges:600 },
+    'balance':       { V0:100,lambda:30,alpha:50,innov:40, ai:60,acc:70,uniq:50,hv:60, nodes:50, edges:150 },
+    'human-focus':   { V0:90, lambda:15,alpha:60,innov:50, ai:40,acc:50,uniq:90,hv:95, nodes:40, edges:80  },
+  };
+  const p = presets[name]; if (!p) return;
+  setSlider('sl-V0',p.V0); setSlider('sl-lambda',p.lambda); setSlider('sl-alpha',p.alpha); setSlider('sl-innov',p.innov);
+  setSlider('sl-ai',p.ai); setSlider('sl-acc',p.acc); setSlider('sl-uniq',p.uniq); setSlider('sl-hv',p.hv);
+  setSlider('sl-nodes',p.nodes); setSlider('sl-edges',p.edges);
+  onSlider();
+}
+
+// ============================================================
+// D-FUMT結果表示
+// ============================================================
+function showDfumtResult(id, r, inline) {
+  const box = document.getElementById(id);
+  if (!box) return;
+  if (r.error) {
+    box.style.display='block';
+    box.innerHTML=`<div class="dfumt-result-title">⟁ D-FUMT RESULT</div><span style="color:var(--danger)">${r.error}</span>`;
+    return;
+  }
+  box.style.display='block';
+  box.innerHTML = `
+    <div class="dfumt-result-title">⟁ D-FUMT ENGINE ANALYSIS</div>
+    生存候補: ${r.survivors} 件 &nbsp;|&nbsp;
+    エネルギー: ${r.energy?.toFixed?.(3)??'—'} &nbsp;|&nbsp;
+    複雑度: ${r.complexity?.toFixed?.(2)??'—'} &nbsp;|&nbsp;
+    適応度: ${r.fitness?.toFixed?.(4)??'—'}`;
+}
+
+// ============================================================
+// ビュー切り替え（統合/arXiv/SIM/OEIS）
+// ============================================================
+function setView(v) {
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tab-'+v)?.classList.add('active');
+  const panels = ['arxiv','sim','oeis'];
+  const main   = document.getElementById('main');
+  if (v === 'all') {
+    main.style.gridTemplateColumns='1fr 1fr 1fr';
+    panels.forEach(p=>{ const el=document.getElementById('panel-'+p); if(el) el.style.display='flex'; });
+  } else {
+    main.style.gridTemplateColumns='1fr';
+    panels.forEach(p=>{ const el=document.getElementById('panel-'+p);
+      if(el) el.style.display = p===v ? 'flex':'none'; });
+  }
+}
+
+// ============================================================
+// ユーティリティ
+// ============================================================
+function setText(id, v) { const el=document.getElementById(id); if(el) el.textContent=String(v); }
+function setSlider(id, v) {
+  const el=document.getElementById(id); if(!el) return; el.value=v;
+  // value表示ラベルも更新
+  const labelId = 'v-'+id.replace('sl-','');
+  const lel = document.getElementById(labelId);
+  if (!lel) return;
+  lel.textContent = (id==='sl-V0'||id==='sl-nodes'||id==='sl-edges') ? v : (v/100).toFixed(2);
+}
+function showLoading(id) {
+  const el=document.getElementById(id);
+  if(el) el.innerHTML='<div class="loading"><span class="spin"></span>取得中...</div>';
+}
+function openLink(url) { require('electron').shell?.openExternal?.(url); }
+function closeWin() { window.knowledgeBridge?.close(); }
+
+// 初回ローカル描画
+window.addEventListener('load', () => { onSlider(); });
+// リサイズ
+window.addEventListener('resize', () => { drawChart(); });
+</script>
+</body>
+</html>

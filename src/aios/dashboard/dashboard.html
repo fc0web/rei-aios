@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Content-Security-Policy"
+  content="default-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+           font-src 'self' https://fonts.gstatic.com; script-src 'self' 'unsafe-inline';">
+<title>D-FUMT Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400&family=Zen+Kaku+Gothic+New:wght@300;400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg-void:    #06060b; --bg-deep:    #0a0a12;
+  --bg-mid:     #10101a; --bg-surface: #16161f; --bg-raised: #1c1c28;
+  --silver-dim: #4a4a5a; --silver-mid: #7a7a90;
+  --silver-bright: #a8a8c0; --silver-pure: #d0d0e0;
+  --accent-rei:   #6e9ecf; --accent-dfumt: #9b7ecf;
+  --accent-gold:  #c4a85a; --accent-danger:#cf6e7e;
+  --accent-green: #4caf7d;
+  --glow-rei:   rgba(110,158,207,0.15); --glow-dfumt: rgba(155,126,207,0.15);
+  --border-subtle: rgba(160,160,200,0.08); --border-dim: rgba(160,160,200,0.15);
+  --font-mono: 'JetBrains Mono','Courier New',monospace;
+  --font-jp:   'Zen Kaku Gothic New',sans-serif;
+  --r:220ms cubic-bezier(0.4,0,0.2,1);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html,body{width:100%;height:100%;overflow:hidden;background:var(--bg-void);
+  color:var(--silver-bright);font-family:var(--font-jp);font-size:13px;
+  -webkit-font-smoothing:antialiased;user-select:none;}
+body::before{content:'';position:fixed;inset:0;z-index:0;
+  background-image:linear-gradient(rgba(110,158,207,0.025) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(110,158,207,0.025) 1px,transparent 1px);
+  background-size:40px 40px;pointer-events:none;}
+
+/* ── レイアウト ── */
+#app{position:relative;z-index:1;width:100vw;height:100vh;
+  display:grid;grid-template-rows:42px 1fr 36px;
+  grid-template-columns:1fr 1fr 1fr;
+  grid-template-areas:"topbar topbar topbar""left center right""status status status";
+  animation:in 500ms ease both;}
+@keyframes in{from{opacity:0;filter:blur(3px)}to{opacity:1;filter:blur(0)}}
+
+/* ── トップバー ── */
+#topbar{grid-area:topbar;display:flex;align-items:center;gap:12px;
+  padding:0 20px;background:var(--bg-deep);border-bottom:1px solid var(--border-subtle);
+  -webkit-app-region:drag;}
+#topbar>*{-webkit-app-region:no-drag;}
+.tb-title{font-family:var(--font-mono);font-size:12px;letter-spacing:.15em;
+  color:var(--accent-dfumt);display:flex;align-items:center;gap:8px;}
+.tb-dot{width:7px;height:7px;border-radius:50%;background:var(--accent-dfumt);
+  box-shadow:0 0 8px var(--accent-dfumt);animation:blink 2s infinite;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+.tb-run-btn{margin-left:auto;padding:6px 16px;background:rgba(155,126,207,.15);
+  border:1px solid rgba(155,126,207,.3);border-radius:4px;color:var(--accent-dfumt);
+  cursor:pointer;font-family:var(--font-mono);font-size:11px;letter-spacing:.1em;
+  transition:var(--r);}
+.tb-run-btn:hover{background:rgba(155,126,207,.28);}
+.tb-reset-btn{padding:6px 14px;background:transparent;
+  border:1px solid var(--border-dim);border-radius:4px;color:var(--silver-dim);
+  cursor:pointer;font-family:var(--font-mono);font-size:11px;transition:var(--r);}
+.tb-reset-btn:hover{color:var(--silver-bright);border-color:var(--border-dim);}
+.tb-close{width:28px;height:28px;background:rgba(207,110,126,.12);
+  border:1px solid rgba(207,110,126,.25);border-radius:50%;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  color:var(--accent-danger);font-size:13px;transition:var(--r);}
+.tb-close:hover{background:rgba(207,110,126,.25);}
+
+/* ── パネル共通 ── */
+.panel{background:var(--bg-deep);border:1px solid var(--border-subtle);
+  border-radius:8px;margin:8px 4px;overflow:hidden;
+  display:flex;flex-direction:column;}
+.panel-hd{padding:10px 16px;border-bottom:1px solid var(--border-subtle);
+  font-family:var(--font-mono);font-size:10px;letter-spacing:.15em;
+  display:flex;align-items:center;gap:8px;}
+.panel-body{flex:1;overflow-y:auto;padding:12px 16px;}
+.panel-body::-webkit-scrollbar{width:3px;}
+.panel-body::-webkit-scrollbar-thumb{background:var(--border-dim);border-radius:2px;}
+
+/* ── 左パネル: 種層 ── */
+#left{grid-area:left;}
+.layer-dot{width:8px;height:8px;border-radius:50%;}
+.dot-rei  {background:var(--accent-rei);  box-shadow:0 0 6px var(--accent-rei);}
+.dot-gold {background:var(--accent-gold); box-shadow:0 0 6px var(--accent-gold);}
+.dot-dfumt{background:var(--accent-dfumt);box-shadow:0 0 6px var(--accent-dfumt);}
+.dot-green{background:var(--accent-green);box-shadow:0 0 6px var(--accent-green);}
+
+.metric-row{display:flex;justify-content:space-between;align-items:center;
+  padding:5px 0;border-bottom:1px solid var(--border-subtle);}
+.metric-row:last-child{border-bottom:none;}
+.metric-label{color:var(--silver-dim);font-size:12px;}
+.metric-value{font-family:var(--font-mono);font-size:12px;color:var(--silver-mid);}
+.metric-value.hi{color:var(--accent-dfumt);}
+.metric-value.ok{color:var(--accent-green);}
+.metric-value.warn{color:var(--accent-gold);}
+
+/* バランスバー */
+.balance-wrap{display:flex;align-items:center;gap:6px;padding:6px 0;}
+.balance-label{font-family:var(--font-mono);font-size:10px;color:var(--silver-dim);width:40px;}
+.balance-bar{flex:1;height:4px;background:var(--bg-raised);border-radius:2px;overflow:hidden;}
+.balance-fill{height:100%;transition:width .6s ease;border-radius:2px;}
+.balance-pos{background:linear-gradient(90deg,var(--accent-rei),var(--accent-dfumt));}
+.balance-neg{background:var(--accent-danger);}
+
+/* ── 中央パネル: メトリクスグラフ ── */
+#center{grid-area:center;}
+#chartCanvas{width:100%;display:block;}
+
+/* ── 右パネル: 選択層 + 履歴 ── */
+#right{grid-area:right;}
+.gen-bar{display:flex;align-items:center;gap:6px;padding:5px 0;
+  border-bottom:1px solid var(--border-subtle);}
+.gen-label{font-family:var(--font-mono);font-size:10px;color:var(--silver-dim);flex:1;}
+.gen-track{width:90px;height:3px;background:var(--bg-raised);border-radius:2px;overflow:hidden;}
+.gen-fill{height:100%;background:linear-gradient(90deg,var(--accent-green),var(--accent-rei));
+  transition:width .5s ease;}
+
+/* スナップショットリスト */
+.snap-list{font-family:var(--font-mono);font-size:10px;}
+.snap-row{display:grid;grid-template-columns:50px 1fr 1fr 1fr;
+  gap:4px;padding:3px 0;border-bottom:1px solid var(--border-subtle);}
+.snap-row:last-child{border-bottom:none;}
+.snap-time{color:var(--silver-dim);}
+.snap-val{text-align:right;color:var(--silver-mid);}
+.snap-val.hi{color:var(--accent-dfumt);}
+
+/* ── ステータスバー ── */
+#status{grid-area:status;background:var(--bg-deep);border-top:1px solid var(--border-subtle);
+  display:flex;align-items:center;padding:0 16px;gap:0;
+  font-family:var(--font-mono);font-size:10px;}
+.st-item{display:flex;align-items:center;gap:5px;padding:0 10px;
+  color:var(--silver-dim);border-right:1px solid var(--border-subtle);height:100%;}
+.st-spacer{flex:1;}
+.st-uptime{color:var(--silver-dim);padding-left:10px;}
+
+/* インプット行 */
+.input-row{display:flex;gap:6px;align-items:center;padding:8px 0 4px;}
+.vec-input{flex:1;background:var(--bg-raised);border:1px solid var(--border-dim);
+  border-radius:4px;padding:6px 10px;color:var(--silver-bright);
+  font-family:var(--font-mono);font-size:11px;outline:none;transition:var(--r);}
+.vec-input:focus{border-color:var(--accent-dfumt);box-shadow:0 0 0 2px var(--glow-dfumt);}
+.vec-input::placeholder{color:var(--silver-dim);}
+.vec-btn{padding:6px 14px;background:rgba(155,126,207,.12);
+  border:1px solid rgba(155,126,207,.25);border-radius:4px;
+  color:var(--accent-dfumt);cursor:pointer;font-family:var(--font-mono);font-size:11px;
+  white-space:nowrap;transition:var(--r);}
+.vec-btn:hover{background:rgba(155,126,207,.25);}
+
+/* 最新入力ベクトル表示 */
+.vec-display{font-family:var(--font-mono);font-size:11px;color:var(--silver-dim);
+  padding:4px 0 8px;letter-spacing:.03em;}
+
+/* グラフカラー */
+.legend{display:flex;gap:12px;padding:4px 0 8px;flex-wrap:wrap;}
+.leg{display:flex;align-items:center;gap:5px;font-family:var(--font-mono);font-size:10px;color:var(--silver-dim);}
+.leg-dot{width:8px;height:3px;border-radius:1px;}
+</style>
+</head>
+<body>
+<div id="app">
+
+  <!-- ── トップバー ── -->
+  <header id="topbar">
+    <div class="tb-title">
+      <span class="tb-dot"></span>
+      D-FUMT ENGINE DASHBOARD
+    </div>
+    <input id="vecInput" class="vec-input" style="width:260px;"
+      placeholder="入力ベクトル: 0, 1, 1.618, 3.14159">
+    <button class="tb-run-btn" onclick="runManual()">▶ RUN</button>
+    <button class="tb-reset-btn" onclick="resetMetrics()">RESET</button>
+    <button class="tb-close" onclick="closeDash()" title="閉じる">✕</button>
+  </header>
+
+  <!-- ── 左パネル: 種(Seed)層 ── -->
+  <section class="panel" id="left">
+    <div class="panel-hd">
+      <span class="layer-dot dot-rei"></span>
+      SEED LAYER — 種
+    </div>
+    <div class="panel-body">
+      <div class="metric-row">
+        <span class="metric-label">呼出回数</span>
+        <span class="metric-value hi" id="s-calls">0</span>
+      </div>
+      <div class="metric-row">
+        <span class="metric-label">入力次元</span>
+        <span class="metric-value" id="s-indim">—</span>
+      </div>
+      <div class="metric-row">
+        <span class="metric-label">写像先次元</span>
+        <span class="metric-value" id="s-outdim">—</span>
+      </div>
+      <div class="metric-row">
+        <span class="metric-label">拡張深度</span>
+        <span class="metric-value" id="s-depth">—</span>
+      </div>
+      <div class="metric-row">
+        <span class="metric-label">拡張数</span>
+        <span class="metric-value" id="s-ext">0</span>
+      </div>
+      <div class="metric-row">
+        <span class="metric-label">処理時間</span>
+        <span class="metric-value" id="s-ms">0ms</span>
+      </div>
+      <div style="margin-top:10px;font-family:var(--font-mono);font-size:10px;
+        color:var(--silver-dim);letter-spacing:.1em;margin-bottom:6px;">⊕⊖ BALANCE</div>
+      <div class="balance-wrap">
+        <span class="balance-label">⊕</span>
+        <div class="balance-bar"><div class="balance-fill balance-pos" id="s-bal-pos" style="width:50%"></div></div>
+      </div>
+      <div class="balance-wrap">
+        <span class="balance-label">⊖</span>
+        <div class="balance-bar"><div class="balance-fill balance-neg" id="s-bal-neg" style="width:50%"></div></div>
+      </div>
+
+      <div style="margin-top:14px;border-top:1px solid var(--border-subtle);padding-top:12px;">
+        <div style="font-family:var(--font-mono);font-size:10px;color:var(--accent-gold);
+          letter-spacing:.1em;margin-bottom:8px;">METABOLISM LAYER — 代謝</div>
+        <div class="metric-row">
+          <span class="metric-label">合成数</span>
+          <span class="metric-value hi" id="m-synth">0</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">複雑度</span>
+          <span class="metric-value" id="m-complex">—</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">エネルギー</span>
+          <span class="metric-value ok" id="m-energy">—</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">⊕⊖バランス</span>
+          <span class="metric-value" id="m-dual">—</span>
+        </div>
+        <div class="metric-row">
+          <span class="metric-label">処理時間</span>
+          <span class="metric-value" id="m-ms">0ms</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 中央パネル: グラフ ── -->
+  <section class="panel" id="center">
+    <div class="panel-hd">
+      <span class="layer-dot dot-dfumt"></span>
+      ENGINE METRICS — リアルタイム
+    </div>
+    <div class="panel-body" style="padding:8px 12px;">
+      <div class="input-row">
+        <span style="font-family:var(--font-mono);font-size:10px;color:var(--silver-dim);">
+          入力ベクトル:
+        </span>
+        <span class="vec-display" id="lastVec">—</span>
+      </div>
+      <div class="legend">
+        <div class="leg"><div class="leg-dot" style="background:#6e9ecf"></div>適応度</div>
+        <div class="leg"><div class="leg-dot" style="background:#9b7ecf"></div>エネルギー</div>
+        <div class="leg"><div class="leg-dot" style="background:#4caf7d"></div>生存数</div>
+        <div class="leg"><div class="leg-dot" style="background:#c4a85a"></div>処理ms</div>
+      </div>
+      <canvas id="chartCanvas" height="220"></canvas>
+      <div style="margin-top:10px;display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:8px;">
+        <div style="text-align:center;padding:8px;background:var(--bg-mid);border-radius:4px;">
+          <div style="font-family:var(--font-mono);font-size:18px;color:var(--accent-dfumt);" id="c-runs">0</div>
+          <div style="font-family:var(--font-mono);font-size:9px;color:var(--silver-dim);margin-top:3px;">RUNS</div>
+        </div>
+        <div style="text-align:center;padding:8px;background:var(--bg-mid);border-radius:4px;">
+          <div style="font-family:var(--font-mono);font-size:18px;color:var(--accent-green);" id="c-survivors">0</div>
+          <div style="font-family:var(--font-mono);font-size:9px;color:var(--silver-dim);margin-top:3px;">SURVIVORS</div>
+        </div>
+        <div style="text-align:center;padding:8px;background:var(--bg-mid);border-radius:4px;">
+          <div style="font-family:var(--font-mono);font-size:18px;color:var(--accent-rei);" id="c-avgms">0ms</div>
+          <div style="font-family:var(--font-mono);font-size:9px;color:var(--silver-dim);margin-top:3px;">AVG TIME</div>
+        </div>
+        <div style="text-align:center;padding:8px;background:var(--bg-mid);border-radius:4px;">
+          <div style="font-family:var(--font-mono);font-size:18px;color:var(--accent-gold);" id="c-rate">0%</div>
+          <div style="font-family:var(--font-mono);font-size:9px;color:var(--silver-dim);margin-top:3px;">SURVIVAL</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── 右パネル: 選択層 + 履歴 ── -->
+  <section class="panel" id="right">
+    <div class="panel-hd">
+      <span class="layer-dot dot-green"></span>
+      SELECTION LAYER — 選択
+    </div>
+    <div class="panel-body">
+      <div class="metric-row">
+        <span class="metric-label">総候補数</span>
+        <span class="metric-value hi" id="sel-total">0</span>
+      </div>
+      <div class="metric-row">
+        <span class="metric-label">生存</span>
+        <span class="metric-value ok" id="sel-surv">0</span>
+      </div>
+      <div class="metric-row">
+        <span class="metric-label">淘汰</span>
+        <span class="metric-value warn" id="sel-elim">0</span>
+      </div>
+      <div class="metric-row">
+        <span class="metric-label">突然変異</span>
+        <span class="metric-value" id="sel-mut">0</span>
+      </div>
+      <div class="metric-row">
+        <span class="metric-label">世代数</span>
+        <span class="metric-value" id="sel-gen">—</span>
+      </div>
+      <div class="metric-row">
+        <span class="metric-label">平均適応度</span>
+        <span class="metric-value hi" id="sel-fitness">—</span>
+      </div>
+      <div class="metric-row">
+        <span class="metric-label">生存率</span>
+        <span class="metric-value ok" id="sel-rate">—</span>
+      </div>
+
+      <!-- 生存率バー -->
+      <div style="margin:10px 0 4px;font-family:var(--font-mono);font-size:10px;
+        color:var(--silver-dim);">生存率トレンド</div>
+      <div id="genBars"></div>
+
+      <!-- 履歴テーブル -->
+      <div style="margin-top:12px;font-family:var(--font-mono);font-size:10px;
+        color:var(--accent-rei);letter-spacing:.1em;margin-bottom:6px;">
+        最新スナップショット
+      </div>
+      <div class="snap-list">
+        <div class="snap-row" style="color:var(--silver-dim);">
+          <span>時刻</span><span class="snap-val">適応度</span>
+          <span class="snap-val">エネルギー</span><span class="snap-val">ms</span>
+        </div>
+        <div id="snapRows"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── ステータスバー ── */
+  <footer id="status">
+    <div class="st-item">
+      <span class="layer-dot dot-dfumt" style="width:5px;height:5px;"></span>
+      D-FUMT ENGINE
+    </div>
+    <div class="st-item" id="st-mode">AUTO-RUN: 2s</div>
+    <div class="st-item">THEME-H v1.0</div>
+    <div class="st-spacer"></div>
+    <div class="st-uptime" id="st-uptime">稼働時間: 0s</div>
+  </footer>
+
+</div>
+
+<script>
+// ============================================================
+// グローバル状態
+// ============================================================
+let _state = null;
+let _history = [];
+let _startTime = Date.now();
+
+// ============================================================
+// ブリッジ初期化
+// ============================================================
+window.addEventListener('DOMContentLoaded', () => {
+  if (!window.dashBridge) return;
+  window.dashBridge.onStateUpdate(s => applyState(s));
+  window.dashBridge.ready();
+
+  setInterval(updateUptime, 1000);
+  requestAnimationFrame(drawChart);
+});
+
+function updateUptime() {
+  const s = Math.floor((Date.now() - _startTime) / 1000);
+  const m = Math.floor(s / 60), sec = s % 60;
+  document.getElementById('st-uptime').textContent =
+    `稼働時間: ${m > 0 ? m + 'm ' : ''}${sec}s`;
+}
+
+// ============================================================
+// 状態適用
+// ============================================================
+function applyState(state) {
+  _state = state;
+  _history = state.historyWindow || [];
+
+  const m  = state.engineMetrics;
+  const sd = m.seed;
+  const mt = m.metabolism;
+  const sl = m.selection;
+
+  // Seed
+  setText('s-calls', sd.callCount);
+  setText('s-indim', sd.lastInputDim > 0 ? sd.lastInputDim + 'D' : '—');
+  setText('s-outdim', sd.lastTargetDim > 0 ? sd.lastTargetDim + 'D' : '—');
+  setText('s-depth',  sd.lastExpDepth  > 0 ? sd.lastExpDepth  : '—');
+  setText('s-ext',    sd.lastExtensions);
+  setText('s-ms',     sd.activeMs.toFixed(1) + 'ms');
+  const bal = (sd.zeroBalance + 1) / 2;
+  setWidth('s-bal-pos', Math.round(bal * 100));
+  setWidth('s-bal-neg', Math.round((1 - bal) * 100));
+
+  // Metabolism
+  setText('m-synth',   mt.synthCount);
+  setText('m-complex', mt.lastComplexity > 0 ? mt.lastComplexity.toFixed(2) : '—');
+  setText('m-energy',  mt.lastEnergy     > 0 ? mt.lastEnergy.toFixed(3)     : '—');
+  setText('m-dual',    mt.dualBalance !== 0  ? mt.dualBalance.toFixed(3)    : '0.000');
+  setText('m-ms',      mt.activeMs.toFixed(1) + 'ms');
+
+  // Selection
+  setText('sel-total',   sl.totalCandidates);
+  setText('sel-surv',    sl.survivors);
+  setText('sel-elim',    sl.eliminated);
+  setText('sel-mut',     sl.mutated);
+  setText('sel-gen',     sl.lastGenCount > 0 ? sl.lastGenCount + '世代' : '—');
+  setText('sel-fitness', sl.avgFitness > 0 ? sl.avgFitness.toFixed(4) : '—');
+  setText('sel-rate',    (sl.survivalRate * 100).toFixed(1) + '%');
+
+  // 全体
+  setText('c-runs',      m.runCount);
+  setText('c-survivors', sl.survivors);
+  setText('c-avgms',     m.avgMs.toFixed(1) + 'ms');
+  setText('c-rate',      (sl.survivalRate * 100).toFixed(1) + '%');
+
+  // 最新ベクトル
+  if (m.lastInputVector.length > 0) {
+    document.getElementById('lastVec').textContent =
+      '[' + m.lastInputVector.map(v => v.toFixed(4)).join(', ') + ']';
+  }
+
+  // 生存率バー（直近8件）
+  updateGenBars();
+
+  // 履歴テーブル
+  updateSnapRows();
+}
+
+function setText(id, val) {
+  const el = document.getElementById(id);
+  if (el) el.textContent = String(val);
+}
+function setWidth(id, pct) {
+  const el = document.getElementById(id);
+  if (el) el.style.width = Math.min(100, Math.max(0, pct)) + '%';
+}
+
+function updateGenBars() {
+  const bars = document.getElementById('genBars');
+  const recent = _history.slice(-8);
+  const maxFit = Math.max(...recent.map(s => s.fitness), 1);
+  bars.innerHTML = recent.map(s => {
+    const w = Math.round((s.fitness / maxFit) * 100);
+    const t = new Date(s.timestamp).toLocaleTimeString('ja', {hour12:false});
+    return `<div class="gen-bar">
+      <span class="gen-label">${t}</span>
+      <div class="gen-track"><div class="gen-fill" style="width:${w}%"></div></div>
+      <span style="font-family:var(--font-mono);font-size:10px;color:var(--silver-dim);
+        margin-left:6px;width:40px;text-align:right;">${s.fitness.toFixed(3)}</span>
+    </div>`;
+  }).reverse().join('');
+}
+
+function updateSnapRows() {
+  const rows = document.getElementById('snapRows');
+  const recent = _history.slice(-8).reverse();
+  rows.innerHTML = recent.map(s => {
+    const t = new Date(s.timestamp).toLocaleTimeString('ja', {hour12:false});
+    return `<div class="snap-row">
+      <span class="snap-time">${t}</span>
+      <span class="snap-val hi">${s.fitness.toFixed(3)}</span>
+      <span class="snap-val">${s.energy.toFixed(3)}</span>
+      <span class="snap-val">${s.elapsedMs}ms</span>
+    </div>`;
+  }).join('');
+}
+
+// ============================================================
+// Canvas グラフ描画
+// ============================================================
+function drawChart() {
+  requestAnimationFrame(drawChart);
+  const canvas = document.getElementById('chartCanvas');
+  const rect   = canvas.parentElement.getBoundingClientRect();
+  if (!rect.width) return;
+  canvas.width  = rect.width - 24;
+  canvas.height = 220;
+
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  const data = _history.slice(-60);
+  if (data.length < 2) {
+    // データ無し → 待機表示
+    ctx.clearRect(0,0,W,H);
+    ctx.font = '11px JetBrains Mono,monospace';
+    ctx.fillStyle = 'rgba(74,74,90,0.5)';
+    ctx.textAlign = 'center';
+    ctx.fillText('エンジン起動待機中...', W/2, H/2);
+    ctx.textAlign = 'left';
+    return;
+  }
+
+  ctx.clearRect(0,0,W,H);
+
+  // グリッド
+  ctx.strokeStyle='rgba(160,160,200,0.05)'; ctx.lineWidth=0.5;
+  for (let i=0;i<=4;i++){
+    const y=H*0.08+H*0.84*(i/4);
+    ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();
+  }
+
+  // シリーズ描画
+  const series = [
+    { key:'fitness',     color:'#6e9ecf', label:'適応度' },
+    { key:'energy',      color:'#9b7ecf', label:'エネルギー' },
+    { key:'survivors',   color:'#4caf7d', label:'生存数' },
+    { key:'elapsedMs',   color:'#c4a85a', label:'処理ms' },
+  ];
+
+  for (const s of series) {
+    const vals = data.map(d => d[s.key]);
+    const max  = Math.max(...vals, 1);
+    const min  = Math.min(...vals, 0);
+    const range= Math.max(max - min, 1);
+    const pad  = { l:8, r:8, t:H*0.08, b:H*0.08 };
+
+    ctx.beginPath();
+    ctx.strokeStyle = s.color;
+    ctx.lineWidth   = 1.5;
+    ctx.shadowColor = s.color;
+    ctx.shadowBlur  = 4;
+
+    for (let i=0; i<vals.length; i++) {
+      const x = pad.l + (i/(vals.length-1))*(W-pad.l-pad.r);
+      const y = pad.t + (1-(vals[i]-min)/range)*(H-pad.t-pad.b);
+      i===0 ? ctx.moveTo(x,y) : ctx.lineTo(x,y);
+    }
+    ctx.stroke();
+    ctx.shadowBlur = 0;
+  }
+}
+
+// ============================================================
+// ユーザー操作
+// ============================================================
+async function runManual() {
+  if (!window.dashBridge) return;
+  const raw = document.getElementById('vecInput').value || '0,1,1.618,3.14159';
+  const vec = raw.split(',').map(v => parseFloat(v.trim())).filter(v => !isNaN(v));
+  if (vec.length === 0) return;
+  await window.dashBridge.runEngine(vec);
+}
+
+async function resetMetrics() {
+  if (!window.dashBridge) return;
+  await window.dashBridge.resetMetrics();
+  _history = [];
+}
+
+function closeDash() {
+  if (window.dashBridge) window.dashBridge.close();
+}
+
+// Enter キーでも実行
+document.addEventListener('keydown', e => {
+  if (e.key === 'Enter') runManual();
+});
+</script>
+</body>
+</html>

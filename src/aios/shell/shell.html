@@ -1,0 +1,1565 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Content-Security-Policy"
+  content="default-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+           font-src 'self' https://fonts.gstatic.com; script-src 'self' 'unsafe-inline';">
+<title>Rei-AIOS Shell</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;400&family=JetBrains+Mono:wght@300;400&family=Zen+Kaku+Gothic+New:wght@300;400&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   CSS変数 — ibushi-gin（錆銀）カラーシステム
+   ============================================================ */
+:root {
+  --bg-void:        #06060b;
+  --bg-deep:        #0a0a12;
+  --bg-mid:         #10101a;
+  --bg-surface:     #16161f;
+  --bg-raised:      #1c1c28;
+
+  --silver-dim:     #4a4a5a;
+  --silver-mid:     #7a7a90;
+  --silver-bright:  #a8a8c0;
+  --silver-pure:    #d0d0e0;
+
+  --accent-rei:     #6e9ecf;   /* Rei ブルー */
+  --accent-dfumt:   #9b7ecf;   /* D-FUMT パープル */
+  --accent-gold:    #c4a85a;   /* 金箔アクセント */
+  --accent-danger:  #cf6e7e;
+
+  --glow-rei:       rgba(110, 158, 207, 0.15);
+  --glow-dfumt:     rgba(155, 126, 207, 0.15);
+
+  --border-subtle:  rgba(160, 160, 200, 0.08);
+  --border-dim:     rgba(160, 160, 200, 0.15);
+  --border-mid:     rgba(160, 160, 200, 0.25);
+
+  --font-jp:        'Zen Kaku Gothic New', 'Noto Serif JP', sans-serif;
+  --font-mono:      'JetBrains Mono', 'Courier New', monospace;
+
+  --radius-sm:  4px;
+  --radius-md:  8px;
+  --radius-lg:  16px;
+
+  --transition: 220ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ============================================================
+   リセット & ベース
+   ============================================================ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  width: 100%; height: 100%;
+  overflow: hidden;
+  background: var(--bg-void);
+  color: var(--silver-bright);
+  font-family: var(--font-jp);
+  font-size: 14px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  user-select: none;
+}
+
+/* ============================================================
+   背景: ノイズテクスチャ + 微細グリッド
+   ============================================================ */
+body::before {
+  content: '';
+  position: fixed; inset: 0; z-index: 0;
+  background-image:
+    linear-gradient(rgba(110,158,207,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(110,158,207,0.03) 1px, transparent 1px);
+  background-size: 40px 40px;
+  pointer-events: none;
+}
+
+/* ============================================================
+   シェルレイアウト
+   ============================================================ */
+#shell {
+  position: relative; z-index: 1;
+  width: 100vw; height: 100vh;
+  display: grid;
+  grid-template-rows: 42px 1fr 28px;
+  grid-template-columns: 220px 1fr 280px;
+  grid-template-areas:
+    "topbar  topbar  topbar"
+    "sidebar main    panel"
+    "status  status  status";
+}
+
+/* ============================================================
+   トップバー (タイトルバー兼メニュー)
+   ============================================================ */
+#topbar {
+  grid-area: topbar;
+  display: flex; align-items: center; gap: 0;
+  background: var(--bg-deep);
+  border-bottom: 1px solid var(--border-subtle);
+  -webkit-app-region: drag;
+  position: relative;
+}
+
+/* ドラッグ無効ゾーン（ボタン類） */
+#topbar > * { -webkit-app-region: no-drag; }
+
+.topbar-logo {
+  display: flex; align-items: center; gap: 10px;
+  padding: 0 20px;
+  border-right: 1px solid var(--border-subtle);
+  height: 100%;
+  min-width: 220px;
+}
+.topbar-logo .logo-mark {
+  width: 22px; height: 22px;
+  border: 1.5px solid var(--accent-rei);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  position: relative;
+}
+.topbar-logo .logo-mark::after {
+  content: '';
+  width: 8px; height: 8px;
+  background: var(--accent-rei);
+  border-radius: 50%;
+  box-shadow: 0 0 8px var(--accent-rei);
+}
+.topbar-logo .logo-text {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  letter-spacing: 0.12em;
+  color: var(--silver-pure);
+}
+.topbar-logo .logo-sub {
+  font-size: 10px;
+  color: var(--silver-dim);
+  letter-spacing: 0.08em;
+}
+
+.topbar-nav {
+  display: flex; align-items: center;
+  flex: 1;
+  padding: 0 16px;
+  gap: 2px;
+}
+.topbar-nav button {
+  background: none; border: none; cursor: pointer;
+  padding: 6px 14px;
+  border-radius: var(--radius-sm);
+  color: var(--silver-mid);
+  font-family: var(--font-jp);
+  font-size: 12px;
+  letter-spacing: 0.05em;
+  transition: var(--transition);
+}
+.topbar-nav button:hover { background: var(--bg-raised); color: var(--silver-bright); }
+.topbar-nav button.active {
+  color: var(--accent-rei);
+  background: rgba(110,158,207,0.08);
+}
+
+.topbar-right {
+  display: flex; align-items: center;
+  padding: 0 16px; gap: 8px;
+  margin-left: auto;
+}
+.topbar-clock {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--silver-dim);
+  letter-spacing: 0.08em;
+  min-width: 70px;
+  text-align: right;
+}
+
+/* ウィンドウコントロール */
+.win-controls { display: flex; gap: 6px; padding-left: 8px; }
+.win-btn {
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  border: none; cursor: pointer;
+  transition: var(--transition);
+  opacity: 0.6;
+}
+.win-btn:hover { opacity: 1; transform: scale(1.15); }
+.win-btn.close    { background: #ff5f57; }
+.win-btn.minimize { background: #febc2e; }
+.win-btn.maximize { background: #28c840; }
+
+/* ============================================================
+   サイドバー
+   ============================================================ */
+#sidebar {
+  grid-area: sidebar;
+  background: var(--bg-deep);
+  border-right: 1px solid var(--border-subtle);
+  display: flex; flex-direction: column;
+  overflow: hidden;
+}
+
+.sidebar-section {
+  padding: 16px 12px 8px;
+}
+.sidebar-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  color: var(--silver-dim);
+  text-transform: uppercase;
+  padding: 0 8px 8px;
+  border-bottom: 1px solid var(--border-subtle);
+  margin-bottom: 8px;
+}
+
+.sidebar-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 10px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: var(--transition);
+  color: var(--silver-mid);
+  font-size: 13px;
+}
+.sidebar-item:hover { background: var(--bg-raised); color: var(--silver-bright); }
+.sidebar-item.active {
+  background: rgba(110,158,207,0.1);
+  color: var(--accent-rei);
+  border-left: 2px solid var(--accent-rei);
+  padding-left: 8px;
+}
+.sidebar-item .item-icon {
+  width: 18px; text-align: center;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  opacity: 0.7;
+}
+.sidebar-item .item-badge {
+  margin-left: auto;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  padding: 2px 6px;
+  border-radius: 10px;
+  background: var(--bg-raised);
+  color: var(--silver-dim);
+}
+.sidebar-item.active .item-badge {
+  background: rgba(110,158,207,0.2);
+  color: var(--accent-rei);
+}
+
+.sidebar-divider {
+  height: 1px;
+  background: var(--border-subtle);
+  margin: 8px 12px;
+}
+
+/* D-FUMT 状態インジケーター */
+.dfumt-indicator {
+  margin: 8px 12px;
+  padding: 10px 12px;
+  background: var(--bg-mid);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  border-left: 2px solid var(--accent-dfumt);
+}
+.dfumt-indicator .di-title {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--accent-dfumt);
+  letter-spacing: 0.1em;
+  margin-bottom: 6px;
+}
+.dfumt-indicator .di-row {
+  display: flex; justify-content: space-between;
+  font-size: 11px;
+  color: var(--silver-dim);
+  margin-bottom: 2px;
+}
+.dfumt-indicator .di-row span:last-child {
+  color: var(--silver-mid);
+  font-family: var(--font-mono);
+}
+
+/* ============================================================
+   メインエリア
+   ============================================================ */
+#main {
+  grid-area: main;
+  background: var(--bg-mid);
+  overflow: hidden;
+  position: relative;
+  display: flex; flex-direction: column;
+}
+
+/* タブバー */
+.main-tabs {
+  display: flex; align-items: center;
+  background: var(--bg-surface);
+  border-bottom: 1px solid var(--border-subtle);
+  padding: 0 16px;
+  gap: 0;
+  height: 36px;
+}
+.main-tab {
+  display: flex; align-items: center; gap: 6px;
+  padding: 0 16px;
+  height: 100%;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  color: var(--silver-mid);
+  font-size: 12px;
+  transition: var(--transition);
+  white-space: nowrap;
+}
+.main-tab:hover { color: var(--silver-bright); }
+.main-tab.active {
+  color: var(--accent-rei);
+  border-bottom-color: var(--accent-rei);
+}
+.main-tab .tab-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--silver-dim);
+}
+.main-tab.active .tab-dot { background: var(--accent-rei); box-shadow: 0 0 6px var(--accent-rei); }
+
+/* コンテンツエリア */
+.main-content {
+  flex: 1; overflow: hidden;
+  position: relative;
+}
+.tab-panel {
+  display: none;
+  width: 100%; height: 100%;
+  padding: 20px 24px;
+  overflow-y: auto;
+}
+.tab-panel.active { display: flex; flex-direction: column; gap: 16px; }
+
+/* ウェルカム画面 */
+.welcome-header {
+  padding: 32px 0 16px;
+  text-align: center;
+}
+.welcome-header .rei-kanji {
+  font-family: 'Noto Serif JP', serif;
+  font-size: 48px;
+  font-weight: 300;
+  color: var(--silver-pure);
+  letter-spacing: 0.2em;
+  line-height: 1;
+  text-shadow: 0 0 40px rgba(110,158,207,0.3);
+  animation: pulse-glow 4s ease-in-out infinite;
+}
+@keyframes pulse-glow {
+  0%, 100% { text-shadow: 0 0 40px rgba(110,158,207,0.2); }
+  50% { text-shadow: 0 0 60px rgba(110,158,207,0.5), 0 0 20px rgba(155,126,207,0.3); }
+}
+.welcome-header .rei-sub {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--silver-dim);
+  letter-spacing: 0.25em;
+  margin-top: 8px;
+}
+
+/* カードグリッド */
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 12px;
+}
+.card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 16px 18px;
+  cursor: pointer;
+  transition: var(--transition);
+  position: relative;
+  overflow: hidden;
+}
+.card::before {
+  content: '';
+  position: absolute; inset: 0;
+  opacity: 0;
+  transition: var(--transition);
+}
+.card:hover {
+  border-color: var(--border-mid);
+  transform: translateY(-1px);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+}
+.card:hover::before { opacity: 1; }
+.card.rei-card::before  { background: linear-gradient(135deg, var(--glow-rei), transparent 60%); }
+.card.dfumt-card::before { background: linear-gradient(135deg, var(--glow-dfumt), transparent 60%); }
+
+.card-icon {
+  font-family: var(--font-mono);
+  font-size: 20px;
+  margin-bottom: 10px;
+}
+.card-title {
+  font-size: 13px;
+  color: var(--silver-pure);
+  margin-bottom: 4px;
+  font-weight: 400;
+}
+.card-desc {
+  font-size: 11px;
+  color: var(--silver-dim);
+  line-height: 1.5;
+}
+.card-tag {
+  margin-top: 10px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--accent-rei);
+  letter-spacing: 0.1em;
+}
+
+/* AIチャットパネル */
+.chat-container {
+  display: flex; flex-direction: column;
+  height: 100%;
+  gap: 0;
+}
+.chat-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+  display: flex; flex-direction: column; gap: 12px;
+}
+.chat-messages::-webkit-scrollbar { width: 4px; }
+.chat-messages::-webkit-scrollbar-track { background: transparent; }
+.chat-messages::-webkit-scrollbar-thumb { background: var(--border-dim); border-radius: 2px; }
+
+.msg {
+  display: flex; gap: 10px;
+  animation: msg-in 200ms ease-out;
+}
+@keyframes msg-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.msg-avatar {
+  width: 28px; height: 28px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-mono);
+  font-size: 11px; flex-shrink: 0;
+}
+.msg.user .msg-avatar { background: var(--bg-raised); color: var(--silver-mid); margin-left: auto; }
+.msg.ai   .msg-avatar { background: rgba(110,158,207,0.15); color: var(--accent-rei); }
+.msg.user { flex-direction: row-reverse; }
+
+.msg-bubble {
+  max-width: 72%;
+  padding: 10px 14px;
+  border-radius: var(--radius-md);
+  font-size: 13px; line-height: 1.6;
+}
+.msg.ai   .msg-bubble {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  color: var(--silver-bright);
+  border-top-left-radius: 2px;
+}
+.msg.user .msg-bubble {
+  background: rgba(110,158,207,0.12);
+  border: 1px solid rgba(110,158,207,0.2);
+  color: var(--silver-pure);
+  border-top-right-radius: 2px;
+}
+
+/* 公理分岐 */
+.axiom-branches {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 8px; margin-top: 8px;
+}
+.branch {
+  padding: 8px 10px;
+  border-radius: var(--radius-sm);
+  font-size: 11px; line-height: 1.5;
+  cursor: pointer; transition: var(--transition);
+}
+.branch.logic   { background: rgba(110,158,207,0.08); border: 1px solid rgba(110,158,207,0.2); color: var(--accent-rei); }
+.branch.practical { background: rgba(196,168,90,0.08); border: 1px solid rgba(196,168,90,0.2); color: var(--accent-gold); }
+.branch.critical  { background: rgba(207,110,126,0.08); border: 1px solid rgba(207,110,126,0.2); color: var(--accent-danger); }
+.branch:hover { filter: brightness(1.3); }
+.branch-label { font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.1em; margin-bottom: 4px; opacity: 0.7; }
+
+/* チャット入力 */
+.chat-input-bar {
+  padding: 12px 16px;
+  background: var(--bg-surface);
+  border-top: 1px solid var(--border-subtle);
+  display: flex; gap: 8px; align-items: flex-end;
+}
+.chat-input {
+  flex: 1;
+  background: var(--bg-raised);
+  border: 1px solid var(--border-dim);
+  border-radius: var(--radius-md);
+  padding: 10px 14px;
+  color: var(--silver-bright);
+  font-family: var(--font-jp);
+  font-size: 13px;
+  resize: none;
+  min-height: 42px; max-height: 120px;
+  outline: none;
+  transition: var(--transition);
+  line-height: 1.5;
+}
+.chat-input:focus { border-color: var(--accent-rei); box-shadow: 0 0 0 2px var(--glow-rei); }
+.chat-input::placeholder { color: var(--silver-dim); }
+.chat-send {
+  width: 42px; height: 42px;
+  background: rgba(110,158,207,0.15);
+  border: 1px solid rgba(110,158,207,0.3);
+  border-radius: var(--radius-md);
+  color: var(--accent-rei); cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px; transition: var(--transition);
+  flex-shrink: 0;
+}
+.chat-send:hover { background: rgba(110,158,207,0.25); transform: scale(1.05); }
+
+/* ============================================================
+   右パネル (D-FUMT モニター)
+   ============================================================ */
+#panel {
+  grid-area: panel;
+  background: var(--bg-deep);
+  border-left: 1px solid var(--border-subtle);
+  display: flex; flex-direction: column;
+  overflow: hidden;
+}
+.panel-header {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border-subtle);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--accent-dfumt);
+  letter-spacing: 0.12em;
+  display: flex; align-items: center; gap: 8px;
+}
+.panel-header::before {
+  content: '';
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--accent-dfumt);
+  box-shadow: 0 0 8px var(--accent-dfumt);
+  animation: blink 2s ease-in-out infinite;
+}
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+.panel-section {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border-subtle);
+}
+.panel-section-title {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--silver-dim);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+
+/* メトリクス */
+.metric-row {
+  display: flex; justify-content: space-between;
+  align-items: center;
+  padding: 4px 0;
+  font-size: 12px;
+}
+.metric-label { color: var(--silver-dim); }
+.metric-value {
+  font-family: var(--font-mono);
+  color: var(--silver-mid);
+  font-size: 11px;
+}
+.metric-value.highlight { color: var(--accent-dfumt); }
+
+/* プログレスバー */
+.progress-bar {
+  width: 100%; height: 3px;
+  background: var(--bg-raised);
+  border-radius: 2px; margin: 6px 0 12px;
+  overflow: hidden;
+}
+.progress-fill {
+  height: 100%; border-radius: 2px;
+  background: linear-gradient(90deg, var(--accent-rei), var(--accent-dfumt));
+  transition: width 800ms cubic-bezier(0.4,0,0.2,1);
+  box-shadow: 0 0 8px var(--accent-rei);
+}
+
+/* エージェントリスト */
+.agent-list { display: flex; flex-direction: column; gap: 6px; }
+.agent-item {
+  display: flex; align-items: center; gap: 8px;
+  padding: 7px 10px;
+  background: var(--bg-mid);
+  border-radius: var(--radius-sm);
+  font-size: 11px;
+}
+.agent-dot {
+  width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0;
+}
+.agent-dot.idle    { background: var(--silver-dim); }
+.agent-dot.active  { background: #4caf7d; box-shadow: 0 0 6px #4caf7d; animation: blink 1.5s infinite; }
+.agent-dot.waiting { background: var(--accent-gold); }
+.agent-name { color: var(--silver-mid); flex: 1; font-family: var(--font-mono); }
+.agent-status { color: var(--silver-dim); font-size: 10px; }
+
+/* ログストリーム */
+.log-stream {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px 12px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  line-height: 1.7;
+}
+.log-stream::-webkit-scrollbar { width: 3px; }
+.log-stream::-webkit-scrollbar-thumb { background: var(--border-subtle); }
+.log-entry { display: flex; gap: 8px; }
+.log-time  { color: var(--silver-dim); flex-shrink: 0; }
+.log-level { flex-shrink: 0; width: 40px; }
+.log-level.info  { color: var(--accent-rei); }
+.log-level.warn  { color: var(--accent-gold); }
+.log-level.error { color: var(--accent-danger); }
+.log-level.dfumt { color: var(--accent-dfumt); }
+.log-msg { color: var(--silver-mid); }
+
+/* ============================================================
+   ステータスバー
+   ============================================================ */
+#status {
+  grid-area: status;
+  background: var(--bg-deep);
+  border-top: 1px solid var(--border-subtle);
+  display: flex; align-items: center;
+  padding: 0 16px;
+  gap: 0;
+  font-family: var(--font-mono);
+  font-size: 11px;
+}
+.status-item {
+  display: flex; align-items: center; gap: 5px;
+  padding: 0 12px;
+  color: var(--silver-dim);
+  border-right: 1px solid var(--border-subtle);
+  height: 100%;
+}
+.status-item:first-child { padding-left: 0; }
+.status-dot {
+  width: 5px; height: 5px; border-radius: 50%;
+}
+.status-dot.green  { background: #4caf7d; box-shadow: 0 0 5px #4caf7d; }
+.status-dot.blue   { background: var(--accent-rei); }
+.status-dot.purple { background: var(--accent-dfumt); }
+.status-spacer { flex: 1; }
+.status-version { color: var(--silver-dim); padding-left: 12px; }
+
+/* ============================================================
+   スクロールバー共通
+   ============================================================ */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border-dim); border-radius: 3px; }
+
+/* ── Rei REPL サンプルボタン ── */
+.sample-btn {
+  padding: 4px 12px;
+  background: var(--bg-raised);
+  border: 1px solid var(--border-dim);
+  border-radius: 4px;
+  color: var(--silver-mid);
+  cursor: pointer;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  transition: var(--transition);
+}
+.sample-btn:hover { background: var(--bg-surface); color: var(--silver-bright); }
+
+/* ── 起動アニメーション ── */
+#shell { animation: shell-in 600ms cubic-bezier(0.4,0,0.2,1) both; }
+@keyframes shell-in {
+  from { opacity: 0; filter: blur(4px); }
+  to   { opacity: 1; filter: blur(0); }
+}
+</style>
+</head>
+<body>
+
+<div id="shell">
+
+  <!-- ========== トップバー ========== -->
+  <header id="topbar">
+    <div class="topbar-logo">
+      <div class="logo-mark"></div>
+      <div>
+        <div class="logo-text">Rei-AIOS</div>
+        <div class="logo-sub">D-FUMT Shell v0.1.0</div>
+      </div>
+    </div>
+
+    <nav class="topbar-nav">
+      <button class="active" onclick="switchTab('home')">ホーム</button>
+      <button onclick="switchTab('automator')">Automator</button>
+      <button onclick="switchTab('chat')">AIアシスタント</button>
+      <button onclick="switchTab('dfumt')">D-FUMT</button>
+      <button onclick="switchTab('rei-repl')" style="color:var(--accent-rei)">Rei REPL</button>
+      <button onclick="switchTab('settings')">設定</button>
+      <button id="btn-mirror"    onclick="toggleMirror()"    title="合わせ鏡UIを開く"       style="color:var(--accent-dfumt)">合わせ鏡</button>
+      <button id="btn-dashboard" onclick="toggleDashboard()" title="D-FUMTダッシュボードを開く" style="color:var(--accent-gold)">ダッシュボード</button>
+      <button id="btn-knowledge" onclick="toggleKnowledge()" title="数学知識ネットワークを開く" style="color:var(--accent-teal, #4ec9b0)">ナレッジ</button>
+    </nav>
+
+    <div class="topbar-right">
+      <div class="topbar-clock" id="clock">--:--:--</div>
+      <div class="win-controls">
+        <button class="win-btn minimize" onclick="winControl('minimize')" title="最小化"></button>
+        <button class="win-btn maximize" onclick="winControl('maximize')" title="最大化"></button>
+        <button class="win-btn close"    onclick="winControl('close')"    title="閉じる"></button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ========== サイドバー ========== -->
+  <aside id="sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-label">ナビゲーション</div>
+
+      <div class="sidebar-item active" onclick="switchTab('home')">
+        <span class="item-icon">⬡</span>
+        <span>ホーム</span>
+      </div>
+      <div class="sidebar-item" onclick="switchTab('automator')">
+        <span class="item-icon">⚙</span>
+        <span>Rei Automator</span>
+        <span class="item-badge">稼働中</span>
+      </div>
+      <div class="sidebar-item" onclick="switchTab('chat')">
+        <span class="item-icon">◈</span>
+        <span>AIアシスタント</span>
+      </div>
+      <div class="sidebar-item" onclick="switchTab('dfumt')">
+        <span class="item-icon">∞</span>
+        <span>D-FUMTエンジン</span>
+        <span class="item-badge">3層</span>
+      </div>
+      <div class="sidebar-item" id="sidebar-mirror" onclick="toggleMirror()">
+        <span class="item-icon" style="color:var(--accent-dfumt)">⟺</span>
+        <span>合わせ鏡</span>
+        <span class="item-badge" id="mirror-badge" style="color:var(--silver-dim)">待機</span>
+      </div>
+      <div class="sidebar-item" onclick="switchTab('rei-repl')">
+        <span class="item-icon" style="color:var(--accent-rei)">⌨</span>
+        <span>Rei REPL</span>
+        <span class="item-badge" id="repl-badge" style="color:var(--silver-dim)">待機</span>
+      </div>
+      <div class="sidebar-item" id="sidebar-dash" onclick="toggleDashboard()">
+        <span class="item-icon" style="color:var(--accent-gold)">◉</span>
+        <span>D-FUMTダッシュ</span>
+        <span class="item-badge" id="dash-badge" style="color:var(--silver-dim)">待機</span>
+      </div>
+      <div class="sidebar-item" id="sidebar-knowledge" onclick="toggleKnowledge()">
+        <span class="item-icon" style="color:#4ec9b0">⬡</span>
+        <span>ナレッジNET</span>
+        <span class="item-badge" id="knowledge-badge" style="color:var(--silver-dim)">待機</span>
+      </div>
+    </div>
+
+    <div class="sidebar-divider"></div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-label">エージェント</div>
+      <div class="sidebar-item">
+        <span class="item-icon" style="color:#4caf7d">●</span>
+        <span>Claude</span>
+        <span class="item-badge" style="color:#4caf7d">待機</span>
+      </div>
+      <div class="sidebar-item">
+        <span class="item-icon" style="color:var(--silver-dim)">○</span>
+        <span>GPT</span>
+        <span class="item-badge">未接続</span>
+      </div>
+      <div class="sidebar-item">
+        <span class="item-icon" style="color:var(--accent-dfumt)">●</span>
+        <span>Rei Agent</span>
+        <span class="item-badge" style="color:var(--accent-dfumt)">内蔵</span>
+      </div>
+    </div>
+
+    <div class="sidebar-divider"></div>
+
+    <!-- D-FUMT 状態インジケーター -->
+    <div class="dfumt-indicator">
+      <div class="di-title">D-FUMT ENGINE</div>
+      <div class="di-row"><span>種(Seed)</span><span id="di-seed">待機</span></div>
+      <div class="di-row"><span>代謝(Metab)</span><span id="di-metab">待機</span></div>
+      <div class="di-row"><span>選択(Sel)</span><span id="di-sel">待機</span></div>
+    </div>
+  </aside>
+
+  <!-- ========== メインエリア ========== -->
+  <main id="main">
+    <div class="main-tabs">
+      <div class="main-tab active" id="tab-home" onclick="switchTab('home')">
+        <div class="tab-dot"></div>ホーム
+      </div>
+      <div class="main-tab" id="tab-automator" onclick="switchTab('automator')">
+        <div class="tab-dot"></div>Automator
+      </div>
+      <div class="main-tab" id="tab-chat" onclick="switchTab('chat')">
+        <div class="tab-dot"></div>AIアシスタント
+      </div>
+      <div class="main-tab" id="tab-dfumt" onclick="switchTab('dfumt')">
+        <div class="tab-dot"></div>D-FUMT
+      </div>
+      <div class="main-tab" id="tab-rei-repl" onclick="switchTab('rei-repl')">
+        <div class="tab-dot" style="background:var(--accent-rei)"></div>Rei REPL
+      </div>
+      <div class="main-tab" id="tab-settings" onclick="switchTab('settings')">
+        <div class="tab-dot"></div>設定
+      </div>
+    </div>
+
+    <div class="main-content">
+
+      <!-- ホームパネル -->
+      <div class="tab-panel active" id="panel-home">
+        <div class="welcome-header">
+          <div class="rei-kanji">零</div>
+          <div class="rei-sub">REI-AIOS SHELL · D-FUMT ENGINE · ACTIVE</div>
+        </div>
+
+        <div class="card-grid">
+          <div class="card rei-card" onclick="switchTab('automator')">
+            <div class="card-icon">⚙</div>
+            <div class="card-title">Rei Automator</div>
+            <div class="card-desc">PCを自然言語で自動操作。スクリプト実行・スケジューリング・デーモン管理。</div>
+            <div class="card-tag">AUTOMATOR · 稼働中</div>
+          </div>
+          <div class="card dfumt-card" onclick="switchTab('chat')">
+            <div class="card-icon">◈</div>
+            <div class="card-title">AIアシスタント</div>
+            <div class="card-desc">公理分岐付きAIチャット。論理・実用・批判の3視点でAI回答を展開。</div>
+            <div class="card-tag">THINKING GYM · 準備完了</div>
+          </div>
+          <div class="card dfumt-card" onclick="switchTab('dfumt')">
+            <div class="card-icon">∞</div>
+            <div class="card-title">D-FUMTエンジン</div>
+            <div class="card-desc">種・代謝・選択の3層数理エンジン。ゼロ拡張・π拡張・多次元写像。</div>
+            <div class="card-tag">D-FUMT · 3LAYER · 10AXIOM</div>
+          </div>
+          <div class="card rei-card">
+            <div class="card-icon">⬡</div>
+            <div class="card-title">マルチエージェント</div>
+            <div class="card-desc">複数AIが自由に出入りし協調動作。テーマE以降で実装予定。</div>
+            <div class="card-tag">COMING SOON · THEME-E</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Automatorパネル -->
+      <div class="tab-panel" id="panel-automator">
+        <div style="color:var(--silver-mid); font-size:13px; padding:16px 0;">
+          <div style="font-family:var(--font-mono); color:var(--accent-rei); margin-bottom:12px; font-size:11px; letter-spacing:0.1em;">REI AUTOMATOR · 統合ビュー</div>
+          <p style="color:var(--silver-dim);">Rei Automatorのメインウィンドウと連携します。<br>既存の <code style="font-family:var(--font-mono); color:var(--accent-dfumt);">src/renderer/index.html</code> をiframeまたはサブウィンドウとして読み込む形で統合されます。</p>
+          <div style="margin-top:20px; padding:16px; background:var(--bg-surface); border:1px solid var(--border-subtle); border-radius:var(--radius-md); font-family:var(--font-mono); font-size:12px; color:var(--silver-dim);">
+            <div style="color:var(--accent-rei); margin-bottom:8px;"># 統合ステータス</div>
+            <div>daemon       : <span style="color:#4caf7d">RUNNING</span></div>
+            <div>REST API     : <span style="color:#4caf7d">ACTIVE (port 3001)</span></div>
+            <div>Agent Loop   : <span style="color:#4caf7d">ACTIVE</span></div>
+            <div>D-FUMT Bridge: <span style="color:var(--accent-dfumt)">LOADED</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- AIアシスタント(Thinking Gym)パネル -->
+      <div class="tab-panel" id="panel-chat">
+        <div class="chat-container">
+          <div class="chat-messages" id="chatMessages">
+            <div class="msg ai">
+              <div class="msg-avatar">Rei</div>
+              <div>
+                <div class="msg-bubble">
+                  こんにちは。Rei-AIOSシェルが起動しました。<br>
+                  何でもお聞きください。D-FUMTエンジンによる公理分岐で、複数の視点からお答えします。
+                </div>
+                <div class="axiom-branches">
+                  <div class="branch logic">
+                    <div class="branch-label">論理的視点</div>
+                    D-FUMT 3層構造は種→代謝→選択の順で数理処理を行います。
+                  </div>
+                  <div class="branch practical">
+                    <div class="branch-label">実用的視点</div>
+                    まずAutomatorタブでPCの自動操作から始めるのが最短です。
+                  </div>
+                  <div class="branch critical">
+                    <div class="branch-label">批判的視点</div>
+                    シェルはテーマD実装中のため、一部機能は準備中です。
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="chat-input-bar">
+            <textarea class="chat-input" id="chatInput" placeholder="メッセージを入力... (Shift+Enter で送信)" rows="1"></textarea>
+            <button class="chat-send" onclick="sendChat()" title="送信">↑</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- D-FUMTパネル -->
+      <div class="tab-panel" id="panel-dfumt">
+        <div style="font-family:var(--font-mono); color:var(--accent-dfumt); font-size:11px; letter-spacing:0.15em; margin-bottom:16px;">D-FUMT ENGINE · 3-LAYER MONITOR</div>
+        <div class="card-grid">
+          <div class="card dfumt-card">
+            <div class="card-icon" style="color:var(--accent-rei)">⊕⊖</div>
+            <div class="card-title">種 (Seed)</div>
+            <div class="card-desc">ゼロ拡張縮小・多次元写像。φ螺旋・π拡張による次元昇格。不動点探索。</div>
+            <div class="card-tag">seed.ts · 403行</div>
+          </div>
+          <div class="card dfumt-card">
+            <div class="card-icon" style="color:var(--accent-gold)">∿</div>
+            <div class="card-title">代謝 (Metabolism)</div>
+            <div class="card-desc">公式変換・合成・簡約。定数畳み込み・双対消去・φ恒等式の適用。</div>
+            <div class="card-tag">metabolism.ts · 485行</div>
+          </div>
+          <div class="card dfumt-card">
+            <div class="card-icon" style="color:var(--accent-danger)">⚖</div>
+            <div class="card-title">選択 (Selection)</div>
+            <div class="card-desc">整合性評価・淘汰・多世代進化。5公理検証・survive/eliminate/mutate判定。</div>
+            <div class="card-tag">selection.ts · 529行</div>
+          </div>
+        </div>
+
+        <div style="margin-top:8px; padding:16px; background:var(--bg-surface); border:1px solid var(--border-subtle); border-radius:var(--radius-md); font-family:var(--font-mono); font-size:12px;">
+          <div style="color:var(--accent-dfumt); margin-bottom:10px; font-size:10px; letter-spacing:0.15em;">QUICK EXECUTE</div>
+          <textarea id="dfumtInput" style="width:100%; background:var(--bg-raised); border:1px solid var(--border-dim); border-radius:var(--radius-sm); padding:10px; color:var(--silver-bright); font-family:var(--font-mono); font-size:12px; resize:none; height:60px; outline:none;"
+            placeholder="入力ベクトル: 0, 1, 1.618, 3.14159"></textarea>
+          <button onclick="runDFUMT()" style="margin-top:8px; padding:8px 20px; background:rgba(155,126,207,0.15); border:1px solid rgba(155,126,207,0.3); border-radius:var(--radius-sm); color:var(--accent-dfumt); cursor:pointer; font-family:var(--font-mono); font-size:11px; letter-spacing:0.1em;">
+            ▶ ENGINE RUN
+          </button>
+          <div id="dfumtOutput" style="margin-top:10px; color:var(--silver-dim); font-size:11px; min-height:20px;"></div>
+        </div>
+      </div>
+
+      <!-- Rei REPLパネル -->
+      <div class="tab-panel" id="panel-rei-repl">
+        <div style="font-family:var(--font-mono);color:var(--accent-rei);font-size:11px;
+          letter-spacing:.15em;margin-bottom:12px;">REI INTERPRETER · REPL</div>
+
+        <!-- セッション情報 + 実行コントロール -->
+        <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px;">
+          <div style="font-family:var(--font-mono);font-size:11px;color:var(--silver-dim);">
+            セッション:
+          </div>
+          <div style="font-family:var(--font-mono);font-size:11px;color:var(--accent-rei);"
+            id="repl-session-name">—</div>
+          <div style="font-family:var(--font-mono);font-size:10px;padding:2px 8px;
+            border-radius:3px;background:var(--bg-raised);color:var(--silver-dim);"
+            id="repl-status-badge">idle</div>
+          <button onclick="reiNewSession()" style="margin-left:auto;padding:5px 12px;
+            background:rgba(110,158,207,.12);border:1px solid rgba(110,158,207,.25);
+            border-radius:4px;color:var(--accent-rei);cursor:pointer;
+            font-family:var(--font-mono);font-size:10px;">+ 新セッション</button>
+          <button onclick="reiAbort()" style="padding:5px 12px;
+            background:rgba(207,110,126,.08);border:1px solid rgba(207,110,126,.2);
+            border-radius:4px;color:var(--accent-danger);cursor:pointer;
+            font-family:var(--font-mono);font-size:10px;">■ 中断</button>
+        </div>
+
+        <!-- スクリプトエディタ -->
+        <div style="font-family:var(--font-mono);font-size:10px;color:var(--silver-dim);
+          margin-bottom:4px;letter-spacing:.08em;">SCRIPT</div>
+        <textarea id="reiScriptInput" style="width:100%;height:160px;
+          background:var(--bg-raised);border:1px solid var(--border-dim);
+          border-radius:6px;padding:12px;color:var(--silver-bright);
+          font-family:var(--font-mono);font-size:12px;resize:vertical;
+          outline:none;line-height:1.7;transition:220ms;"
+          placeholder="// Rei スクリプトを入力
+click(100, 200)
+wait(500)
+type(&quot;Hello, Rei-AIOS!&quot;)
+// Ctrl+Enter で実行"></textarea>
+
+        <!-- サンプルボタン -->
+        <div style="display:flex;gap:6px;margin:8px 0;flex-wrap:wrap;">
+          <button onclick="reiLoadSample('basic')" class="sample-btn">基本サンプル</button>
+          <button onclick="reiLoadSample('click')" class="sample-btn">クリック</button>
+          <button onclick="reiLoadSample('type')"  class="sample-btn">テキスト入力</button>
+          <button onclick="reiRunScript()" style="margin-left:auto;padding:7px 20px;
+            background:rgba(110,158,207,.18);border:1px solid rgba(110,158,207,.35);
+            border-radius:4px;color:var(--accent-rei);cursor:pointer;
+            font-family:var(--font-mono);font-size:12px;letter-spacing:.08em;">
+            ▶ 実行 (Ctrl+Enter)
+          </button>
+        </div>
+
+        <!-- ログ出力 -->
+        <div style="font-family:var(--font-mono);font-size:10px;color:var(--silver-dim);
+          margin-bottom:4px;letter-spacing:.08em;display:flex;align-items:center;gap:8px;">
+          LOG OUTPUT
+          <button onclick="reiClearLog()" style="padding:2px 8px;background:transparent;
+            border:1px solid var(--border-subtle);border-radius:3px;
+            color:var(--silver-dim);cursor:pointer;font-family:var(--font-mono);font-size:9px;">
+            CLR
+          </button>
+        </div>
+        <div id="reiLogOutput" style="height:180px;overflow-y:auto;
+          background:var(--bg-deep);border:1px solid var(--border-subtle);
+          border-radius:6px;padding:10px 12px;
+          font-family:var(--font-mono);font-size:11px;line-height:1.7;">
+          <div style="color:var(--silver-dim);">// Rei-AIOS REPL 準備完了</div>
+        </div>
+      </div>
+
+      <!-- 設定パネル -->
+      <div class="tab-panel" id="panel-settings">
+        <div style="font-family:var(--font-mono); color:var(--silver-mid); font-size:11px; letter-spacing:0.15em; margin-bottom:16px;">SETTINGS</div>
+        <div style="display:flex; flex-direction:column; gap:12px; max-width:480px;">
+          <div style="padding:16px; background:var(--bg-surface); border:1px solid var(--border-subtle); border-radius:var(--radius-md);">
+            <div style="font-size:12px; color:var(--silver-pure); margin-bottom:4px;">APIキー (Claude)</div>
+            <input type="password" placeholder="sk-ant-..." style="width:100%; background:var(--bg-raised); border:1px solid var(--border-dim); border-radius:var(--radius-sm); padding:8px 12px; color:var(--silver-bright); font-family:var(--font-mono); font-size:12px; outline:none; margin-top:6px;">
+          </div>
+          <div style="padding:16px; background:var(--bg-surface); border:1px solid var(--border-subtle); border-radius:var(--radius-md);">
+            <div style="font-size:12px; color:var(--silver-pure); margin-bottom:4px;">シェルバージョン</div>
+            <div style="font-family:var(--font-mono); font-size:12px; color:var(--silver-dim); margin-top:6px;" id="shellVersion">読み込み中...</div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /main-content -->
+  </main>
+
+  <!-- ========== 右パネル (D-FUMTモニター) ========== -->
+  <aside id="panel">
+    <div class="panel-header">D-FUMT MONITOR</div>
+
+    <div class="panel-section">
+      <div class="panel-section-title">エンジン状態</div>
+      <div class="metric-row">
+        <span class="metric-label">アクション数</span>
+        <span class="metric-value highlight">10</span>
+      </div>
+      <div class="metric-row">
+        <span class="metric-label">処理済みコール</span>
+        <span class="metric-value" id="callCount">0</span>
+      </div>
+      <div class="metric-row">
+        <span class="metric-label">最終実行</span>
+        <span class="metric-value" id="lastCall">—</span>
+      </div>
+      <div class="progress-bar"><div class="progress-fill" id="engineLoad" style="width:12%"></div></div>
+    </div>
+
+    <div class="panel-section">
+      <div class="panel-section-title">エージェント状態</div>
+      <div class="agent-list">
+        <div class="agent-item">
+          <div class="agent-dot active"></div>
+          <span class="agent-name">Rei-Agent</span>
+          <span class="agent-status">稼働中</span>
+        </div>
+        <div class="agent-item">
+          <div class="agent-dot idle"></div>
+          <span class="agent-name">Claude</span>
+          <span class="agent-status">待機</span>
+        </div>
+        <div class="agent-item">
+          <div class="agent-dot waiting"></div>
+          <span class="agent-name">D-FUMT</span>
+          <span class="agent-status">処理待ち</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel-section">
+      <div class="panel-section-title">ログストリーム</div>
+    </div>
+    <div class="log-stream" id="logStream">
+      <div class="log-entry"><span class="log-time">00:00:00</span><span class="log-level dfumt">DFUMT</span><span class="log-msg">Engine initialized</span></div>
+      <div class="log-entry"><span class="log-time">00:00:00</span><span class="log-level info">INFO</span><span class="log-msg">Shell v0.1.0 ready</span></div>
+    </div>
+  </aside>
+
+  <!-- ========== ステータスバー ========== -->
+  <footer id="status">
+    <div class="status-item">
+      <div class="status-dot green"></div>
+      <span>Rei-AIOS</span>
+    </div>
+    <div class="status-item">
+      <div class="status-dot blue"></div>
+      <span>Automator</span>
+    </div>
+    <div class="status-item">
+      <div class="status-dot purple"></div>
+      <span>D-FUMT</span>
+    </div>
+    <div class="status-item" id="statusTheme">テーマI完成</div>
+    <div class="status-spacer"></div>
+    <div class="status-version" id="statusVersion">v0.1.0</div>
+  </footer>
+
+</div><!-- /#shell -->
+
+<script>
+// ============================================================
+// タブ切り替え
+// ============================================================
+function switchTab(name) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.main-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.topbar-nav button').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
+
+  const panel = document.getElementById('panel-' + name);
+  const tab   = document.getElementById('tab-' + name);
+  if (panel) panel.classList.add('active');
+  if (tab)   tab.classList.add('active');
+
+  // サイドバーも同期
+  const sideItems = document.querySelectorAll('.sidebar-item');
+  sideItems.forEach(item => {
+    if (item.getAttribute('onclick') === `switchTab('${name}')`) {
+      item.classList.add('active');
+    }
+  });
+}
+
+// ============================================================
+// 時計
+// ============================================================
+function updateClock() {
+  const now = new Date();
+  const h = String(now.getHours()).padStart(2,'0');
+  const m = String(now.getMinutes()).padStart(2,'0');
+  const s = String(now.getSeconds()).padStart(2,'0');
+  document.getElementById('clock').textContent = `${h}:${m}:${s}`;
+}
+setInterval(updateClock, 1000);
+updateClock();
+
+// ============================================================
+// ウィンドウコントロール
+// ============================================================
+function winControl(action) {
+  if (window.reiShell) {
+    window.reiShell.window(action);
+  }
+}
+
+// ============================================================
+// AIチャット（モック）
+// ============================================================
+let callCount = 0;
+
+function addLog(level, msg) {
+  const stream = document.getElementById('logStream');
+  const now = new Date();
+  const time = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}:${String(now.getSeconds()).padStart(2,'0')}`;
+  const el = document.createElement('div');
+  el.className = 'log-entry';
+  el.innerHTML = `<span class="log-time">${time}</span><span class="log-level ${level}">${level.toUpperCase().padEnd(5,' ')}</span><span class="log-msg">${msg}</span>`;
+  stream.appendChild(el);
+  stream.scrollTop = stream.scrollHeight;
+}
+
+function sendChat() {
+  const input = document.getElementById('chatInput');
+  const text = input.value.trim();
+  if (!text) return;
+
+  const messages = document.getElementById('chatMessages');
+
+  // ユーザーメッセージ
+  const userEl = document.createElement('div');
+  userEl.className = 'msg user';
+  userEl.innerHTML = `<div class="msg-avatar">You</div><div class="msg-bubble">${text}</div>`;
+  messages.appendChild(userEl);
+  input.value = '';
+
+  callCount++;
+  document.getElementById('callCount').textContent = callCount;
+  document.getElementById('lastCall').textContent = 'chat';
+  document.getElementById('engineLoad').style.width = Math.min(90, 12 + callCount * 8) + '%';
+  addLog('info', `Chat input received (${text.length} chars)`);
+
+  // D-FUMT状態更新
+  document.getElementById('di-seed').textContent = '処理中';
+  document.getElementById('di-metab').textContent = '処理中';
+
+  setTimeout(() => {
+    document.getElementById('di-seed').textContent = '完了';
+    document.getElementById('di-metab').textContent = '完了';
+    document.getElementById('di-sel').textContent = '判定中';
+
+    const aiEl = document.createElement('div');
+    aiEl.className = 'msg ai';
+    aiEl.innerHTML = `
+      <div class="msg-avatar">Rei</div>
+      <div>
+        <div class="msg-bubble">「${text}」について、D-FUMT公理エンジンで3軸分岐を生成しました。</div>
+        <div class="axiom-branches">
+          <div class="branch logic"><div class="branch-label">論理的視点</div>D-FUMT理論の第2公理（双対性）に基づき、⊕⊖の対称構造で分析します。</div>
+          <div class="branch practical"><div class="branch-label">実用的視点</div>Rei Automatorで即座に自動化タスクとして実行可能な形に変換できます。</div>
+          <div class="branch critical"><div class="branch-label">批判的視点</div>現時点ではAPIキーが未設定のため、実際のLLM呼び出しは設定後に有効化されます。</div>
+        </div>
+      </div>
+    `;
+    messages.appendChild(aiEl);
+    messages.scrollTop = messages.scrollHeight;
+    document.getElementById('di-sel').textContent = '完了';
+    addLog('dfumt', 'Axiom branch generated (3-axis)');
+  }, 600);
+}
+
+// Shift+Enter で送信
+document.getElementById('chatInput').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter' && e.shiftKey) { e.preventDefault(); sendChat(); }
+  // 高さ自動調整
+  this.style.height = 'auto';
+  this.style.height = Math.min(120, this.scrollHeight) + 'px';
+});
+
+// ============================================================
+// D-FUMT クイック実行（モック）
+// ============================================================
+function runDFUMT() {
+  const input = document.getElementById('dfumtInput').value || '0, 1, 1.618, 3.14159';
+  const output = document.getElementById('dfumtOutput');
+  const values = input.split(',').map(v => parseFloat(v.trim())).filter(v => !isNaN(v));
+
+  document.getElementById('di-seed').textContent = '実行中';
+  document.getElementById('di-metab').textContent = '実行中';
+  document.getElementById('di-sel').textContent = '実行中';
+  addLog('dfumt', `Engine run: input=[${values.join(', ')}]`);
+
+  output.style.color = 'var(--silver-dim)';
+  output.textContent = '処理中...';
+
+  callCount++;
+  document.getElementById('callCount').textContent = callCount;
+  document.getElementById('lastCall').textContent = 'engine_run';
+  document.getElementById('engineLoad').style.width = Math.min(90, 12 + callCount * 8) + '%';
+
+  setTimeout(() => {
+    const survivors = Math.floor(values.length * 0.6) + 1;
+    output.style.color = 'var(--accent-dfumt)';
+    output.textContent =
+      `✓ 完了 | 入力: ${values.length}次元 | 合成公式: ${values.length - 1} | ` +
+      `生存個体: ${survivors} | エンジン: Seed→Metabolism→Selection 正常終了`;
+    document.getElementById('di-seed').textContent = '完了';
+    document.getElementById('di-metab').textContent = '完了';
+    document.getElementById('di-sel').textContent = '完了';
+    addLog('dfumt', `Engine completed. survivors=${survivors}`);
+  }, 800);
+}
+
+// ============================================================
+// テーマI: 数学知識ネットワーク統合
+// ============================================================
+let _knowledgeOpen = false;
+
+async function toggleKnowledge() {
+  if (!window.reiShell) { addLog('warn', 'reiShell API not available'); return; }
+  if (_knowledgeOpen) {
+    await window.reiShell.closeKnowledge();
+    _setKnowledgeState(false);
+  } else {
+    await window.reiShell.openKnowledge();
+    _setKnowledgeState(true);
+    addLog('info', 'Knowledge Network opened (arXiv + OEIS + MathSim テーマI)');
+  }
+}
+
+function _setKnowledgeState(open) {
+  _knowledgeOpen = open;
+  const badge = document.getElementById('knowledge-badge');
+  const btn   = document.getElementById('btn-knowledge');
+  const sbar  = document.getElementById('sidebar-knowledge');
+  if (badge) {
+    badge.textContent = open ? '稼働中' : '待機';
+    badge.style.color = open ? '#4ec9b0' : 'var(--silver-dim)';
+  }
+  if (btn) {
+    btn.style.color      = open ? 'var(--silver-bright)' : '#4ec9b0';
+    btn.style.background = open ? 'rgba(78,201,176,.15)' : '';
+  }
+  if (sbar) sbar.classList.toggle('active', open);
+}
+
+function initKnowledge() {
+  if (!window.reiShell) return;
+  window.reiShell.onKnowledgeClosed(() => {
+    _setKnowledgeState(false);
+    addLog('info', 'Knowledge Network: window closed externally');
+  });
+  addLog('info', 'Knowledge Network initialized (テーマI ready)');
+}
+
+// ============================================================
+// テーマH-1: D-FUMTダッシュボード統合
+// ============================================================
+let _dashOpen = false;
+
+async function toggleDashboard() {
+  if (!window.reiShell) { addLog('warn', 'reiShell API not available'); return; }
+  if (_dashOpen) {
+    await window.reiShell.closeDashboard();
+    _setDashState(false);
+    addLog('info', 'D-FUMT Dashboard closed');
+  } else {
+    await window.reiShell.openDashboard();
+    _setDashState(true);
+    addLog('dfumt', 'D-FUMT Dashboard opened (テーマH)');
+  }
+}
+
+function _setDashState(open) {
+  _dashOpen = open;
+  const badge = document.getElementById('dash-badge');
+  const btn   = document.getElementById('btn-dashboard');
+  const sbar  = document.getElementById('sidebar-dash');
+  if (badge) {
+    badge.textContent  = open ? '稼働中' : '待機';
+    badge.style.color  = open ? 'var(--accent-gold)' : 'var(--silver-dim)';
+  }
+  if (btn) {
+    btn.style.color      = open ? 'var(--silver-bright)' : 'var(--accent-gold)';
+    btn.style.background = open ? 'rgba(196,168,90,0.15)' : '';
+  }
+  if (sbar) sbar.classList.toggle('active', open);
+}
+
+function initDashboard() {
+  if (!window.reiShell) return;
+  window.reiShell.onDashboardClosed(() => {
+    _setDashState(false);
+    addLog('info', 'Dashboard: window closed externally');
+  });
+  addLog('dfumt', 'Dashboard initialized (テーマH-1 ready)');
+}
+
+// ============================================================
+// テーマH-2: Rei REPL統合
+// ============================================================
+let _reiSessionId   = null;
+let _reiSessionName = '—';
+
+async function initReiREPL() {
+  if (!window.reiShell) return;
+  // デフォルトセッションを作成
+  const session = await window.reiShell.reiCreateSession('default');
+  if (session) {
+    _reiSessionId   = session.id;
+    _reiSessionName = session.name;
+    setText('repl-session-name', _reiSessionName);
+  }
+  // ログストリーム受信
+  window.reiShell.onReiLog(data => {
+    if (data.sessionId === _reiSessionId) appendReiLog(data.entry);
+  });
+  // ステータス受信
+  window.reiShell.onReiStatus(data => {
+    if (data.sessionId === _reiSessionId) updateReiStatus(data.status);
+  });
+  const replBadge = document.getElementById('repl-badge');
+  if (replBadge) {
+    replBadge.textContent = '準備完了';
+    replBadge.style.color = 'var(--accent-green)';
+  }
+  addLog('info', 'Rei REPL initialized (テーマH-2 ready)');
+}
+
+function setText(id, val) {
+  const el = document.getElementById(id);
+  if (el) el.textContent = String(val);
+}
+
+async function reiNewSession() {
+  if (!window.reiShell) return;
+  const name = `Session #${Date.now().toString(36).slice(-4)}`;
+  const s = await window.reiShell.reiCreateSession(name);
+  if (s) {
+    _reiSessionId   = s.id;
+    _reiSessionName = s.name;
+    setText('repl-session-name', _reiSessionName);
+    reiClearLog();
+    appendReiLog({ level:'info', message:`新セッション作成: ${name}` });
+  }
+}
+
+async function reiRunScript() {
+  if (!window.reiShell || !_reiSessionId) return;
+  const script = document.getElementById('reiScriptInput').value.trim();
+  if (!script) return;
+  addLog('info', `Rei スクリプト実行開始 (${script.split('\n').length}行)`);
+  await window.reiShell.reiRunScript(_reiSessionId, script);
+}
+
+async function reiAbort() {
+  if (!window.reiShell || !_reiSessionId) return;
+  await window.reiShell.reiAbort(_reiSessionId);
+  appendReiLog({ level:'warn', message:'実行を中断しました' });
+}
+
+function reiClearLog() {
+  const out = document.getElementById('reiLogOutput');
+  if (out) out.innerHTML = '<div style="color:var(--silver-dim);">// ログをクリアしました</div>';
+}
+
+function appendReiLog(entry) {
+  const out = document.getElementById('reiLogOutput');
+  if (!out) return;
+  const colors = {
+    info:   'var(--silver-mid)',
+    warn:   'var(--accent-gold)',
+    error:  'var(--accent-danger)',
+    result: 'var(--accent-rei)',
+  };
+  const color = colors[entry.level] || 'var(--silver-dim)';
+  const prefix = { info:'  ', warn:'⚠ ', error:'✗ ', result:'✓ ' }[entry.level] || '';
+  const el = document.createElement('div');
+  el.style.color = color;
+  el.textContent = prefix + entry.message;
+  out.appendChild(el);
+  out.scrollTop = out.scrollHeight;
+}
+
+function updateReiStatus(status) {
+  const badge = document.getElementById('repl-status-badge');
+  const replBadge = document.getElementById('repl-badge');
+  if (!badge) return;
+  const map = {
+    idle:    { label:'idle',    color:'var(--silver-dim)',    bg:'var(--bg-raised)' },
+    running: { label:'実行中',   color:'var(--accent-rei)',   bg:'rgba(110,158,207,.15)' },
+    paused:  { label:'一時停止', color:'var(--accent-gold)',  bg:'rgba(196,168,90,.15)' },
+    error:   { label:'エラー',   color:'var(--accent-danger)',bg:'rgba(207,110,126,.15)' },
+  };
+  const s = map[status] || map.idle;
+  badge.textContent = s.label;
+  badge.style.color = s.color;
+  badge.style.background = s.bg;
+  if (replBadge) {
+    replBadge.textContent = status === 'running' ? '実行中' : '準備完了';
+    replBadge.style.color = status === 'running' ? 'var(--accent-rei)' : 'var(--accent-green)';
+  }
+}
+
+const REPL_SAMPLES = {
+  basic: `// 基本サンプル
+wait(300)
+// マウスを中央付近へ移動
+move(960, 540)
+wait(200)`,
+  click: `// クリックサンプル
+// デスクトップ中央をクリック
+click(960, 540)
+wait(300)
+// 別の位置をダブルクリック
+doubleClick(960, 540)`,
+  type: `// テキスト入力サンプル
+// ウィンドウにフォーカスして入力
+wait(500)
+type("Hello, Rei-AIOS!")
+key(Return)`,
+};
+
+function reiLoadSample(key) {
+  const script = REPL_SAMPLES[key];
+  if (script) {
+    document.getElementById('reiScriptInput').value = script;
+    appendReiLog({ level:'info', message:`サンプル読み込み: ${key}` });
+  }
+}
+
+// Ctrl+Enter で実行
+document.addEventListener('keydown', e => {
+  if (e.ctrlKey && e.key === 'Enter') {
+    const active = document.activeElement;
+    if (active && active.id === 'reiScriptInput') reiRunScript();
+  }
+});
+
+// ============================================================
+// テーマG: 合わせ鏡 UI 統合  (initMirrorUI)
+// ============================================================
+let _mirrorOpen = false;
+
+/** 合わせ鏡ウィンドウのトグル */
+async function toggleMirror() {
+  if (!window.reiShell) { addLog('warn', 'reiShell API not available'); return; }
+  if (_mirrorOpen) {
+    await window.reiShell.closeMirror();
+    _setMirrorState(false);
+    addLog('info', 'Mirror UI closed');
+  } else {
+    await window.reiShell.openMirror();
+    _setMirrorState(true);
+    addLog('dfumt', 'Mirror UI opened (合わせ鏡起動)');
+  }
+}
+
+function _setMirrorState(open) {
+  _mirrorOpen = open;
+  const badge  = document.getElementById('mirror-badge');
+  const btn    = document.getElementById('btn-mirror');
+  const sbar   = document.getElementById('sidebar-mirror');
+  if (badge) {
+    badge.textContent = open ? '稼働中' : '待機';
+    badge.style.color = open ? 'var(--accent-dfumt)' : 'var(--silver-dim)';
+  }
+  if (btn) {
+    btn.style.color     = open ? 'var(--silver-bright)' : 'var(--accent-dfumt)';
+    btn.style.background= open ? 'rgba(155,126,207,0.15)' : '';
+  }
+  if (sbar) sbar.classList.toggle('active', open);
+}
+
+/**
+ * initMirrorUI — テーマGのエントリポイント
+ * DOMContentLoaded 後に呼び出す。
+ * 合わせ鏡が外部から閉じられた場合の状態同期を登録する。
+ */
+function initMirrorUI() {
+  if (!window.reiShell) return;
+  window.reiShell.onMirrorClosed(() => {
+    _setMirrorState(false);
+    addLog('info', 'Mirror UI: window closed externally');
+  });
+  addLog('dfumt', 'Mirror UI initialized (テーマG ready)');
+}
+
+// ============================================================
+// 初期化
+// ============================================================
+window.addEventListener('DOMContentLoaded', async () => {
+  if (window.reiShell) {
+    const info = await window.reiShell.getInfo();
+    document.getElementById('shellVersion').textContent =
+      `v${info.version} · Electron ${info.electronVersion} · Node ${info.nodeVersion}`;
+    document.getElementById('statusVersion').textContent = `v${info.version}`;
+  }
+  addLog('info', 'Rei-AIOS Shell DOM ready');
+  addLog('dfumt', 'D-FUMT actions loaded (10 actions)');
+  // ── テーマG: 合わせ鏡 UI 初期化 ──
+  initMirrorUI();
+  // ── テーマH: ダッシュボード + Rei REPL 初期化 ──
+  initDashboard();
+  await initReiREPL();
+  // ── テーマI: 数学知識ネットワーク初期化 ──
+  initKnowledge();
+});
+</script>
+</body>
+</html>
