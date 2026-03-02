@@ -340,7 +340,7 @@ export const HISTORIAN_DB: HistorianPersona[] = [
   {
     id: 'yoshida_shoin',
     nameJa: '吉田松陰',
-    nameEen: 'Yoshida Shoin',
+    nameEn: 'Yoshida Shoin',
     period: '1830 – 1859',
     region: 'east_asia',
     domains: ['education', 'philosophy'],
