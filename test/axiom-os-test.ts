@@ -36,9 +36,9 @@ function main() {
   // ── persons CRUD ──
   console.log('── persons CRUD ──');
 
-  test('seed: 19 persons loaded (東洋10 + 西洋9)', () => {
+  test('seed: 20 persons loaded (東洋11 + 西洋9)', () => {
     const all = store.getAllPersons();
-    assert(all.length === 19, `Expected 19, got ${all.length}`);
+    assert(all.length === 20, `Expected 20, got ${all.length}`);
   });
 
   test('getPersonById: buddha', () => {

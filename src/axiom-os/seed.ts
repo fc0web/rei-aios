@@ -102,6 +102,17 @@ export const SEED_PERSONS: PersonInsert[] = [
     is_free: true,
   },
   {
+    id: 'ganjin',
+    name_ja: '鑑真',
+    name_en: 'Jianzhen (Ganjin)',
+    period: '688 – 763',
+    region: 'east_asia',
+    domains: ['religion', 'education', 'ethics'],
+    core_axiom: '戒律 ── 正しき行いの規範を伝えること。五度の失敗と失明を越え、誓願を果たす不退転の意志',
+    thought_keywords: ['戒律', '律宗', '唐招提寺', '渡海', '授戒', '不退転'],
+    is_free: true,
+  },
+  {
     id: 'dogen',
     name_ja: '道元',
     name_en: 'Dōgen',
