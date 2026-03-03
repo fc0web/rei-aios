@@ -56,3 +56,7 @@ export type {
   AxiomRow, AxiomInsert, AxiomUpdate,
   MemoryRow, MemoryInsert, MemoryUpdate,
 } from './axiom-os';
+
+// ─── Axiom OS Connector（AIOS↔公理OS連携） ──────────────────
+export { AxiomOSConnector } from './axiom-os-connector';
+export type { SearchHit, QueryResult } from './axiom-os-connector';

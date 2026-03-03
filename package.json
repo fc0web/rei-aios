@@ -7,8 +7,9 @@
   "scripts": {
     "build": "tsc",
     "clean": "rimraf dist",
-    "test": "tsx test/rei-pl-bridge-test.ts && tsx test/axiom-os-test.ts",
+    "test": "tsx test/rei-pl-bridge-test.ts && tsx test/axiom-os-test.ts && tsx test/axiom-os-connector-test.ts",
     "test:axiom-os": "tsx test/axiom-os-test.ts",
+    "test:connector": "tsx test/axiom-os-connector-test.ts",
     "prepublishOnly": "npm run build"
   },
   "keywords": [
