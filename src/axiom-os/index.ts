@@ -15,3 +15,13 @@ export type {
 export { openDatabase, DEFAULT_DB_PATH } from './db';
 export { AxiomOSStore } from './crud';
 export { SEED_PERSONS, SEED_THEORIES, SEED_AXIOMS } from './seed';
+
+// 七価論理
+export {
+  SEVEN_VALUES, SYMBOL_MAP, SYMBOL_REVERSE,
+  not, and, or, collapse, lift,
+  toSymbol, fromSymbol,
+  isFourValued, isExtended, isDefinite,
+  checkDeMorgan, checkIdempotent,
+} from './seven-logic';
+export type { SevenLogicValue, FourLogicValue, ExtendedLogicValue } from './seven-logic';

@@ -50,6 +50,14 @@ export {
 // ─── Axiom OS（SQLite永続化層） ──────────────────────────────
 export { AxiomOSStore, openDatabase, DEFAULT_DB_PATH } from './axiom-os';
 export { SEED_PERSONS, SEED_THEORIES, SEED_AXIOMS }    from './axiom-os';
+export {
+  SEVEN_VALUES, SYMBOL_MAP,
+  not as sevenNot, and as sevenAnd, or as sevenOr,
+  collapse, lift, toSymbol, fromSymbol,
+  isFourValued, isExtended, isDefinite,
+  checkDeMorgan, checkIdempotent,
+} from './axiom-os';
+export type { SevenLogicValue, FourLogicValue, ExtendedLogicValue } from './axiom-os';
 export type {
   PersonRow, PersonInsert, PersonUpdate,
   TheoryRow, TheoryInsert, TheoryUpdate,

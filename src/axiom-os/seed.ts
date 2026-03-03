@@ -343,6 +343,43 @@ export const SEED_THEORIES: TheoryInsert[] = [
     category: 'consciousness',
     constant_ref: null,
   },
+  // ── 11. 七価論理: 第5の値「∞（無限）」──
+  {
+    id: 'dfumt-infinity-value',
+    name: '無限値理論（∞値）',
+    axiom: '命題Pが無限に分岐する評価経路を持つとき、その真理値は∞（無限）である。' +
+      '∞は確定を永遠に先送りする「未完の真理」を表す',
+    description: 'D-FUMT七価論理の第5値。四価論理の⊤/⊥/both/neitherに加え、' +
+      '再帰・自己参照・無限後退する命題に対応する。ゲーデル不完全性定理の ' +
+      '「証明も反証もできない」命題、チューリングの停止問題がこの値域に属する。' +
+      'Rei-PLでは∞値を持つ式は遅延評価（lazy）として扱われる。',
+    category: 'logic',
+    constant_ref: 'infinity',
+  },
+  // ── 12. 七価論理: 第6の値「〇（ゼロ状態）」──
+  {
+    id: 'dfumt-zero-state',
+    name: 'ゼロ状態理論（〇値）',
+    axiom: '命題Pが評価される以前の状態、すなわち「まだ問われていない」状態の真理値は〇（ゼロ状態）である。' +
+      '〇は存在するが未活性の潜在的真理を表す',
+    description: 'D-FUMT七価論理の第6値。neitherが「問うた結果どちらでもない」であるのに対し、' +
+      '〇は「そもそも問われていない」未観測状態。量子力学の重ね合わせ状態、' +
+      'D-FUMTのゼロ（原点）概念と接続する。Rei-PLでは未初期化変数が〇値を持つ。',
+    category: 'logic',
+    constant_ref: null,
+  },
+  // ── 13. 七価論理: 第7の値「～（流動）」──
+  {
+    id: 'dfumt-flowing-value',
+    name: '流動値理論（～値）',
+    axiom: '命題Pの真理値が時間とともに変化し続けるとき、その値は～（流動）である。' +
+      '～は「今この瞬間の真理」が次の瞬間には異なることを許容する',
+    description: 'D-FUMT七価論理の第7値。静的な真偽ではなく、プロセス・変化・生成を ' +
+      '真理値として扱う。ヘラクレイトスの「万物流転」、仏教の「無常」、' +
+      'プリゴジンの散逸構造と対応。Rei-PLではストリーム型・リアクティブ値が～値を持つ。',
+    category: 'logic',
+    constant_ref: null,
+  },
   // ── 補助理論 ──
   {
     id: 'dfumt-center-periphery',
