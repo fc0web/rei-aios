@@ -262,9 +262,10 @@ function tokenize(query: string): string[] {
   // 「について」「とは」「を教えて」等の接尾辞を除去
   let cleaned = query
     .replace(/について(教えて)?/g, '')
-    .replace(/とは(何(ですか)?)?/g, '')
+    .replace(/とは(何(ですか|か)?)?/g, '')
+    .replace(/って何(ですか|か)?/g, '')
     .replace(/を教えて(ください)?/g, '')
-    .replace(/って何/g, '')
+    .replace(/は何(ですか|か)/g, '')
     .replace(/[？?！!。、,.]/g, '')
     .trim();
 

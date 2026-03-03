@@ -60,3 +60,7 @@ export type {
 // ─── Axiom OS Connector（AIOS↔公理OS連携） ──────────────────
 export { AxiomOSConnector } from './axiom-os-connector';
 export type { SearchHit, QueryResult } from './axiom-os-connector';
+
+// ─── Axiom OS Persona（ペルソナチャット） ────────────────────
+export { PersonaChat } from './axiom-os-persona';
+export type { LLMCallFn, PersonaChatResult, AutoChatResult } from './axiom-os-persona';
