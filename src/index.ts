@@ -46,3 +46,13 @@ export {
   type ReiPLCompileResult,
   type ReiPLRunResult,
 } from './rei-pl-bridge';
+
+// ─── Axiom OS（SQLite永続化層） ──────────────────────────────
+export { AxiomOSStore, openDatabase, DEFAULT_DB_PATH } from './axiom-os';
+export { SEED_PERSONS, SEED_THEORIES, SEED_AXIOMS }    from './axiom-os';
+export type {
+  PersonRow, PersonInsert, PersonUpdate,
+  TheoryRow, TheoryInsert, TheoryUpdate,
+  AxiomRow, AxiomInsert, AxiomUpdate,
+  MemoryRow, MemoryInsert, MemoryUpdate,
+} from './axiom-os';
