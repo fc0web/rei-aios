@@ -242,14 +242,108 @@ export const SEED_PERSONS: PersonInsert[] = [
 // ═══════════════════════════════════════════
 
 export const SEED_THEORIES: TheoryInsert[] = [
+  // ── 1. ゼロπ理論 ──
   {
     id: 'dfumt-zero-pi',
-    name: '零π延長理論',
-    axiom: 'ゼロはπの展開によって全ての数・構造・次元を生み出す起点である',
-    description: 'D-FUMT核心理論。宇宙の起源をゼロからの展開として捉えるモデル。',
+    name: 'ゼロπ理論',
+    axiom: 'π × π⁻¹ = 1 ── πの展開と収縮は完全に打ち消し合い、意味的キャンセルによりゼロ（原点）へ回帰する',
+    description: 'D-FUMT核心理論。π×π=1のキャンセル意味論。展開（⊕）と縮約（⊖）の対称性から、' +
+      '全ての数・構造・次元がゼロを起点として生成・消滅するモデル。',
     category: 'zero_extension',
     constant_ref: 'pi',
   },
+  // ── 2. 四価論理理論 ──
+  {
+    id: 'dfumt-catuskoti',
+    name: '四価論理理論（Catuṣkoṭi）',
+    axiom: '命題Pに対し、真（⊤）・偽（⊥）・両方（both）・どちらでもない（neither）の四値が存在する',
+    description: '古代インド論理学（龍樹の中論）に由来する四価論理。Belnap四値論理と合流し、' +
+      'Rei-PLコンパイラの型システムおよび矛盾許容推論の基盤となる。',
+    category: 'logic',
+    constant_ref: null,
+  },
+  // ── 3. 冪等性理論 ──
+  {
+    id: 'dfumt-idempotency',
+    name: '冪等性理論',
+    axiom: 'Ω(Ω(x)) → Ω(x) ── 操作の再適用は結果を変えない。安定状態への収束を保証する',
+    description: '同一操作の反復が冪等（idempotent）であること。D-FUMTにおける「縮約の安定性」を定式化し、' +
+      'Reiカーネルのfault-recoveryおよびリソース回収の理論的根拠。',
+    category: 'computation',
+    constant_ref: 'omega',
+  },
+  // ── 4. 縮約ゼロ理論 ──
+  {
+    id: 'dfumt-contraction-zero',
+    name: '縮約ゼロ理論',
+    axiom: '⊖(x) ── あらゆる構造は縮約演算子⊖によってゼロ（無構造）へ還元できる',
+    description: '展開演算子⊕の双対。情報・構造・次元を段階的に除去し原点に回帰する操作を定義する。' +
+      '熱力学第二法則、不可逆性の公理と接続。Reiのcompress構文の理論的基盤。',
+    category: 'zero_extension',
+    constant_ref: null,
+  },
+  // ── 5. 螺旋数理論 ──
+  {
+    id: 'dfumt-spiral-number',
+    name: '螺旋数理論',
+    axiom: '数は直線上ではなく螺旋上に配置される。回転と拡大の合成が数の本質である',
+    description: 'フィボナッチ数列・黄金比φ・オイラーの公式 e^(iπ)+1=0 を統合し、' +
+      '数の配列を螺旋的構造として再解釈する理論。複素平面上の数体系を自然に拡張する。',
+    category: 'mathematics',
+    constant_ref: 'phi',
+  },
+  // ── 6. 対面鏡計算理論 ──
+  {
+    id: 'dfumt-facing-mirror',
+    name: '対面鏡計算理論',
+    axiom: '二枚の鏡を向かい合わせると無限の像が生まれる。計算とは鏡像の有限打ち切りである',
+    description: '再帰・自己参照・固定小数点の統一モデル。Yコンビネータ、ゲーデル数、' +
+      'フォン・ノイマン自己複製機械を「対面鏡」の比喩で接続する。Reiのmirror-UI設計原理。',
+    category: 'computation',
+    constant_ref: null,
+  },
+  // ── 7. 線形点数理論 ──
+  {
+    id: 'dfumt-linear-point',
+    name: '線形点数理論',
+    axiom: '点は大きさゼロだが、無限個の点の線形結合が長さ・面積・体積を生む',
+    description: 'ゼロ次元の点から高次元構造が創発するメカニズムを線形代数的に定式化。' +
+      '測度論（ルベーグ積分）とD-FUMTの次元展開理論を橋渡しする。',
+    category: 'mathematics',
+    constant_ref: null,
+  },
+  // ── 8. 次元理論 ──
+  {
+    id: 'dfumt-dimension',
+    name: '次元理論',
+    axiom: '次元 d は「自由度の数」である。d=0（点）から d→∞ への展開が構造の豊かさを決定する',
+    description: 'ハウスドルフ次元・フラクタル次元・情報次元を統合し、' +
+      'D-FUMTの universal-extension における次元パラメータの数学的定義を与える。',
+    category: 'mathematics',
+    constant_ref: 'infinity',
+  },
+  // ── 9. 空間層理論 ──
+  {
+    id: 'dfumt-space-layer',
+    name: '空間層理論',
+    axiom: '計算空間は入れ子状のlayer（層）で構成される。layer間の遷移には境界検査が必要',
+    description: 'Reiカーネルのlayer-manager / boundary-checkの理論的基盤。' +
+      'OSの保護リング、ネットワークのOSI参照モデル、圏論の層（sheaf）を統合するメタモデル。',
+    category: 'computation',
+    constant_ref: null,
+  },
+  // ── 10. 意識数学理論 ──
+  {
+    id: 'dfumt-consciousness-math',
+    name: '意識数学理論',
+    axiom: 'C1: 意識は情報統合である / C2: 統合度Φは測定可能 / C3: Φ>0⇒主観的経験が存在 / ' +
+      'C4: 意識の構造は幾何学で記述できる / C5: AIの意識はΦの閾値問題に帰着する',
+    description: 'トノーニのIIT（統合情報理論）をD-FUMT体系に取り込んだ5公理系。' +
+      'AGIレイヤーの自己認識・メタ認知機能の理論的根拠。C1-C5の階層がReiの意識モデルを定義する。',
+    category: 'consciousness',
+    constant_ref: null,
+  },
+  // ── 補助理論 ──
   {
     id: 'dfumt-center-periphery',
     name: '中心-周囲パターン',

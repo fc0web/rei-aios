@@ -107,9 +107,35 @@ function main() {
   console.log();
   console.log('── theories CRUD ──');
 
-  test('seed: 3 theories loaded', () => {
+  test('seed: 12 D-FUMT theories loaded', () => {
     const all = store.getAllTheories();
-    assert(all.length === 3, `Expected 3, got ${all.length}`);
+    assert(all.length === 12, `Expected 12, got ${all.length}`);
+    console.log(`    → ${all.map(t => t.id).join(', ')}`);
+  });
+
+  test('getTheoryById: dfumt-catuskoti (四価論理)', () => {
+    const t = store.getTheoryById('dfumt-catuskoti');
+    assert(t !== undefined, 'dfumt-catuskoti not found');
+    assert(t!.category === 'logic', `Expected logic, got ${t!.category}`);
+    assert(t!.axiom.includes('⊤'), 'axiom should contain ⊤');
+  });
+
+  test('getTheoryById: dfumt-consciousness-math (意識数学)', () => {
+    const t = store.getTheoryById('dfumt-consciousness-math');
+    assert(t !== undefined, 'dfumt-consciousness-math not found');
+    assert(t!.axiom.includes('C1'), 'axiom should contain C1');
+    assert(t!.axiom.includes('C5'), 'axiom should contain C5');
+  });
+
+  test('getTheoriesByCategory: computation', () => {
+    const theories = store.getTheoriesByCategory('computation');
+    assert(theories.length >= 3, `Expected >= 3 computation, got ${theories.length}`);
+    console.log(`    → ${theories.map(t => t.id).join(', ')}`);
+  });
+
+  test('getTheoriesByCategory: mathematics', () => {
+    const theories = store.getTheoriesByCategory('mathematics');
+    assert(theories.length >= 3, `Expected >= 3 mathematics, got ${theories.length}`);
   });
 
   test('createTheory + getTheoryById', () => {
