@@ -36,3 +36,13 @@ export { initAGILayer }   from './agi/index';
 
 // ─── D-FUMT Core ──────────────────────────────────────────────
 export { DFUMT_CONSTANTS, CONSTANT_REGISTRY } from './core/dfumt/constants';
+
+// ─── Rei-PL Bridge（コンパイラ接続） ─────────────────────────
+export {
+  compile       as reiPLCompile,
+  compileWithDetails as reiPLCompileWithDetails,
+  compileAndRun as reiPLCompileAndRun,
+  ReiPLBridgeError,
+  type ReiPLCompileResult,
+  type ReiPLRunResult,
+} from './rei-pl-bridge';
