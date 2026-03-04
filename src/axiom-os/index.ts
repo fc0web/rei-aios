@@ -71,3 +71,7 @@ export type { AxiomLLMResponse, LocalLLMConfig } from './local-axiom-llm';
 // Consensus Engine
 export { ConsensusEngine } from './consensus-engine';
 export type { InstanceVote, ConsensusRound, ConsensusResult } from './consensus-engine';
+
+// Cognitive Load Meter
+export { CognitiveLoadMeter } from './cognitive-load-meter';
+export type { LoadSnapshot, LoadAlert, LoadSession } from './cognitive-load-meter';
