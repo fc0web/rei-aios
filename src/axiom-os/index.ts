@@ -67,3 +67,7 @@ export type { AxiomizerResult, AxiomMatch } from './formula-axiomizer';
 // Local Axiom LLM
 export { LocalAxiomLLM } from './local-axiom-llm';
 export type { AxiomLLMResponse, LocalLLMConfig } from './local-axiom-llm';
+
+// Consensus Engine
+export { ConsensusEngine } from './consensus-engine';
+export type { InstanceVote, ConsensusRound, ConsensusResult } from './consensus-engine';

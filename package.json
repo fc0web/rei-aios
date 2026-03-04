@@ -18,6 +18,7 @@
     "test:axiom-acl": "tsx test/axiom-os-axiom-acl-test.ts",
     "test:formula-axiomizer": "tsx test/axiom-os-formula-axiomizer-test.ts",
     "test:local-axiom-llm": "tsx test/axiom-os-local-axiom-llm-test.ts",
+    "test:consensus-engine": "tsx test/axiom-os-consensus-engine-test.ts",
     "test:seven-logic": "tsx test/seven-logic-test.ts",
     "test:seven-logic-compiler": "tsx test/seven-logic-compiler-test.ts",
     "test:axiom-os": "tsx test/axiom-os-test.ts",
