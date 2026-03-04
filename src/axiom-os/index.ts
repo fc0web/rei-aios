@@ -63,3 +63,7 @@ export type { AclRule, AclDecision, AuditEntry } from './axiom-acl';
 // Formula Axiomizer
 export { FormulaAxiomizer } from './formula-axiomizer';
 export type { AxiomizerResult, AxiomMatch } from './formula-axiomizer';
+
+// Local Axiom LLM
+export { LocalAxiomLLM } from './local-axiom-llm';
+export type { AxiomLLMResponse, LocalLLMConfig } from './local-axiom-llm';
