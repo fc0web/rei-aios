@@ -107,9 +107,9 @@ function main() {
   console.log();
   console.log('── theories CRUD ──');
 
-  test('seed: 15 D-FUMT theories loaded', () => {
+  test('seed: 75 D-FUMT theories loaded', () => {
     const all = store.getAllTheories();
-    assert(all.length === 15, `Expected 15, got ${all.length}`);
+    assert(all.length === 75, `Expected 75, got ${all.length}`);
     console.log(`    → ${all.map(t => t.id).join(', ')}`);
   });
 
