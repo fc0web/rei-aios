@@ -25,3 +25,8 @@ export {
   checkDeMorgan, checkIdempotent,
 } from './seven-logic';
 export type { SevenLogicValue, FourLogicValue, ExtendedLogicValue } from './seven-logic';
+
+// Seed Kernel（種から再生成）
+export { SEED_KERNEL } from './seed-kernel';
+export type { SeedTheory } from './seed-kernel';
+export { TheoryGenerator } from './theory-generator';

@@ -65,6 +65,10 @@ export type {
   MemoryRow, MemoryInsert, MemoryUpdate,
 } from './axiom-os';
 
+// ─── Axiom OS Seed Kernel（種から再生成） ─────────────────────
+export { SEED_KERNEL, TheoryGenerator } from './axiom-os';
+export type { SeedTheory } from './axiom-os';
+
 // ─── Axiom OS Connector（AIOS↔公理OS連携） ──────────────────
 export { AxiomOSConnector } from './axiom-os-connector';
 export type { SearchHit, QueryResult } from './axiom-os-connector';
