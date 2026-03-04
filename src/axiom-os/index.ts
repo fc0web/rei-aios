@@ -79,3 +79,7 @@ export type { LoadSnapshot, LoadAlert, LoadSession } from './cognitive-load-mete
 // Code Axiom Extractor
 export { CodeAxiomExtractor } from './code-axiom-extractor';
 export type { CodePattern, ExtractionResult } from './code-axiom-extractor';
+
+// Distributed Axiom Pipeline
+export { DistributedAxiomPipeline } from './distributed-axiom-pipeline';
+export type { AxiomNode, PipelineResult } from './distributed-axiom-pipeline';
