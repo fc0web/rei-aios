@@ -30,3 +30,8 @@ export type { SevenLogicValue, FourLogicValue, ExtendedLogicValue } from './seve
 export { SEED_KERNEL } from './seed-kernel';
 export type { SeedTheory } from './seed-kernel';
 export { TheoryGenerator } from './theory-generator';
+
+// Axiom Encoder & Compressed Kernel（さらなる圧縮層）
+export { AxiomEncoder } from './axiom-encoder';
+export type { EncodedSeed } from './axiom-encoder';
+export { COMPRESSED_KERNEL, CompressedKernel } from './compressed-kernel';

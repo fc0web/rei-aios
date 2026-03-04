@@ -68,6 +68,8 @@ export type {
 // ─── Axiom OS Seed Kernel（種から再生成） ─────────────────────
 export { SEED_KERNEL, TheoryGenerator } from './axiom-os';
 export type { SeedTheory } from './axiom-os';
+export { AxiomEncoder, COMPRESSED_KERNEL, CompressedKernel } from './axiom-os';
+export type { EncodedSeed } from './axiom-os';
 
 // ─── Axiom OS Connector（AIOS↔公理OS連携） ──────────────────
 export { AxiomOSConnector } from './axiom-os-connector';
