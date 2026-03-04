@@ -51,3 +51,7 @@ export type { SeedPackage, PackageMetadata, ImportResult, ConflictEntry, DeltaIn
 // Explainability Engine
 export { ExplainabilityEngine } from './explainability-engine';
 export type { ReasoningStep, AxiomChain, ExplanationReport } from './explainability-engine';
+
+// Temporal Reasoning Engine
+export { TemporalReasoningEngine } from './temporal-reasoning';
+export type { TemporalSnapshot, TemporalPrediction, TemporalTrack, TimeAxis } from './temporal-reasoning';
