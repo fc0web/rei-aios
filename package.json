@@ -22,6 +22,8 @@
     "test:cognitive-load": "tsx test/axiom-os-cognitive-load-meter-test.ts",
     "test:code-axiom-extractor": "tsx test/axiom-os-code-axiom-extractor-test.ts",
     "test:distributed-pipeline": "tsx test/axiom-os-distributed-axiom-pipeline-test.ts",
+    "test:distribution-hub": "tsx test/axiom-os-axiom-distribution-hub-test.ts",
+    "test:self-axiomizer": "tsx test/axiom-os-rei-pl-self-axiomizer-test.ts",
     "test:seven-logic": "tsx test/seven-logic-test.ts",
     "test:seven-logic-compiler": "tsx test/seven-logic-compiler-test.ts",
     "test:axiom-os": "tsx test/axiom-os-test.ts",

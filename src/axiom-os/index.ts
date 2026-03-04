@@ -83,3 +83,11 @@ export type { CodePattern, ExtractionResult } from './code-axiom-extractor';
 // Distributed Axiom Pipeline
 export { DistributedAxiomPipeline } from './distributed-axiom-pipeline';
 export type { AxiomNode, PipelineResult } from './distributed-axiom-pipeline';
+
+// Axiom Distribution Hub
+export { AxiomDistributionHub } from './axiom-distribution-hub';
+export type { HubStatus } from './axiom-distribution-hub';
+
+// Rei-PL Self Axiomizer
+export { ReiPLSelfAxiomizer } from './rei-pl-self-axiomizer';
+export type { SelfAxiomResult } from './rei-pl-self-axiomizer';
