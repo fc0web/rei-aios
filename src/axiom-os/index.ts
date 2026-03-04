@@ -43,3 +43,7 @@ export type { ContradictionEntry, ContradictionKind, ResolutionStrategy, Resolut
 // Theory Evolution
 export { TheoryEvolution } from './theory-evolution';
 export type { EvolvedTheory, TheorySource, TheoryUsageLog } from './theory-evolution';
+
+// Seed Transfer Protocol
+export { SeedTransferProtocol } from './seed-transfer';
+export type { SeedPackage, PackageMetadata, ImportResult, ConflictEntry, DeltaInfo } from './seed-transfer';
