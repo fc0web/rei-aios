@@ -71,4 +71,4 @@ export type { SearchHit, QueryResult } from './axiom-os-connector';
 
 // ─── Axiom OS Persona（ペルソナチャット） ────────────────────
 export { PersonaChat } from './axiom-os-persona';
-export type { LLMCallFn, PersonaChatResult, AutoChatResult } from './axiom-os-persona';
+export type { LLMCallFn, PersonaChatResult, AutoChatResult, SevenLogicPersonaResponse, SevenLogicEval } from './axiom-os-persona';

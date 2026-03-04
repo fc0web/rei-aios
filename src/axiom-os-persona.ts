@@ -7,6 +7,8 @@
 
 import { AxiomOSConnector } from './axiom-os-connector';
 import type { PersonRow, TheoryRow } from './axiom-os';
+import { toSymbol } from './axiom-os/seven-logic';
+import type { SevenLogicValue } from './axiom-os/seven-logic';
 
 // ─── Types ───
 
@@ -28,6 +30,21 @@ export interface PersonaChatResult {
 export interface AutoChatResult extends PersonaChatResult {
   searchScore: number;
   candidateCount: number;
+}
+
+export interface SevenLogicEval {
+  concept: string;           // Extracted concept from user message
+  value: SevenLogicValue;    // e.g. 'BOTH'
+  symbol: string;            // e.g. 'B'
+  reasoning: string;         // Why this value was assigned
+}
+
+export interface SevenLogicPersonaResponse {
+  personId: string;
+  personName: string;
+  message: string;           // LLM response
+  sevenLogicEval: SevenLogicEval | null;
+  relatedTheories: string[]; // D-FUMT theory IDs
 }
 
 // ─── PersonaChat ───
@@ -151,6 +168,147 @@ export class PersonaChat {
       searchScore: best.score,
       candidateCount: hits.length,
     };
+  }
+
+  /**
+   * D-FUMT七価論理でユーザーの概念を評価する。
+   */
+  private evaluateConceptSevenLogic(
+    person: PersonRow,
+    userMessage: string,
+    theories: TheoryRow[],
+  ): SevenLogicEval | null {
+    const dfumtTheories = theories.filter(t => t.id.startsWith('dfumt-'));
+    if (dfumtTheories.length === 0) return null;
+
+    // Extract concept: find first matching thought_keyword in userMessage
+    let concept = '';
+    for (const kw of person.thought_keywords) {
+      if (userMessage.includes(kw)) {
+        concept = kw;
+        break;
+      }
+    }
+    if (!concept) {
+      // Fallback: use first token-like segment from userMessage
+      const match = userMessage.match(/[\u4e00-\u9fff\u3040-\u309f\u30a0-\u30ffA-Za-z]{2,}/);
+      concept = match ? match[0] : userMessage.slice(0, 10);
+    }
+
+    // Mapping heuristic based on philosophical tradition
+    const buddhist = ['空', '無常', '縁起', '中道', '四諦', '八正道', '中論', '中観派', '二諦説', '八不中道'];
+    const taoist = ['無為', '道', '自然', '無為自然', '柔弱', '道徳経', '陰陽', '虚'];
+    const ancient = ['卜占', '鬼道', '邪馬台国', '祭政一致', '神託', '魏志倭人伝'];
+    const infinite = ['弁証法', '再帰', '無限', '螺旋', '止揚'];
+    const negation = ['無', '否定', '虚無', '空虚'];
+    const affirmation = ['善', '真理', 'イデア', '仁', '礼', '義', '智'];
+
+    let value: SevenLogicValue;
+    let reasoning: string;
+
+    if (buddhist.some(k => userMessage.includes(k))) {
+      value = 'BOTH';
+      reasoning = `「${concept}」は仏教的概念。真と偽の二項対立を超越する矛盾許容の論理`;
+    } else if (taoist.some(k => userMessage.includes(k))) {
+      value = 'FLOWING';
+      reasoning = `「${concept}」は道家的概念。万物流転・変化し続ける流動の論理`;
+    } else if (ancient.some(k => userMessage.includes(k))) {
+      value = 'ZERO';
+      reasoning = `「${concept}」は古代・未記録の概念。未観測・ゼロ状態の論理`;
+    } else if (infinite.some(k => userMessage.includes(k))) {
+      value = 'INFINITY';
+      reasoning = `「${concept}」は無限・再帰的概念。評価が確定しない無限の論理`;
+    } else if (negation.some(k => userMessage.includes(k))) {
+      value = 'NEITHER';
+      reasoning = `「${concept}」は否定的概念。真でも偽でもない未決定の論理`;
+    } else if (affirmation.some(k => userMessage.includes(k))) {
+      value = 'TRUE';
+      reasoning = `「${concept}」は肯定的概念。確定的に真である古典論理`;
+    } else {
+      // Fallback with D-FUMT theories present
+      value = 'FLOWING';
+      reasoning = `「${concept}」はD-FUMT理論の文脈で流動的に評価される`;
+    }
+
+    return {
+      concept,
+      value,
+      symbol: toSymbol(value),
+      reasoning,
+    };
+  }
+
+  /**
+   * 指定された人物として七価論理評価付きで応答する。
+   */
+  async chatWithSevenLogic(personId: string, userMessage: string): Promise<SevenLogicPersonaResponse> {
+    const thought = this.connector.getPersonThought(personId);
+    if (!thought) {
+      throw new Error(`Person not found: ${personId}`);
+    }
+
+    // Collect D-FUMT theories: from person's related theories, or fall back to core D-FUMT theories
+    let dfumtTheories = thought.relatedTheories.filter(t => t.id.startsWith('dfumt-'));
+    if (dfumtTheories.length === 0) {
+      // Search for D-FUMT theories via connector using user message keywords
+      const theoryHits = this.connector.searchTheories(userMessage);
+      dfumtTheories = theoryHits.filter(h => h.item.id.startsWith('dfumt-')).map(h => h.item);
+    }
+    if (dfumtTheories.length === 0) {
+      // Fallback: use core D-FUMT theories (catuskoti + seven-logic related)
+      const coreIds = ['dfumt-catuskoti', 'dfumt-zero-state', 'dfumt-flowing-value', 'dfumt-infinity-value'];
+      const theoryHits = this.connector.searchTheories('D-FUMT');
+      const fromSearch = theoryHits.filter(h => h.item.id.startsWith('dfumt-')).map(h => h.item);
+      if (fromSearch.length > 0) {
+        dfumtTheories = fromSearch.slice(0, 4);
+      } else {
+        // Last resort: search each core ID individually
+        for (const cid of coreIds) {
+          const all = this.connector.searchTheories(cid);
+          for (const h of all) {
+            if (h.item.id === cid) dfumtTheories.push(h.item);
+          }
+        }
+      }
+    }
+
+    // Always provide eval when chatWithSevenLogic is called — use dfumtTheories as context
+    const theoriesForEval = dfumtTheories.length > 0
+      ? dfumtTheories
+      : [{ id: 'dfumt-catuskoti' } as TheoryRow]; // minimal marker to enable eval
+    const sevenLogicEval = this.evaluateConceptSevenLogic(
+      thought.person, userMessage, theoriesForEval,
+    );
+
+    // Build system prompt with seven-logic section
+    let systemPrompt = this.buildSystemPrompt(thought.person, thought.relatedTheories);
+    if (sevenLogicEval) {
+      systemPrompt += '\n\n【七価論理評価】\n';
+      systemPrompt += `概念「${sevenLogicEval.concept}」の七価論理値: ${sevenLogicEval.value}（${sevenLogicEval.symbol}）\n`;
+      systemPrompt += `理由: ${sevenLogicEval.reasoning}\n`;
+      systemPrompt += 'この七価論理の観点も応答に自然に織り込んでください。';
+    }
+
+    const response = await this.llmCall(systemPrompt, userMessage);
+
+    return {
+      personId,
+      personName: thought.person.name_ja,
+      message: response,
+      sevenLogicEval,
+      relatedTheories: dfumtTheories.map(t => t.id),
+    };
+  }
+
+  /**
+   * クエリに最も関連する人物を自動選択し、七価論理評価付きで応答する。
+   */
+  async autoChatWithSevenLogic(userMessage: string): Promise<SevenLogicPersonaResponse> {
+    const hits = this.connector.searchPersons(userMessage);
+    if (hits.length === 0) {
+      throw new Error(`No matching person found for query: "${userMessage}"`);
+    }
+    return this.chatWithSevenLogic(hits[0].item.id, userMessage);
   }
 
   /**

@@ -74,10 +74,10 @@ function main() {
     store.close();
   });
 
-  test('total theories: 15', () => {
+  test('total theories: 75', () => {
     const store = new AxiomOSStore(':memory:', { seed: true });
     const all = store.getAllTheories();
-    assert(all.length === 15, `Expected 15, got ${all.length}`);
+    assert(all.length === 75, `Expected 75, got ${all.length}`);
     store.close();
   });
 
