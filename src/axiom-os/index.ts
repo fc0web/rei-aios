@@ -55,3 +55,7 @@ export type { ReasoningStep, AxiomChain, ExplanationReport } from './explainabil
 // Temporal Reasoning Engine
 export { TemporalReasoningEngine } from './temporal-reasoning';
 export type { TemporalSnapshot, TemporalPrediction, TemporalTrack, TimeAxis } from './temporal-reasoning';
+
+// Axiom ACL
+export { AxiomACL } from './axiom-acl';
+export type { AclRule, AclDecision, AuditEntry } from './axiom-acl';
