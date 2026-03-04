@@ -59,3 +59,7 @@ export type { TemporalSnapshot, TemporalPrediction, TemporalTrack, TimeAxis } fr
 // Axiom ACL
 export { AxiomACL } from './axiom-acl';
 export type { AclRule, AclDecision, AuditEntry } from './axiom-acl';
+
+// Formula Axiomizer
+export { FormulaAxiomizer } from './formula-axiomizer';
+export type { AxiomizerResult, AxiomMatch } from './formula-axiomizer';
