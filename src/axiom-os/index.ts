@@ -39,3 +39,7 @@ export { COMPRESSED_KERNEL, CompressedKernel } from './compressed-kernel';
 // ContradictionDetector
 export { ContradictionDetector } from './contradiction-detector';
 export type { ContradictionEntry, ContradictionKind, ResolutionStrategy, ResolutionResult } from './contradiction-detector';
+
+// Theory Evolution
+export { TheoryEvolution } from './theory-evolution';
+export type { EvolvedTheory, TheorySource, TheoryUsageLog } from './theory-evolution';
