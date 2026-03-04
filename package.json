@@ -7,9 +7,10 @@
   "scripts": {
     "build": "tsc",
     "clean": "rimraf dist",
-    "test": "tsx test/rei-pl-bridge-test.ts && tsx test/axiom-os-test.ts && tsx test/axiom-os-connector-test.ts && tsx test/axiom-os-persona-test.ts && tsx test/seven-logic-test.ts && tsx test/seven-logic-compiler-test.ts && tsx test/axiom-os-seed-kernel-test.ts && tsx test/axiom-os-compressed-kernel-test.ts",
+    "test": "tsx test/rei-pl-bridge-test.ts && tsx test/axiom-os-test.ts && tsx test/axiom-os-connector-test.ts && tsx test/axiom-os-persona-test.ts && tsx test/seven-logic-test.ts && tsx test/seven-logic-compiler-test.ts && tsx test/axiom-os-seed-kernel-test.ts && tsx test/axiom-os-compressed-kernel-test.ts && tsx test/axiom-os-contradiction-detector-test.ts",
     "test:seed-kernel": "tsx test/axiom-os-seed-kernel-test.ts",
     "test:compressed-kernel": "tsx test/axiom-os-compressed-kernel-test.ts",
+    "test:contradiction": "tsx test/axiom-os-contradiction-detector-test.ts",
     "test:seven-logic": "tsx test/seven-logic-test.ts",
     "test:seven-logic-compiler": "tsx test/seven-logic-compiler-test.ts",
     "test:axiom-os": "tsx test/axiom-os-test.ts",

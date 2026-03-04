@@ -35,3 +35,7 @@ export { TheoryGenerator } from './theory-generator';
 export { AxiomEncoder } from './axiom-encoder';
 export type { EncodedSeed } from './axiom-encoder';
 export { COMPRESSED_KERNEL, CompressedKernel } from './compressed-kernel';
+
+// ContradictionDetector
+export { ContradictionDetector } from './contradiction-detector';
+export type { ContradictionEntry, ContradictionKind, ResolutionStrategy, ResolutionResult } from './contradiction-detector';
