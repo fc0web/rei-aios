@@ -47,3 +47,7 @@ export type { EvolvedTheory, TheorySource, TheoryUsageLog } from './theory-evolu
 // Seed Transfer Protocol
 export { SeedTransferProtocol } from './seed-transfer';
 export type { SeedPackage, PackageMetadata, ImportResult, ConflictEntry, DeltaInfo } from './seed-transfer';
+
+// Explainability Engine
+export { ExplainabilityEngine } from './explainability-engine';
+export type { ReasoningStep, AxiomChain, ExplanationReport } from './explainability-engine';

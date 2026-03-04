@@ -13,6 +13,7 @@
     "test:contradiction": "tsx test/axiom-os-contradiction-detector-test.ts",
     "test:theory-evolution": "tsx test/axiom-os-theory-evolution-test.ts",
     "test:seed-transfer": "tsx test/axiom-os-seed-transfer-test.ts",
+    "test:explainability": "tsx test/axiom-os-explainability-test.ts",
     "test:seven-logic": "tsx test/seven-logic-test.ts",
     "test:seven-logic-compiler": "tsx test/seven-logic-compiler-test.ts",
     "test:axiom-os": "tsx test/axiom-os-test.ts",
