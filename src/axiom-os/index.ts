@@ -75,3 +75,7 @@ export type { InstanceVote, ConsensusRound, ConsensusResult } from './consensus-
 // Cognitive Load Meter
 export { CognitiveLoadMeter } from './cognitive-load-meter';
 export type { LoadSnapshot, LoadAlert, LoadSession } from './cognitive-load-meter';
+
+// Code Axiom Extractor
+export { CodeAxiomExtractor } from './code-axiom-extractor';
+export type { CodePattern, ExtractionResult } from './code-axiom-extractor';
