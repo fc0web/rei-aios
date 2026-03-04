@@ -110,12 +110,15 @@ test('compress/decompress round-trip', () => {
   const compressed = kernel.compress();
   const restored = kernel.decompress(compressed);
   assert(restored.length === 75, `Count: ${restored.length}`);
-  for (let i = 0; i < restored.length; i++) {
-    assert(restored[i].id === SEED_KERNEL[i].id, `ID mismatch at ${i}`);
-    assert(restored[i].axiom === SEED_KERNEL[i].axiom, `Axiom mismatch at ${i}: "${restored[i].axiom}" vs "${SEED_KERNEL[i].axiom}"`);
-    assert(restored[i].category === SEED_KERNEL[i].category, `Category mismatch at ${i}`);
-    assert(JSON.stringify(restored[i].keywords) === JSON.stringify(SEED_KERNEL[i].keywords),
-      `Keywords mismatch at ${i}`);
+  // カテゴリソートにより順序が変わるため、IDで引いて比較
+  const restoredMap = new Map(restored.map(s => [s.id, s]));
+  for (const seed of SEED_KERNEL) {
+    const r = restoredMap.get(seed.id);
+    assert(r !== undefined, `Missing ID: ${seed.id}`);
+    assert(r!.axiom === seed.axiom, `Axiom mismatch: ${seed.id}: "${r!.axiom}" vs "${seed.axiom}"`);
+    assert(r!.category === seed.category, `Category mismatch: ${seed.id}`);
+    assert(JSON.stringify(r!.keywords) === JSON.stringify(seed.keywords),
+      `Keywords mismatch: ${seed.id}`);
   }
 });
 

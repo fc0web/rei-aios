@@ -1,15 +1,15 @@
 /**
- * CompressedKernel — AxiomEncoder + zlib で圧縮した75理論の最小データ
+ * CompressedKernel — AxiomEncoder + brotli で圧縮した75理論の最小データ
  *
- * SEED_KERNEL (9KB) をさらに記号化 + deflate 圧縮し、フルデータの10%以下を目指す。
+ * SEED_KERNEL (9KB) をさらに記号化 + brotli 圧縮し、フルデータの10%以下を目指す。
  *
  * compress():
- *   1. 記号化 + タブ区切りテキスト化（キーワードは ; 区切りでインライン）
- *   2. zlib deflate 圧縮 (level 9)
+ *   1. カテゴリソート → 記号化 → タブ区切りテキスト化
+ *   2. brotli 圧縮 (quality 11)
  *   3. base64 エンコードした文字列を返す
  */
 
-import { deflateSync, inflateSync } from 'node:zlib';
+import { brotliCompressSync, brotliDecompressSync, constants } from 'node:zlib';
 import { SEED_KERNEL, type SeedTheory } from './seed-kernel';
 import { SEED_THEORIES } from './seed';
 import { AxiomEncoder, type EncodedSeed } from './axiom-encoder';
@@ -24,9 +24,10 @@ const ID_PREFIX = 'dfumt-';
 export class CompressedKernel {
   private readonly enc = new AxiomEncoder();
 
-  /** テキスト形式に変換（改行区切り、各行: idSuffix\taxiom\tcat\tkw1;kw2） */
+  /** テキスト形式に変換（カテゴリソート済み、改行区切り） */
   private toText(): string {
-    return SEED_KERNEL.map(s => {
+    const sorted = SEED_KERNEL.slice().sort((a, b) => a.category.localeCompare(b.category));
+    return sorted.map(s => {
       const e = this.enc.encodeSeed(s);
       const idSuffix = e.i.startsWith(ID_PREFIX) ? e.i.slice(ID_PREFIX.length) : e.i;
       // キーワードも記号化して圧縮
@@ -50,21 +51,25 @@ export class CompressedKernel {
     });
   }
 
-  /** 全データを圧縮文字列に変換（deflate → base64） */
+  /** 全データを圧縮文字列に変換（brotli → base64） */
   compress(): string {
-    const deflated = deflateSync(Buffer.from(this.toText(), 'utf-8'), { level: 9 });
-    return deflated.toString('base64');
+    const compressed = brotliCompressSync(Buffer.from(this.toText(), 'utf-8'), {
+      params: { [constants.BROTLI_PARAM_QUALITY]: 11 },
+    });
+    return compressed.toString('base64');
   }
 
   /** 圧縮データから元のSeedTheoryを復元 */
   decompress(data: string): SeedTheory[] {
-    const inflated = inflateSync(Buffer.from(data, 'base64'));
-    return this.fromText(inflated.toString('utf-8'));
+    const decompressed = brotliDecompressSync(Buffer.from(data, 'base64'));
+    return this.fromText(decompressed.toString('utf-8'));
   }
 
-  /** deflate圧縮されたバイナリサイズを取得する */
+  /** brotli圧縮されたバイナリサイズを取得する */
   compressedBinarySize(): number {
-    return deflateSync(Buffer.from(this.toText(), 'utf-8'), { level: 9 }).length;
+    return brotliCompressSync(Buffer.from(this.toText(), 'utf-8'), {
+      params: { [constants.BROTLI_PARAM_QUALITY]: 11 },
+    }).length;
   }
 
   /** サイズ比較レポート */

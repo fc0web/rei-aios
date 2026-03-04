@@ -18,15 +18,45 @@ function inferConstantRef(keywords: string[]): string | null {
   return null;
 }
 
-/** 種IDから短縮名を生成する（dfumt-xxx → xxx をタイトルケースに） */
-function generateName(seed: SeedTheory): string {
-  const kw = seed.keywords[0] ?? seed.id.replace('dfumt-', '');
-  return `${kw}（${seed.axiom.slice(0, 20).replace(/[,、]/g, '')}…）`;
+const CATEGORY_LABEL: Record<string, string> = {
+  'zero_extension':  'ゼロ・π拡張理論',
+  'logic':           '論理体系理論',
+  'computation':     '計算構造理論',
+  'mathematics':     '数学基盤理論',
+  'consciousness':   '意識数学理論',
+  'general':         '汎用基盤理論',
+  'number-system':   '数体系理論',
+  'expansion':       '拡張・縮小理論',
+  'ai-integration':  'AI統合理論',
+  'unified':         '統合・応用理論',
+  'projection':      '空間投影理論',
+  'cosmic':          '宇宙・因果理論',
+};
+
+/** 七価論理タグを推定する */
+function inferSevenLogicTag(seed: SeedTheory): string {
+  const text = seed.axiom + ' ' + seed.keywords.join(' ');
+  if (text.includes('∞') || text.includes('infinity')) return '[∞]';
+  if (text.includes('〇') || text.includes('未観測') || text.includes('潜在')) return '[〇]';
+  if (text.includes('～') || text.includes('流動') || text.includes('変化')) return '[～]';
+  if (text.includes('両方') || text.includes('矛盾') || text.includes('B')) return '[B]';
+  if (text.includes('neither') || text.includes('N')) return '[N]';
+  return '[⊤]';
 }
 
-/** 種からdescriptionを生成する */
+/** カテゴリラベル + 七価論理タグ + キーワードで名前を生成 */
+function generateName(seed: SeedTheory): string {
+  const label = CATEGORY_LABEL[seed.category] ?? seed.category;
+  const tag = inferSevenLogicTag(seed);
+  const kw = seed.keywords[0] ?? seed.id.replace('dfumt-', '');
+  return `${label} ${tag} ${kw}`;
+}
+
+/** カテゴリラベル + 公理 + キーワードで説明を生成 */
 function generateDescription(seed: SeedTheory): string {
-  return `D-FUMT理論 [${seed.category}]: ${seed.axiom}。キーワード: ${seed.keywords.join('・')}`;
+  const label = CATEGORY_LABEL[seed.category] ?? seed.category;
+  const tag = inferSevenLogicTag(seed);
+  return `${label} ${tag}: ${seed.axiom}。関連概念: ${seed.keywords.join('・')}`;
 }
 
 export class TheoryGenerator {
