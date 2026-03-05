@@ -154,8 +154,27 @@ function main() {
     console.log(`  再生成検証: ${verifyPassed} 成功 / ${verifyFailed} 失敗`);
   }
 
-  // Step6: 出力ファイル保存
+  // Step6: 出力ファイル保存（source付き拡張公理）
   if (outputFile) {
+    // 全ファイルからパターンを直接収集（sourceフィールド含む）
+    const allPatterns: Array<{ id: string; axiom: string; category: string; keywords: string[]; source: string }> = [];
+    const seenIds = new Set<string>();
+    for (const file of files) {
+      const code = fs.readFileSync(file, 'utf-8');
+      const result = extractor.extract(code, ext);
+      for (let i = 0; i < result.seedTheories.length; i++) {
+        const seed = result.seedTheories[i];
+        const pat = result.patterns[i];
+        if (!seenIds.has(seed.id)) {
+          seenIds.add(seed.id);
+          allPatterns.push({
+            ...seed,
+            source: pat?.source ?? '',
+          });
+        }
+      }
+    }
+
     const output = {
       version: '1.0.0',
       extractedAt: new Date().toISOString(),
@@ -163,11 +182,11 @@ function main() {
       stats: {
         files: files.length,
         originalBytes: totalOriginalBytes,
-        axioms: globalAxioms.length,
+        axioms: allPatterns.length,
         axiomJsonBytes: seedBytes,
         compressionRatio: axiomRatio,
       },
-      axioms: globalAxioms,
+      axioms: allPatterns,
     };
     fs.writeFileSync(outputFile, JSON.stringify(output, null, 2), 'utf-8');
     console.log(`\n公理データを保存: ${outputFile} (${formatBytes(fs.statSync(outputFile).size)})`);
