@@ -7,7 +7,8 @@
   "scripts": {
     "build": "tsc",
     "clean": "rimraf dist",
-    "test": "tsx test/rei-pl-bridge-test.ts && tsx test/axiom-os-test.ts && tsx test/axiom-os-connector-test.ts && tsx test/axiom-os-persona-test.ts && tsx test/seven-logic-test.ts && tsx test/seven-logic-compiler-test.ts && tsx test/axiom-os-seed-kernel-test.ts && tsx test/axiom-os-compressed-kernel-test.ts && tsx test/axiom-os-contradiction-detector-test.ts && tsx test/axiom-os-theory-evolution-test.ts && tsx test/axiom-os-seed-transfer-test.ts",
+    "test": "tsx test/rei-pl-bridge-test.ts && tsx test/axiom-os-test.ts && tsx test/axiom-os-connector-test.ts && tsx test/axiom-os-persona-test.ts && tsx test/seven-logic-test.ts && tsx test/seven-logic-compiler-test.ts && tsx test/axiom-os-seed-kernel-test.ts && tsx test/axiom-os-compressed-kernel-test.ts && tsx test/axiom-os-contradiction-detector-test.ts && tsx test/axiom-os-theory-evolution-test.ts && tsx test/axiom-os-seed-transfer-test.ts && tsx test/step9-ai-home-test.ts",
+    "test:step9": "tsx test/step9-ai-home-test.ts",
     "test:seed-kernel": "tsx test/axiom-os-seed-kernel-test.ts",
     "test:compressed-kernel": "tsx test/axiom-os-compressed-kernel-test.ts",
     "test:contradiction": "tsx test/axiom-os-contradiction-detector-test.ts",
