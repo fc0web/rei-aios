@@ -1,6 +1,8 @@
 import { DistributedAxiomPipeline, type AxiomNode } from './distributed-axiom-pipeline';
 import { SeedTransferProtocol, type SeedPackage } from './seed-transfer';
 import { type SeedTheory } from './seed-kernel';
+import { AxiomDHT } from './axiom-dht';
+import { AxiomContentAddressor } from './axiom-content-address';
 
 // ハブの状態
 export interface HubStatus {
@@ -16,6 +18,8 @@ export class AxiomDistributionHub {
   private transfer = new SeedTransferProtocol();
   private storedPackages: SeedPackage[] = [];
   private globalAxioms: SeedTheory[] = [];
+  private dht = new AxiomDHT();
+  private addressor = new AxiomContentAddressor();
 
   // ノード群から公理抽出→パッケージ化→保存
   publish(nodes: AxiomNode[], version = '1.0.0'): SeedPackage {
@@ -25,10 +29,12 @@ export class AxiomDistributionHub {
       ...result.pendingAxioms,
     ];
 
-    // 重複を除いてglobalAxiomsに追加
-    for (const axiom of allAxioms) {
+    // 重複を除いてglobalAxiomsに追加 + DHT/CID登録
+    const addressed = this.addressor.addressAll(allAxioms);
+    for (const axiom of addressed) {
       if (!this.globalAxioms.find(a => a.id === axiom.id)) {
         this.globalAxioms.push(axiom);
+        this.dht.put(axiom);
       }
     }
 
@@ -47,9 +53,11 @@ export class AxiomDistributionHub {
     const result = this.pipeline.runSingle(code, nodeId);
     const allAxioms = [...result.consensusAxioms, ...result.pendingAxioms];
 
-    for (const axiom of allAxioms) {
+    const addressed = this.addressor.addressAll(allAxioms);
+    for (const axiom of addressed) {
       if (!this.globalAxioms.find(a => a.id === axiom.id)) {
         this.globalAxioms.push(axiom);
+        this.dht.put(axiom);
       }
     }
 
@@ -100,6 +108,21 @@ export class AxiomDistributionHub {
   // 全グローバル公理を取得
   getGlobalAxioms(): SeedTheory[] {
     return [...this.globalAxioms];
+  }
+
+  // DHT経由でCID検索
+  getByCID(cid: string): SeedTheory | undefined {
+    return this.dht.get(cid);
+  }
+
+  // DHT統計
+  getDHTStats() {
+    return this.dht.stats();
+  }
+
+  // 近傍公理検索
+  findNearestAxioms(axiom: SeedTheory, k = 5): SeedTheory[] {
+    return this.dht.findNearest(axiom, k);
   }
 
   // ハブ状態を取得
