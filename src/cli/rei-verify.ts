@@ -15,6 +15,7 @@ import * as ts   from 'typescript';
 export interface VerifyResult {
   file: string;
   syntaxErrors: number;
+  errorDetails: string[];   // エラー詳細
   functionCount: number;
   exportCount: number;
   sourceFidelityCount: number;
@@ -50,10 +51,19 @@ export function verifyFile(filePath: string): VerifyResult {
 
   // parseDiagnostics を収集
   let syntaxErrors = 0;
-  // ts.createSourceFile の結果からparseDiagnosticsを取得
+  const errorDetails: string[] = [];
   const diagnostics = (sourceFile as any).parseDiagnostics as ts.Diagnostic[] | undefined;
   if (diagnostics) {
     syntaxErrors = diagnostics.length;
+    const lines = content.split('\n');
+    for (const diag of diagnostics) {
+      if (diag.start !== undefined) {
+        const pos = sourceFile.getLineAndCharacterOfPosition(diag.start);
+        const lineText = lines[pos.line]?.trim() ?? '';
+        const msg = ts.flattenDiagnosticMessageText(diag.messageText, ' ');
+        errorDetails.push(`L${pos.line + 1}: "${lineText.slice(0, 40)}" — ${msg}`);
+      }
+    }
   }
 
   // 構造チェック: function/const arrow 宣言数
@@ -74,6 +84,7 @@ export function verifyFile(filePath: string): VerifyResult {
     syntaxErrors,
     functionCount,
     exportCount,
+    errorDetails,
     sourceFidelityCount,
     semiFidelityCount,
     templateCount,
@@ -132,6 +143,14 @@ function main() {
   for (const r of results) {
     const status = r.syntaxErrors === 0 ? 'OK' : 'NG';
     console.log(`  ${status} ${r.file}: ${r.functionCount}関数, ${r.exportCount}export, エラー${r.syntaxErrors}件`);
+    if (r.syntaxErrors > 0) {
+      for (const detail of r.errorDetails.slice(0, 3)) {
+        console.log(`      ${detail}`);
+      }
+      if (r.errorDetails.length > 3) {
+        console.log(`      ...他 ${r.errorDetails.length - 3} 件`);
+      }
+    }
   }
 
   console.log('\n╔════════════════════════════════════════════════════════════╗');

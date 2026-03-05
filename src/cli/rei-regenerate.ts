@@ -121,8 +121,21 @@ function cast<A, B>(value: A): B {
 
 // ─── セミ忠実テンプレート（第2優先）─────────────────────────────
 
+const RESERVED_WORDS = new Set([
+  'break','case','catch','class','const','continue','debugger','default','delete',
+  'do','else','enum','export','extends','false','finally','for','function','if',
+  'import','in','instanceof','new','null','return','super','switch','this','throw',
+  'true','try','typeof','var','void','while','with','yield','let','static',
+  'implements','interface','package','private','protected','public','async','await',
+  'Math','JSON','Object','Array','String','Number','Boolean','Error','Promise',
+  'console','undefined','NaN','Infinity','eval','arguments',
+]);
+
 function generateSemiTemplate(kind: string, funcName: string, keywords: string[], axiom: SeedTheory): string {
-  const safeName = funcName.replace(/[^a-zA-Z0-9_]/g, '') || 'process';
+  let safeName = funcName.replace(/[^a-zA-Z0-9_]/g, '') || 'process';
+  if (RESERVED_WORDS.has(safeName) || /^\d/.test(safeName)) {
+    safeName = `rei_${safeName}`;
+  }
   const comment = `// [再生成:semi-fidelity] ${axiom.axiom}`;
 
   switch (kind) {
@@ -142,12 +155,20 @@ function generateSemiTemplate(kind: string, funcName: string, keywords: string[]
       return `${comment}\nasync function ${safeName}<T>(fn: () => Promise<T>): Promise<T> {\n  return await fn();\n}`;
     case 'error':
       return `${comment}\nfunction ${safeName}<T>(fn: () => T): T | null {\n  try { return fn(); } catch { return null; }\n}`;
-    case 'class':
-      return `${comment}\ninterface ${safeName.charAt(0).toUpperCase() + safeName.slice(1)} {\n  [key: string]: unknown;\n}`;
-    case 'module':
-      return `${comment}\nexport const ${safeName} = {} as const;`;
-    default:
-      return `${comment}\nconst ${safeName} = undefined; // ${keywords.join(', ')}`;
+    case 'class': {
+      const uid = axiom.id.split('-').pop() ?? '0';
+      const iName = safeName.charAt(0).toUpperCase() + safeName.slice(1) + '_' + uid;
+      return `${comment}\ninterface ${iName} {\n  [key: string]: unknown;\n}`;
+    }
+    case 'module': {
+      const uid = axiom.id.split('-').pop() ?? '0';
+      return `${comment}\nexport const ${safeName}_${uid} = {} as const;`;
+    }
+    default: {
+      // ユニークなサフィックスを付けて重複宣言を防止
+      const uid = axiom.id.split('-').pop() ?? '0';
+      return `${comment}\nconst ${safeName}_${uid} = undefined; // ${keywords.join(', ')}`;
+    }
   }
 }
 
@@ -158,12 +179,27 @@ function getKindFromAxiom(axiom: SeedTheory): string {
   return parts[1] ?? 'constant';
 }
 
+// ─── source有効性チェック ──────────────────────────────────────
+
+const MIN_SOURCE_LENGTH = 20;
+
+function isValidSource(src: string | undefined): src is string {
+  if (!src || src.length < MIN_SOURCE_LENGTH) return false;
+  const SHORT_KEYWORDS = /^(===|!==|typeof|instanceof|true|false|null|undefined|void|new|return|const|let|var|\|\||&&|=>|\?\?|\.\.\.)\s*$/;
+  if (SHORT_KEYWORDS.test(src.trim())) return false;
+  // 不完全なコード断片を除外
+  const opens  = (src.match(/[({[]/g) ?? []).length;
+  const closes = (src.match(/[)}\]]/g) ?? []).length;
+  if (opens > closes) return false;  // 開き括弧が閉じ括弧より多い = 不完全
+  return true;
+}
+
 // ─── 2段階生成関数 ────────────────────────────────────────────
 
 function generateFromAxiom(axiom: ExtendedSeedTheory): { code: string; fidelity: 'source' | 'semi' | 'template' } {
-  // 第1優先: source直接使用（5文字以上）
+  // 第1優先: source直接使用（20文字以上 + 短キーワード除外）
   const src = axiom.source;
-  if (src && src.length >= 5) {
+  if (isValidSource(src)) {
     return {
       code: `// [再生成:source-fidelity] ${axiom.axiom}\n${src}`,
       fidelity: 'source',
