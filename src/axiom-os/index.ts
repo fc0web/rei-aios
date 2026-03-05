@@ -91,3 +91,13 @@ export type { HubStatus } from './axiom-distribution-hub';
 // Rei-PL Self Axiomizer
 export { ReiPLSelfAxiomizer } from './rei-pl-self-axiomizer';
 export type { SelfAxiomResult } from './rei-pl-self-axiomizer';
+
+// Blockchain (STEP 4)
+export { AxiomHashChain } from './axiom-hash-chain';
+export type { AxiomBlock, ChainValidationResult } from './axiom-hash-chain';
+
+export { AxiomSmartContract } from './axiom-smart-contract';
+export type { AxiomContract, ContractVerdict, ContractViolation } from './axiom-smart-contract';
+
+export { AxiomTokenEconomy, TOKEN_PARAMS } from './axiom-token-economy';
+export type { ReiTokenBalance, TokenTransaction, TokenReason } from './axiom-token-economy';
