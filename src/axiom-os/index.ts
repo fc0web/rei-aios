@@ -116,3 +116,13 @@ export type { Prediction, LLMZipEntry, LLMZipResult } from './axiom-llm-zip';
 // RCT — Rei圧縮理論 Theory #67 (STEP 6-A)
 export { AxiomRCT } from './axiom-rct';
 export type { EndoEdge, SpanTreeNode, RCTEntry, RCTResult } from './axiom-rct';
+
+// 圧縮スイート (STEP 6-B/C/D)
+export { AxiomCompressionSelector } from './axiom-compression-selector';
+export type { DataProfile, SelectionResult, BenchmarkResult, CompressionMethod } from './axiom-compression-selector';
+
+export { AxiomLLMZipEnhanced } from './axiom-llm-zip-enhanced';
+export type { EnhancedLLMZipResult } from './axiom-llm-zip-enhanced';
+
+export { AxiomStreamCompressor } from './axiom-stream-compressor';
+export type { StreamConfig, StreamChunk, StreamStats } from './axiom-stream-compressor';
