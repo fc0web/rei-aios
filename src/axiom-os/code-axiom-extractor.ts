@@ -3,7 +3,8 @@ import { type SeedTheory } from './seed-kernel';
 // 抽出されたコードパターン
 export interface CodePattern {
   id: string;
-  kind: 'loop' | 'recursion' | 'branch' | 'transform' | 'reduce' | 'compose' | 'guard' | 'constant';
+  kind: 'loop' | 'recursion' | 'branch' | 'transform' | 'reduce' | 'compose' | 'guard' | 'constant'
+    | 'class' | 'async' | 'error' | 'cast' | 'collection' | 'math' | 'string' | 'object' | 'module' | 'state' | 'debug' | 'compare';
   source: string;       // 元のコード断片
   frequency: number;    // 出現頻度
   axiom: string;        // D-FUMT公理として表現した文字列
@@ -33,6 +34,18 @@ const KIND_TO_CATEGORY: Record<CodePattern['kind'], string> = {
   compose:   'unified',
   guard:     'logic',
   constant:  'general',
+  class:      'mathematics',
+  async:      'expansion',
+  error:      'logic',
+  cast:       'mathematics',
+  collection: 'computation',
+  math:       'mathematics',
+  string:     'general',
+  object:     'general',
+  module:     'unified',
+  state:      'computation',
+  debug:      'general',
+  compare:    'logic',
 };
 
 // パターン検出ルール（正規表現 + ラベル）
@@ -90,19 +103,103 @@ const PATTERN_RULES: Array<{
     axiomTemplate: (m) => `c = lim(1/∞) — 定数公理 [${m}]`,
     keywords: ['constant', 'immutable', 'identity'],
   },
+  // ⑨ クラス・オブジェクト構造
+  {
+    kind: 'class',
+    pattern: /\b(class|interface|type|struct|extends|implements)\b/g,
+    axiomTemplate: (m: string) => `T: Type → ∃x∈T — 型構造 [${m}]`,
+    keywords: ['class', 'type', 'structure', 'object'],
+  },
+  // ⑩ 非同期・並行
+  {
+    kind: 'async',
+    pattern: /\b(async|await|Promise|Observable|Stream|EventEmitter)\b/g,
+    axiomTemplate: (m: string) => `f: A→Promise<B> — 非同期写像 [${m}]`,
+    keywords: ['async', 'concurrent', 'promise', '～'],
+  },
+  // ⑪ エラー処理
+  {
+    kind: 'error',
+    pattern: /\b(try|catch|finally|Error|Exception|reject)\b/g,
+    axiomTemplate: (m: string) => `P∨¬P∨⊥ — エラー分岐 [${m}]`,
+    keywords: ['error', 'exception', 'fault', '⊥'],
+  },
+  // ⑫ 型キャスト・変換
+  {
+    kind: 'cast',
+    pattern: /\b(as|instanceof|typeof|is|cast|coerce)\b/g,
+    axiomTemplate: (m: string) => `A ≅ B — 型同型変換 [${m}]`,
+    keywords: ['cast', 'coerce', 'isomorphism'],
+  },
+  // ⑬ 配列・コレクション操作
+  {
+    kind: 'collection',
+    pattern: /\b(push|pop|shift|unshift|splice|slice|concat|join|split)\b/g,
+    axiomTemplate: (m: string) => `S ⊕ x = S' — コレクション変換 [${m}]`,
+    keywords: ['collection', 'array', 'list', '⊕'],
+  },
+  // ⑭ 数学・計算
+  {
+    kind: 'math',
+    pattern: /\b(Math\.|sqrt|pow|abs|floor|ceil|round|PI|log|exp)\b/g,
+    axiomTemplate: (m: string) => `f: ℝ→ℝ — 数学関数 [${m}]`,
+    keywords: ['math', 'numerical', 'calculation', 'ℝ'],
+  },
+  // ⑮ 文字列操作
+  {
+    kind: 'string',
+    pattern: /\b(toString|toUpperCase|toLowerCase|trim|replace|match|test|indexOf|includes)\b/g,
+    axiomTemplate: (m: string) => `f: Σ*→Σ* — 文字列変換 [${m}]`,
+    keywords: ['string', 'text', 'pattern', 'Σ'],
+  },
+  // ⑯ オブジェクト操作
+  {
+    kind: 'object',
+    pattern: /\b(Object\.|JSON\.|keys|values|entries|assign|freeze|spread)\b/g,
+    axiomTemplate: (m: string) => `{k:v} — 構造体操作 [${m}]`,
+    keywords: ['object', 'record', 'map', 'key-value'],
+  },
+  // ⑰ モジュール・インポート
+  {
+    kind: 'module',
+    pattern: /\b(import|export|require|from|default|module)\b/g,
+    axiomTemplate: (m: string) => `M₁ → M₂ — モジュール依存 [${m}]`,
+    keywords: ['module', 'dependency', 'import', 'export'],
+  },
+  // ⑱ 状態管理
+  {
+    kind: 'state',
+    pattern: /\b(state|setState|useState|store|dispatch|action|reducer|mutation)\b/g,
+    axiomTemplate: (m: string) => `S×A→S' — 状態遷移 [${m}]`,
+    keywords: ['state', 'transition', 'mutation', 'store'],
+  },
+  // ⑲ ログ・デバッグ
+  {
+    kind: 'debug',
+    pattern: /\b(console\.|log|warn|error|debug|trace|assert)\b/g,
+    axiomTemplate: (m: string) => `observe(x) — 観測点 [${m}]`,
+    keywords: ['observe', 'debug', 'log', '〇'],
+  },
+  // ⑳ 比較・等値
+  {
+    kind: 'compare',
+    pattern: /===|!==|>=|<=|\b(equals|compareTo|diff|delta)\b/g,
+    axiomTemplate: (m: string) => `a ≡ b ∨ a ≠ b — 等値比較 [${m}]`,
+    keywords: ['equality', 'comparison', 'delta', '≡'],
+  },
 ];
 
 // 七価論理タグを推定
 function inferSevenLogicTag(patterns: CodePattern[]): string {
-  const hasRecursion = patterns.some(p => p.kind === 'recursion');
-  const hasBranch    = patterns.some(p => p.kind === 'branch');
-  const hasReduce    = patterns.some(p => p.kind === 'reduce');
-  const hasCompose   = patterns.some(p => p.kind === 'compose');
+  const has = (kind: string) => patterns.some(p => p.kind === kind);
 
-  if (hasRecursion && hasBranch) return '[B]';  // both — 再帰×分岐は矛盾許容
-  if (hasReduce)                  return '[Ω]';  // 収束
-  if (hasCompose)                 return '[～]';  // 流動
-  if (hasRecursion)               return '[∞]';  // 無限
+  if (has('recursion') && has('branch')) return '[B]';   // both — 再帰×分岐は矛盾許容
+  if (has('reduce'))                     return '[Ω]';   // 収束
+  if (has('async') && has('error'))      return '[Ω]';   // 非同期+エラー → 収束
+  if (has('compose') || has('async'))    return '[～]';   // 流動
+  if (has('recursion'))                  return '[∞]';   // 無限
+  if (has('state'))                      return '[～]';   // 状態遷移 → 流動
+  if (has('class') && has('module'))     return '[B]';   // 構造×依存 → both
   return '[⊤]';
 }
 
