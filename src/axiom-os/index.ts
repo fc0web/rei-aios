@@ -112,3 +112,7 @@ export type { DictEntry, DeltaEntry, DeltaCompressionResult } from './axiom-delt
 // LLMZip完全版 (STEP 5-B)
 export { AxiomLLMZip } from './axiom-llm-zip';
 export type { Prediction, LLMZipEntry, LLMZipResult } from './axiom-llm-zip';
+
+// RCT — Rei圧縮理論 Theory #67 (STEP 6-A)
+export { AxiomRCT } from './axiom-rct';
+export type { EndoEdge, SpanTreeNode, RCTEntry, RCTResult } from './axiom-rct';
