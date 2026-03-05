@@ -5,12 +5,14 @@
  *   npx tsx src/cli/rei-extract.ts ./src
  *   npx tsx src/cli/rei-extract.ts ./src --verify
  *   npx tsx src/cli/rei-extract.ts ./src --output seed.json
+ *   npx tsx src/cli/rei-extract.ts ./src --output seed.json --compress
  */
 
 import * as fs   from 'fs';
 import * as path from 'path';
 import { CodeAxiomExtractor } from '../axiom-os/code-axiom-extractor';
 import { AxiomDistributionHub } from '../axiom-os/axiom-distribution-hub';
+import { HybridCompressor } from '../axiom-os/hybrid-compressor';
 
 // ─── 引数パース ───────────────────────────────────────────────
 const args = process.argv.slice(2);
@@ -22,6 +24,7 @@ const outputFile = (() => {
 })();
 const ext = args.find(a => a.startsWith('--ext='))?.split('=')[1] ?? 'ts';
 const verbose = args.includes('--verbose');
+const doCompress = args.includes('--compress');
 
 // ─── ファイル収集 ─────────────────────────────────────────────
 function collectFiles(dir: string, extension: string): string[] {
@@ -190,6 +193,26 @@ function main() {
     };
     fs.writeFileSync(outputFile, JSON.stringify(output, null, 2), 'utf-8');
     console.log(`\n公理データを保存: ${outputFile} (${formatBytes(fs.statSync(outputFile).size)})`);
+
+    // ハイブリッド圧縮
+    if (doCompress) {
+      const compressor = new HybridCompressor();
+      const compResult = compressor.compress(allPatterns);
+      const serialized = compressor.serialize(compResult);
+      const compressedFile = outputFile.replace(/\.json$/, '.rei');
+      fs.writeFileSync(compressedFile, serialized);
+
+      console.log('\n╔════════════════════════════════════════════════════════════╗');
+      console.log('║  ハイブリッド圧縮結果                                      ║');
+      console.log('╠════════════════════════════════════════════════════════════╣');
+      console.log(`║  Step A (辞書最適化) : ${formatBytes(compResult.steps.afterDict).padStart(12)}                   ║`);
+      console.log(`║  Step B (予測圧縮)   : ${formatBytes(compResult.steps.afterPredict).padStart(12)}                   ║`);
+      console.log(`║  Step C (gzip)       : ${formatBytes(compResult.steps.afterGzip).padStart(12)}                   ║`);
+      console.log(`║  圧縮率              : ${(compResult.ratio * 100).toFixed(1).padStart(8)} %                         ║`);
+      console.log(`║  元データ → 圧縮後   : ${formatBytes(totalOriginalBytes)} → ${formatBytes(compResult.steps.afterGzip).padStart(1)}  ║`);
+      console.log('╚════════════════════════════════════════════════════════════╝');
+      console.log(`\n圧縮データを保存: ${compressedFile} (${formatBytes(serialized.length)})`);
+    }
   }
 }
 
