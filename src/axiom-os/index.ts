@@ -101,3 +101,10 @@ export type { AxiomContract, ContractVerdict, ContractViolation } from './axiom-
 
 export { AxiomTokenEconomy, TOKEN_PARAMS } from './axiom-token-economy';
 export type { ReiTokenBalance, TokenTransaction, TokenReason } from './axiom-token-economy';
+
+// Chunk Extraction & Delta Compression (STEP 5-A)
+export { AxiomChunkExtractor } from './axiom-chunk-extractor';
+export type { ChunkConfig, ChunkResult, ParallelExtractionResult } from './axiom-chunk-extractor';
+
+export { AxiomDeltaCompressor } from './axiom-delta-compressor';
+export type { DictEntry, DeltaEntry, DeltaCompressionResult } from './axiom-delta-compressor';
