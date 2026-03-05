@@ -108,3 +108,7 @@ export type { ChunkConfig, ChunkResult, ParallelExtractionResult } from './axiom
 
 export { AxiomDeltaCompressor } from './axiom-delta-compressor';
 export type { DictEntry, DeltaEntry, DeltaCompressionResult } from './axiom-delta-compressor';
+
+// LLMZip完全版 (STEP 5-B)
+export { AxiomLLMZip } from './axiom-llm-zip';
+export type { Prediction, LLMZipEntry, LLMZipResult } from './axiom-llm-zip';
