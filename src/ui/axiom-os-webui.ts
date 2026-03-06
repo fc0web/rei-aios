@@ -7,12 +7,14 @@
  */
 
 import { generateUniversalChatPanel, DEFAULT_PROVIDERS } from '../chat/universal-chat';
+import { generateMemoryIntegrationScript } from '../chat/chat-memory-bridge';
 
 // ─── WebUI HTML生成 ────────────────────────────────────────────
 export function generateAxiomOsWebUI(options: WebUIOptions = {}): string {
   const personas = options.personas ?? DEFAULT_PERSONAS;
   const theories = options.theories ?? DEFAULT_THEORIES;
   const universalChatPanel = generateUniversalChatPanel(DEFAULT_PROVIDERS);
+  const memoryScript = generateMemoryIntegrationScript();
 
   return `<!DOCTYPE html>
 <html lang="ja">
@@ -137,6 +139,7 @@ export function generateAxiomOsWebUI(options: WebUIOptions = {}): string {
     <button onclick="showPanel('axioms')">公理ブラウザ</button>
     <button onclick="showPanel('bench')">圧縮ベンチマーク</button>
     <button onclick="showPanel('universal')">汎用チャット</button>
+    <button onclick="showPanel('memory')">記憶ログ</button>
   </nav>
 
   <!-- 歴史人物チャットパネル -->
@@ -195,6 +198,29 @@ export function generateAxiomOsWebUI(options: WebUIOptions = {}): string {
 
   ${universalChatPanel}
 
+  <!-- 記憶ログパネル -->
+  <div id="panel-memory" class="panel">
+    <div style="display:flex;gap:0.5rem;align-items:center;margin-bottom:1rem">
+      <span id="memory-count-badge" style="font-size:0.85rem;color:var(--dfumt)">記憶: 0件</span>
+      <button onclick="showMemoryPanel()" class="btn-small" style="background:#333;color:#ccc;border:none;border-radius:4px;padding:0.3rem 0.6rem;cursor:pointer;font-size:0.75rem">更新</button>
+      <button onclick="clearMemory()" class="btn-small" style="background:#442222;color:#cc8888;border:none;border-radius:4px;padding:0.3rem 0.6rem;cursor:pointer;font-size:0.75rem">記憶をクリア</button>
+    </div>
+    <div id="memory-panel" class="memory-panel" style="max-height:500px;overflow-y:auto"></div>
+  </div>
+
+  <style>
+  .memory-item {
+    background: #1e1e28;
+    border-radius: 8px;
+    padding: 0.6rem;
+    margin-bottom: 0.5rem;
+    border-left: 3px solid var(--dfumt);
+  }
+  .memory-q { color: #aabbcc; font-size: 0.85rem; margin-top: 0.3rem; }
+  .memory-a { color: #888899; font-size: 0.8rem; margin-top: 0.2rem; }
+  .memory-meta { display: flex; gap: 0.5rem; align-items: center; }
+  </style>
+
   <script>
     let selectedPersona = null;
     const personas = ${JSON.stringify(personas)};
@@ -249,6 +275,8 @@ export function generateAxiomOsWebUI(options: WebUIOptions = {}): string {
       {name:'AxiomRCT',         magic:'REI\\\\x05', ratio:41.0, desc:'縁起グラフ・Theory #67'},
       {name:'LLMZip',           magic:'REI\\\\x04', ratio:47.0, desc:'統計予測・ヒット率67%'},
     ];
+
+    ${memoryScript}
   </script>
 </body>
 </html>`;
