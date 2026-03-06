@@ -1,0 +1,1248 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Axiom OS — D-FUMT理論研究基盤</title>
+  <style>
+    /* ibushi-gin（渋銀）デザイン */
+    :root {
+      --bg:        #1a1a1e;
+      --surface:   #26262c;
+      --border:    #3a3a42;
+      --accent:    #8888aa;
+      --text:      #c8c8d0;
+      --text-dim:  #666680;
+      --highlight: #aa88ff;
+      --dfumt:     #88aacc;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--bg); color: var(--text); font-family: 'Noto Sans JP', monospace; }
+
+    /* ヘッダー */
+    header {
+      padding: 12px 24px;
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; gap: 16px;
+    }
+    header h1 { font-size: 16px; color: var(--accent); letter-spacing: 2px; }
+    header span { font-size: 11px; color: var(--text-dim); }
+
+    /* タブナビゲーション */
+    nav { display: flex; border-bottom: 1px solid var(--border); }
+    nav button {
+      padding: 10px 20px; background: none; border: none;
+      color: var(--text-dim); cursor: pointer; font-size: 13px;
+      border-bottom: 2px solid transparent;
+    }
+    nav button.active { color: var(--highlight); border-bottom-color: var(--highlight); }
+
+    /* パネル */
+    .panel { display: none; padding: 24px; }
+    .panel.active { display: block; }
+
+    /* 歴史人物グリッド */
+    .persona-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 12px; margin-bottom: 24px;
+    }
+    .persona-card {
+      padding: 14px; background: var(--surface);
+      border: 1px solid var(--border); border-radius: 6px;
+      cursor: pointer; transition: border-color 0.2s;
+    }
+    .persona-card:hover { border-color: var(--accent); }
+    .persona-card.selected { border-color: var(--highlight); }
+    .persona-card .name { font-size: 14px; margin-bottom: 4px; }
+    .persona-card .era  { font-size: 11px; color: var(--text-dim); }
+
+    /* チャット */
+    .chat-area {
+      height: 320px; overflow-y: auto;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 6px; padding: 16px; margin-bottom: 12px;
+    }
+    .msg { margin-bottom: 12px; }
+    .msg .role { font-size: 11px; color: var(--text-dim); margin-bottom: 4px; }
+    .msg .content { font-size: 13px; line-height: 1.7; }
+    .msg.assistant .content { color: var(--dfumt); }
+    .chat-input { display: flex; gap: 8px; }
+    .chat-input input {
+      flex: 1; padding: 8px 12px; background: var(--surface);
+      border: 1px solid var(--border); border-radius: 4px;
+      color: var(--text); font-size: 13px;
+    }
+    .chat-input button {
+      padding: 8px 16px; background: var(--accent);
+      border: none; border-radius: 4px; color: white; cursor: pointer;
+    }
+
+    /* 公理ブラウザ */
+    .theory-list { display: flex; flex-direction: column; gap: 8px; }
+    .theory-item {
+      padding: 12px 16px; background: var(--surface);
+      border: 1px solid var(--border); border-radius: 4px;
+    }
+    .theory-item .num { font-size: 11px; color: var(--text-dim); }
+    .theory-item .title { font-size: 13px; color: var(--highlight); margin: 4px 0; }
+    .theory-item .desc { font-size: 12px; color: var(--text-dim); line-height: 1.5; }
+
+    /* 圧縮ベンチマーク */
+    .bench-table { width: 100%; border-collapse: collapse; }
+    .bench-table th, .bench-table td {
+      padding: 8px 12px; text-align: left;
+      border-bottom: 1px solid var(--border); font-size: 13px;
+    }
+    .bench-table th { color: var(--text-dim); font-weight: normal; }
+    .bar {
+      height: 8px; background: var(--accent); border-radius: 4px;
+      display: inline-block; min-width: 4px;
+    }
+
+    /* 七価論理バッジ */
+    .logic-badge {
+      display: inline-block; padding: 2px 8px;
+      border-radius: 10px; font-size: 11px; font-family: monospace;
+    }
+    .TRUE     { background: #1a3a1a; color: #88cc88; }
+    .BOTH     { background: #3a1a3a; color: #cc88cc; }
+    .NEITHER  { background: #1a2a3a; color: #8888cc; }
+    .FLOWING  { background: #1a3a3a; color: #88cccc; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>AXIOM OS</h1>
+    <span>D-FUMT Theory Research Platform — 七価論理知識基盤</span>
+  </header>
+
+  <nav>
+    <button class="active" onclick="showPanel('chat')">歴史人物チャット</button>
+    <button onclick="showPanel('axioms')">公理ブラウザ</button>
+    <button onclick="showPanel('bench')">圧縮ベンチマーク</button>
+    <button onclick="showPanel('universal')">汎用チャット</button>
+    <button onclick="showPanel('memory')">記憶ログ</button>
+    <button onclick="showPanel('dictionary')">辞書</button>
+  </nav>
+
+  <!-- 歴史人物チャットパネル -->
+  <div id="panel-chat" class="panel active">
+    <div class="persona-grid" id="persona-grid">
+      
+      <div class="persona-card" onclick="selectPersona('nagarjuna')" id="card-nagarjuna">
+        <div class="name">龍樹</div>
+        <div class="era">2-3世紀・インド</div>
+        <span class="logic-badge BOTH">B（空）</span>
+      </div>
+      <div class="persona-card" onclick="selectPersona('buddha')" id="card-buddha">
+        <div class="name">釈迦牟尼</div>
+        <div class="era">紀元前5世紀</div>
+        <span class="logic-badge NEITHER">N（中道）</span>
+      </div>
+      <div class="persona-card" onclick="selectPersona('dogen')" id="card-dogen">
+        <div class="name">道元</div>
+        <div class="era">13世紀・日本</div>
+        <span class="logic-badge FLOWING">～（流れ）</span>
+      </div>
+      <div class="persona-card" onclick="selectPersona('socrates')" id="card-socrates">
+        <div class="name">ソクラテス</div>
+        <div class="era">紀元前5世紀</div>
+        <span class="logic-badge TRUE">⊤（問答）</span>
+      </div>
+      <div class="persona-card" onclick="selectPersona('wittgenstein')" id="card-wittgenstein">
+        <div class="name">ウィトゲンシュタイン</div>
+        <div class="era">20世紀</div>
+        <span class="logic-badge BOTH">B（言語)/</span>
+      </div>
+      <div class="persona-card" onclick="selectPersona('laozi')" id="card-laozi">
+        <div class="name">老子</div>
+        <div class="era">紀元前6世紀</div>
+        <span class="logic-badge ZERO">〇（無）</span>
+      </div>
+    </div>
+    <div class="chat-area" id="chat-area">
+      <div class="msg assistant">
+        <div class="role">Axiom OS</div>
+        <div class="content">歴史上の人物を選択してください。その人物の思想・哲学に基づいてD-FUMT理論を解説します。</div>
+      </div>
+    </div>
+    <div class="chat-input">
+      <input id="chat-input" type="text" placeholder="質問を入力（例: 縁起論について教えてください）" />
+      <button onclick="sendMessage()">送信</button>
+    </div>
+  </div>
+
+  <!-- 公理ブラウザパネル -->
+  <div id="panel-axioms" class="panel">
+    <div class="theory-list">
+      
+      <div class="theory-item">
+        <div class="num">Theory #1</div>
+        <div class="title">四値catuṣkoṭi論理</div>
+        <div class="desc">真・偽・両方・どちらでもない。インド哲学の四句を論理値として形式化。</div>
+      </div>
+      <div class="theory-item">
+        <div class="num">Theory #3</div>
+        <div class="title">零π拡張理論</div>
+        <div class="desc">零と円周率の関係を数学的に探求。ZERO値（4.0）の哲学的基盤。</div>
+      </div>
+      <div class="theory-item">
+        <div class="num">Theory #5</div>
+        <div class="title">螺旋数論</div>
+        <div class="desc">黄金比φと螺旋構造の関係。std/math.phi()の理論的根拠。</div>
+      </div>
+      <div class="theory-item">
+        <div class="num">Theory #7</div>
+        <div class="title">意識数学SAC公理</div>
+        <div class="desc">意識をC1-C6の公理系として形式化。AIの自己認識モデル。</div>
+      </div>
+      <div class="theory-item">
+        <div class="num">Theory #12</div>
+        <div class="title">UMTE（統一数学理論拡張）</div>
+        <div class="desc">U1-U5: 数学の基礎を七価論理で再構築。</div>
+      </div>
+      <div class="theory-item">
+        <div class="num">Theory #23</div>
+        <div class="title">D-FUMT完全七価論理</div>
+        <div class="desc">四値catuṣkoṭiをINFINITY/ZERO/FLOWINGで拡張した七価体系。</div>
+      </div>
+      <div class="theory-item">
+        <div class="num">Theory #67</div>
+        <div class="title">RCT（Rei圧縮理論）</div>
+        <div class="desc">縁起グラフの最小全域木を用いた意味保持圧縮。マジックバイトREI\x05。</div>
+      </div>
+      <div class="theory-item">
+        <div class="num">Theory #75</div>
+        <div class="title">SEED_KERNEL統合理論</div>
+        <div class="desc">75理論の統合核。全D-FUMT理論の交差点。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 圧縮ベンチマークパネル -->
+  <div id="panel-bench" class="panel">
+    <p style="color:var(--text-dim);font-size:12px;margin-bottom:16px">
+      SEED_KERNEL（75理論）に対する各圧縮方式の実績値
+    </p>
+    <table class="bench-table">
+      <tr><th>方式</th><th>マジックバイト</th><th>圧縮率</th><th>特徴</th></tr>
+      
+      <tr>
+        <td>HybridCompressor</td>
+        <td style="font-family:monospace;font-size:11px">REI\x02</td>
+        <td>
+          <span class="bar" style="width:67.2px"></span>
+          <span style="margin-left:8px">33.6%</span>
+        </td>
+        <td style="color:var(--text-dim)">汎用3段階</td>
+      </tr>
+      <tr>
+        <td>DeltaCompressor</td>
+        <td style="font-family:monospace;font-size:11px">REI\x03</td>
+        <td>
+          <span class="bar" style="width:79.4px"></span>
+          <span style="margin-left:8px">39.7%</span>
+        </td>
+        <td style="color:var(--text-dim)">辞書+デルタ差分</td>
+      </tr>
+      <tr>
+        <td>AxiomRCT</td>
+        <td style="font-family:monospace;font-size:11px">REI\x05</td>
+        <td>
+          <span class="bar" style="width:82px"></span>
+          <span style="margin-left:8px">41%</span>
+        </td>
+        <td style="color:var(--text-dim)">縁起グラフ・Theory #67</td>
+      </tr>
+      <tr>
+        <td>LLMZip</td>
+        <td style="font-family:monospace;font-size:11px">REI\x04</td>
+        <td>
+          <span class="bar" style="width:94px"></span>
+          <span style="margin-left:8px">47%</span>
+        </td>
+        <td style="color:var(--text-dim)">統計予測・ヒット率67%</td>
+      </tr>
+    </table>
+  </div>
+
+  
+<!-- ⬡ 汎用チャットパネル -->
+<div id="panel-universal" class="panel" style="display:none">
+  <div class="universal-chat-container">
+
+    <!-- プロバイダー選択 -->
+    <div class="provider-bar">
+      <select id="provider-select" class="provider-select">
+        <optgroup label="🆓 無料・ローカル">
+<option value="ollama" data-needs-key="false">Ollama（ローカル・完全無料）</option>
+<option value="groq" data-needs-key="true">Groq（無料枠あり・超高速）</option>
+<option value="gemini" data-needs-key="true">Google Gemini（無料枠あり）</option>
+<option value="openrouter" data-needs-key="true">OpenRouter（多モデル）</option>
+<option value="local" data-needs-key="false">ローカルサーバー（カスタム）</option>
+</optgroup>
+<optgroup label="🔑 APIキー必要">
+<option value="anthropic" data-needs-key="true">Anthropic Claude</option>
+<option value="openai" data-needs-key="true">OpenAI GPT</option>
+<option value="mistral" data-needs-key="true">Mistral AI</option>
+<option value="deepseek" data-needs-key="true">DeepSeek</option>
+<option value="xai" data-needs-key="true">xAI Grok</option>
+<option value="fireworks" data-needs-key="true">Fireworks AI</option>
+<option value="together" data-needs-key="true">Together AI</option>
+<option value="perplexity" data-needs-key="true">Perplexity AI</option>
+<option value="cohere" data-needs-key="true">Cohere</option>
+</optgroup>
+      </select>
+      <div id="api-key-field" class="api-key-field" style="display:none">
+        <input type="password" id="api-key-input"
+          placeholder="APIキーを入力..." class="api-key-input"/>
+        <button onclick="saveApiKey()" class="btn-small">保存</button>
+      </div>
+      <div id="model-field" class="model-field">
+        <input type="text" id="model-input"
+          placeholder="モデル名..." class="model-input"/>
+      </div>
+    </div>
+
+    <!-- システムプロンプト -->
+    <div class="system-prompt-bar">
+      <select id="system-preset" onchange="applyPreset()" class="preset-select">
+        <option value="general">汎用アシスタント</option>
+        <option value="cooking">🍳 料理・レシピ</option>
+        <option value="sports">⚽ スポーツ・健康</option>
+        <option value="game">🎮 ゲーム・攻略</option>
+        <option value="english">🌍 英語学習</option>
+        <option value="math">📐 数学・理系</option>
+        <option value="dfumt">⬡ D-FUMT哲学</option>
+        <option value="custom">カスタム</option>
+      </select>
+      <span id="dfumt-badge" class="dfumt-badge">⊤ TRUE</span>
+    </div>
+
+    <!-- チャット履歴 -->
+    <div id="universal-chat-history" class="chat-history"></div>
+
+    <!-- 入力エリア -->
+    <div class="input-bar">
+      <textarea id="universal-input" class="chat-input"
+        placeholder="何でも聞いてください（料理・スポーツ・ゲーム・勉強など）..."
+        rows="3"
+        onkeydown="if(event.ctrlKey&&event.key==='Enter')sendUniversal()">
+      </textarea>
+      <button onclick="sendUniversal()" class="btn-send">送信</button>
+    </div>
+
+    <div id="universal-status" class="status-bar"></div>
+  </div>
+</div>
+
+<style>
+.universal-chat-container {
+  display: flex; flex-direction: column; height: 100%; gap: 0.5rem;
+}
+.provider-bar {
+  display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap;
+}
+.provider-select {
+  background: var(--surface); color: var(--text);
+  border: 1px solid #444; border-radius: 6px;
+  padding: 0.4rem 0.6rem; font-size: 0.85rem; flex: 1;
+}
+.api-key-input, .model-input {
+  background: var(--surface); color: var(--text);
+  border: 1px solid #555; border-radius: 6px;
+  padding: 0.4rem 0.6rem; font-size: 0.8rem;
+}
+.api-key-field, .model-field { display: flex; gap: 0.3rem; align-items: center; }
+.model-input { width: 160px; }
+.api-key-input { width: 220px; }
+.system-prompt-bar {
+  display: flex; gap: 0.5rem; align-items: center;
+}
+.preset-select {
+  background: var(--surface); color: var(--text);
+  border: 1px solid #444; border-radius: 6px;
+  padding: 0.3rem 0.5rem; font-size: 0.8rem;
+}
+.dfumt-badge {
+  font-size: 0.75rem; padding: 2px 8px;
+  border-radius: 4px; background: var(--accent); color: #fff;
+  font-weight: bold; letter-spacing: 0.05em;
+}
+.chat-history {
+  flex: 1; overflow-y: auto; padding: 0.5rem;
+  background: #111115; border-radius: 8px;
+  min-height: 300px; max-height: 450px;
+}
+.msg-user {
+  margin: 0.5rem 0; padding: 0.5rem 0.75rem;
+  background: #2a2a35; border-radius: 8px;
+  border-left: 3px solid var(--accent);
+  font-size: 0.9rem;
+}
+.msg-assistant {
+  margin: 0.5rem 0; padding: 0.5rem 0.75rem;
+  background: #1e1e28; border-radius: 8px;
+  border-left: 3px solid var(--highlight);
+  font-size: 0.9rem; white-space: pre-wrap;
+}
+.msg-meta {
+  font-size: 0.7rem; color: #666; margin-top: 0.25rem;
+}
+.msg-dfumt {
+  font-size: 0.7rem; padding: 1px 5px;
+  border-radius: 3px; margin-left: 0.5rem;
+}
+.input-bar { display: flex; gap: 0.5rem; align-items: flex-end; }
+.chat-input {
+  flex: 1; background: var(--surface); color: var(--text);
+  border: 1px solid #444; border-radius: 8px;
+  padding: 0.5rem; font-size: 0.9rem; resize: vertical;
+  font-family: inherit;
+}
+.btn-send {
+  background: var(--accent); color: #fff;
+  border: none; border-radius: 8px;
+  padding: 0.5rem 1.2rem; cursor: pointer;
+  font-size: 0.9rem; white-space: nowrap;
+}
+.btn-send:hover { background: var(--highlight); }
+.btn-small {
+  background: #333; color: #ccc;
+  border: none; border-radius: 4px;
+  padding: 0.3rem 0.6rem; cursor: pointer; font-size: 0.75rem;
+}
+.status-bar { font-size: 0.75rem; color: #666; min-height: 1.2em; }
+</style>
+
+<script>
+// ─── プリセットシステムプロンプト ─────────────────────────────
+const PRESETS = {
+  general: 'あなたは親切で知識豊富なアシスタントです。日本語で丁寧に答えてください。',
+  cooking: 'あなたはプロの料理人です。レシピ・食材・調理法について詳しく、わかりやすく説明してください。',
+  sports: 'あなたはスポーツトレーナーです。運動・健康・競技について科学的な根拠を踏まえて説明してください。',
+  game: 'あなたはゲームの専門家です。攻略・戦略・ゲームデザインについて詳しく説明してください。',
+  english: 'You are an English teacher. Help the user learn English naturally. Mix Japanese and English explanations.',
+  math: 'あなたは数学の教師です。数学・理科・プログラミングについて、ステップバイステップで丁寧に説明してください。',
+  dfumt: 'あなたはD-FUMT七価論理の研究者です。全ての問いをTRUE/FALSE/BOTH/NEITHER/INFINITY/ZERO/FLOWINGの七価論理で考察してください。',
+  custom: '',
+};
+
+const DFUMT_SYMBOLS = {
+  TRUE:'⊤', FALSE:'⊥', BOTH:'B', NEITHER:'N',
+  INFINITY:'∞', ZERO:'〇', FLOWING:'～'
+};
+const DFUMT_COLORS = {
+  TRUE:'#88aaff', FALSE:'#666688', BOTH:'#aa88ff',
+  NEITHER:'#888888', INFINITY:'#ffaa44', ZERO:'#44aacc', FLOWING:'#88ccaa'
+};
+
+let universalHistory = [];
+let apiKeys = {};
+let currentProvider = 'ollama';
+
+// ─── プロバイダー選択時の処理 ─────────────────────────────────
+document.getElementById('provider-select').addEventListener('change', function() {
+  currentProvider = this.value;
+  const needsKey = this.options[this.selectedIndex].dataset.needsKey === 'true';
+  document.getElementById('api-key-field').style.display = needsKey ? 'flex' : 'none';
+
+  // 保存済みAPIキーを復元
+  if (apiKeys[currentProvider]) {
+    document.getElementById('api-key-input').value = apiKeys[currentProvider];
+  } else {
+    document.getElementById('api-key-input').value = '';
+  }
+});
+
+function saveApiKey() {
+  const key = document.getElementById('api-key-input').value.trim();
+  if (key) {
+    apiKeys[currentProvider] = key;
+    document.getElementById('universal-status').textContent =
+      '✓ ' + currentProvider + ' のAPIキーを保存しました';
+    setTimeout(function() {
+      document.getElementById('universal-status').textContent = '';
+    }, 2000);
+  }
+}
+
+function applyPreset() {
+  const preset = document.getElementById('system-preset').value;
+  // カスタムの場合は何もしない
+}
+
+// ─── メッセージ送信 ───────────────────────────────────────────
+async function sendUniversal() {
+  const input = document.getElementById('universal-input');
+  const content = input.value.trim();
+  if (!content) return;
+
+  const provider = document.getElementById('provider-select').value;
+  const apiKey = apiKeys[provider] || document.getElementById('api-key-input').value.trim();
+  const model = document.getElementById('model-input').value.trim();
+  const preset = document.getElementById('system-preset').value;
+  const systemPrompt = PRESETS[preset] || PRESETS.general;
+
+  // ユーザーメッセージ表示
+  universalHistory.push({ role: 'user', content: content });
+  renderHistory();
+  input.value = '';
+
+  const status = document.getElementById('universal-status');
+  status.textContent = '⏳ ' + provider + ' に送信中...';
+
+  try {
+    // Rei-AIOSバックエンドAPIを呼び出す（または直接API）
+    const response = await callProviderAPI({
+      provider: provider, apiKey: apiKey, model: model, systemPrompt: systemPrompt,
+      messages: universalHistory,
+    });
+
+    universalHistory.push({ role: 'assistant', content: response.content,
+      provider: provider, dfumt: response.dfumt, latency: response.latency });
+    renderHistory();
+
+    // D-FUMTバッジ更新
+    const badge = document.getElementById('dfumt-badge');
+    badge.textContent = (DFUMT_SYMBOLS[response.dfumt] || '?') + ' ' + response.dfumt;
+    badge.style.background = DFUMT_COLORS[response.dfumt] || '#666';
+
+    status.textContent = '✓ ' + provider + ' | ' + response.latency + 'ms';
+  } catch (e) {
+    status.textContent = '❌ エラー: ' + e.message;
+    universalHistory.push({
+      role: 'assistant',
+      content: 'エラーが発生しました: ' + e.message + '\n\nOllamaを使用する場合は、まず ollama serve を実行してください。',
+      provider: provider, dfumt: 'FALSE', latency: 0
+    });
+    renderHistory();
+  }
+}
+
+// ─── プロバイダーAPI呼び出し（クライアントサイド） ─────────────
+async function callProviderAPI(opts) {
+  var provider = opts.provider, apiKey = opts.apiKey, model = opts.model;
+  var systemPrompt = opts.systemPrompt, messages = opts.messages;
+  const start = Date.now();
+
+  // メッセージ形式の準備
+  const msgs = messages.filter(function(m) { return m.role === 'user' || m.role === 'assistant'; })
+    .map(function(m) { return { role: m.role, content: m.content }; });
+
+  let content = '';
+
+  if (provider === 'anthropic') {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': apiKey,
+        'anthropic-version': '2023-06-01',
+      },
+      body: JSON.stringify({
+        model: model || 'claude-haiku-4-5-20251001',
+        max_tokens: 1000,
+        system: systemPrompt,
+        messages: msgs,
+      }),
+    });
+    const data = await res.json();
+    if (data.error) throw new Error(data.error.message);
+    content = data.content && data.content[0] ? data.content[0].text : '';
+
+  } else if (provider === 'ollama') {
+    const res = await fetch('http://localhost:11434/api/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: model || 'llama3.2',
+        messages: [{ role: 'system', content: systemPrompt }].concat(msgs),
+        stream: false,
+      }),
+    });
+    const data = await res.json();
+    content = (data.message ? data.message.content : '') || data.response || '';
+
+  } else if (provider === 'gemini') {
+    const geminiMsgs = msgs.map(function(m) {
+      return {
+        role: m.role === 'assistant' ? 'model' : 'user',
+        parts: [{ text: m.content }],
+      };
+    });
+    const geminiUrl = 'https://generativelanguage.googleapis.com/v1beta/models/'
+      + (model || 'gemini-1.5-flash') + ':generateContent?key=' + apiKey;
+    const res = await fetch(geminiUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ contents: geminiMsgs }),
+    });
+    const data = await res.json();
+    if (data.error) throw new Error(data.error.message);
+    content = data.candidates && data.candidates[0] && data.candidates[0].content
+      ? data.candidates[0].content.parts[0].text : '';
+
+  } else {
+    // OpenAI互換（Groq・OpenRouter・Mistral・DeepSeek・xAI等）
+    var baseUrls = {
+      openai: 'https://api.openai.com/v1',
+      groq: 'https://api.groq.com/openai/v1',
+      openrouter: 'https://openrouter.ai/api/v1',
+      mistral: 'https://api.mistral.ai/v1',
+      deepseek: 'https://api.deepseek.com/v1',
+      xai: 'https://api.x.ai/v1',
+      fireworks: 'https://api.fireworks.ai/inference/v1',
+      together: 'https://api.together.xyz/v1',
+      perplexity: 'https://api.perplexity.ai',
+      cohere: 'https://api.cohere.ai/v1',
+      local: 'http://localhost:8080/v1',
+    };
+    var baseUrl = baseUrls[provider] || 'http://localhost:8080/v1';
+    var defaultModels = {
+      openai: 'gpt-4o-mini',
+      groq: 'llama-3.3-70b-versatile',
+      openrouter: 'meta-llama/llama-3.2-3b-instruct:free',
+      mistral: 'mistral-small-latest',
+      deepseek: 'deepseek-chat',
+      xai: 'grok-beta',
+      fireworks: 'accounts/fireworks/models/llama-v3p1-8b-instruct',
+      together: 'meta-llama/Llama-3.2-3B-Instruct-Turbo',
+      perplexity: 'llama-3.1-sonar-small-128k-online',
+      cohere: 'command-r',
+      local: 'local-model',
+    };
+
+    const res = await fetch(baseUrl + '/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + apiKey,
+      },
+      body: JSON.stringify({
+        model: model || defaultModels[provider] || 'gpt-4o-mini',
+        messages: [{ role: 'system', content: systemPrompt }].concat(msgs),
+        max_tokens: 1000,
+        temperature: 0.7,
+      }),
+    });
+    const data = await res.json();
+    if (data.error) throw new Error(
+      typeof data.error === 'string' ? data.error : data.error.message
+    );
+    content = data.choices && data.choices[0] ? data.choices[0].message.content : '';
+  }
+
+  // D-FUMT確信度評価
+  var dfumt = evalDFUMTClient(content);
+  return { content: content, dfumt: dfumt, latency: Date.now() - start };
+}
+
+function evalDFUMTClient(content) {
+  var lower = content.toLowerCase();
+  if (lower.indexOf('わかりません') >= 0 || lower.indexOf('不明') >= 0 ||
+      lower.indexOf("i'm not sure") >= 0) return 'NEITHER';
+  if (lower.indexOf('一方で') >= 0 || lower.indexOf('ただし') >= 0 ||
+      lower.indexOf('however') >= 0 || lower.indexOf('場合によって') >= 0) return 'BOTH';
+  if (lower.indexOf('変化') >= 0 || lower.indexOf('最新') >= 0 ||
+      lower.indexOf('現在') >= 0) return 'FLOWING';
+  if (lower.indexOf('手順') >= 0 || lower.indexOf('まず') >= 0 ||
+      lower.indexOf('レシピ') >= 0) return 'TRUE';
+  return 'TRUE';
+}
+
+// ─── 履歴レンダリング ─────────────────────────────────────────
+function renderHistory() {
+  var container = document.getElementById('universal-chat-history');
+  container.innerHTML = universalHistory.map(function(m) {
+    if (m.role === 'user') {
+      return '<div class="msg-user"><strong>あなた</strong><br>' + escHtml(m.content) + '</div>';
+    } else {
+      var sym = DFUMT_SYMBOLS[m.dfumt] || '?';
+      var col = DFUMT_COLORS[m.dfumt] || '#666';
+      return '<div class="msg-assistant">' +
+        '<div style="font-size:0.75rem;color:#888;margin-bottom:0.25rem">' +
+        '⬡ ' + (m.provider || 'AI') +
+        ' <span class="msg-dfumt" style="background:' + col + ';color:#fff">' + sym + ' ' + (m.dfumt||'') + '</span>' +
+        ' <span style="margin-left:0.5rem">' + (m.latency||0) + 'ms</span>' +
+        '</div>' +
+        escHtml(m.content) +
+        '</div>';
+    }
+  }).join('');
+  container.scrollTop = container.scrollHeight;
+}
+
+function escHtml(s) {
+  return String(s)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+</script>
+
+
+  <!-- 記憶ログパネル -->
+  <div id="panel-memory" class="panel">
+    <div style="display:flex;gap:0.5rem;align-items:center;margin-bottom:1rem">
+      <span id="memory-count-badge" style="font-size:0.85rem;color:var(--dfumt)">記憶: 0件</span>
+      <button onclick="showMemoryPanel()" class="btn-small" style="background:#333;color:#ccc;border:none;border-radius:4px;padding:0.3rem 0.6rem;cursor:pointer;font-size:0.75rem">更新</button>
+      <button onclick="clearMemory()" class="btn-small" style="background:#442222;color:#cc8888;border:none;border-radius:4px;padding:0.3rem 0.6rem;cursor:pointer;font-size:0.75rem">記憶をクリア</button>
+    </div>
+    <div id="memory-panel" class="memory-panel" style="max-height:500px;overflow-y:auto"></div>
+  </div>
+
+  <style>
+  .memory-item {
+    background: #1e1e28;
+    border-radius: 8px;
+    padding: 0.6rem;
+    margin-bottom: 0.5rem;
+    border-left: 3px solid var(--dfumt);
+  }
+  .memory-q { color: #aabbcc; font-size: 0.85rem; margin-top: 0.3rem; }
+  .memory-a { color: #888899; font-size: 0.8rem; margin-top: 0.2rem; }
+  .memory-meta { display: flex; gap: 0.5rem; align-items: center; }
+  </style>
+
+  
+<!-- ⬡ 辞書パネル -->
+<div id="panel-dictionary" class="panel" style="display:none">
+  <div class="dict-container">
+
+    <!-- 検索バー -->
+    <div class="dict-search-bar">
+      <input type="text" id="dict-input"
+        class="dict-input"
+        placeholder="単語を入力（日本語・英語 自動判定）..."
+        onkeydown="if(event.key==='Enter') lookupWord()"/>
+      <select id="dict-lang" class="dict-lang-select">
+        <option value="auto">自動判定</option>
+        <option value="ja">日本語</option>
+        <option value="en">英語</option>
+      </select>
+      <button onclick="lookupWord()" class="btn-dict-search">検索</button>
+    </div>
+
+    <!-- 検索履歴 -->
+    <div id="dict-history-bar" class="dict-history-bar"></div>
+
+    <!-- 結果表示 -->
+    <div id="dict-result" class="dict-result">
+      <div class="dict-placeholder">
+        単語を入力して検索してください<br>
+        <span style="font-size:0.8rem;color:#555">
+          Powered by Wiktionary（完全無料・APIキー不要）
+        </span>
+      </div>
+    </div>
+
+    <!-- キャッシュ情報 -->
+    <div id="dict-cache-info" class="dict-cache-info">
+      <span id="cache-count">キャッシュ: 0件</span>
+      <button onclick="clearDictCache()" class="btn-tiny">キャッシュクリア</button>
+    </div>
+  </div>
+</div>
+
+<style>
+.dict-container {
+  display: flex; flex-direction: column; gap: 0.75rem; height: 100%;
+}
+.dict-search-bar {
+  display: flex; gap: 0.5rem; align-items: center;
+}
+.dict-input {
+  flex: 1; background: var(--surface); color: var(--text);
+  border: 1px solid #444; border-radius: 8px;
+  padding: 0.5rem 0.75rem; font-size: 1rem;
+  font-family: inherit;
+}
+.dict-lang-select {
+  background: var(--surface); color: var(--text);
+  border: 1px solid #444; border-radius: 6px;
+  padding: 0.4rem 0.5rem; font-size: 0.85rem;
+}
+.btn-dict-search {
+  background: var(--dfumt); color: #fff;
+  border: none; border-radius: 8px;
+  padding: 0.5rem 1.2rem; cursor: pointer;
+  font-size: 0.9rem; white-space: nowrap;
+}
+.btn-dict-search:hover { opacity: 0.85; }
+.dict-history-bar {
+  display: flex; gap: 0.4rem; flex-wrap: wrap;
+}
+.dict-history-chip {
+  background: #2a2a3a; color: #aaa;
+  border: 1px solid #444; border-radius: 12px;
+  padding: 2px 10px; font-size: 0.78rem;
+  cursor: pointer;
+}
+.dict-history-chip:hover { background: #3a3a4a; color: #ddd; }
+.dict-result {
+  flex: 1; overflow-y: auto;
+  background: #111115; border-radius: 10px;
+  padding: 1rem; min-height: 300px;
+}
+.dict-placeholder { color: #555; text-align: center; margin-top: 3rem; line-height: 2; }
+.dict-word-header {
+  display: flex; align-items: baseline; gap: 0.75rem;
+  margin-bottom: 0.75rem; border-bottom: 1px solid #333;
+  padding-bottom: 0.5rem;
+}
+.dict-word-title { font-size: 1.6rem; color: var(--highlight); font-weight: bold; }
+.dict-word-lang { font-size: 0.8rem; color: #666; }
+.dict-pos { font-size: 0.8rem; color: var(--accent); padding: 2px 8px;
+  border: 1px solid var(--accent); border-radius: 4px; }
+.dict-dfumt-badge {
+  font-size: 0.75rem; padding: 2px 8px;
+  border-radius: 4px; color: #fff; font-weight: bold;
+}
+.dict-cache-badge {
+  font-size: 0.7rem; color: #666;
+  padding: 1px 6px; border: 1px solid #444; border-radius: 4px;
+}
+.dict-summary { font-size: 1rem; color: #ccc; line-height: 1.7; margin-bottom: 0.75rem; }
+.dict-extract {
+  font-size: 0.85rem; color: #999; line-height: 1.6;
+  background: #1a1a22; border-radius: 6px; padding: 0.75rem;
+  margin-bottom: 0.75rem; white-space: pre-wrap;
+}
+.dict-examples { margin-bottom: 0.75rem; }
+.dict-example-item {
+  font-size: 0.85rem; color: #88aacc;
+  padding: 0.3rem 0.5rem; border-left: 2px solid var(--accent);
+  margin-bottom: 0.3rem;
+}
+.dict-source {
+  font-size: 0.75rem; color: #555;
+}
+.dict-source a { color: #777; text-decoration: none; }
+.dict-source a:hover { color: #aaa; }
+.dict-cache-info {
+  display: flex; align-items: center; gap: 0.75rem;
+  font-size: 0.75rem; color: #555;
+}
+.btn-tiny {
+  background: #2a2a2a; color: #888;
+  border: 1px solid #444; border-radius: 4px;
+  padding: 2px 8px; cursor: pointer; font-size: 0.72rem;
+}
+.dict-error {
+  color: #cc6666; padding: 1rem; text-align: center;
+}
+.dict-loading { color: #888; padding: 1rem; text-align: center; }
+</style>
+
+<script>
+// ─── 辞書機能 ─────────────────────────────────────────────────
+var DICT_CACHE_KEY = 'rei_aios_dict_cache';
+var DICT_HISTORY_KEY = 'rei_aios_dict_history';
+
+var DICT_DFUMT_COLORS = {
+  TRUE:'#88aaff', FALSE:'#666688', BOTH:'#aa88ff',
+  NEITHER:'#888888', INFINITY:'#ffaa44', ZERO:'#44aacc', FLOWING:'#88ccaa'
+};
+var DICT_DFUMT_SYMBOLS = {
+  TRUE:'⊤', FALSE:'⊥', BOTH:'B', NEITHER:'N',
+  INFINITY:'∞', ZERO:'〇', FLOWING:'～'
+};
+
+// ローカルキャッシュ（localStorage）
+function getDictCache() {
+  try { return JSON.parse(localStorage.getItem(DICT_CACHE_KEY) || '{}'); }
+  catch { return {}; }
+}
+function setDictCache(cache) {
+  try { localStorage.setItem(DICT_CACHE_KEY, JSON.stringify(cache)); }
+  catch {}
+}
+function getCachedEntry(word, lang) {
+  var cache = getDictCache();
+  return cache[lang + ':' + word] || null;
+}
+function setCachedEntry(word, lang, entry) {
+  var cache = getDictCache();
+  cache[lang + ':' + word] = entry;
+  var keys = Object.keys(cache);
+  if (keys.length > 200) delete cache[keys[0]];
+  setDictCache(cache);
+  updateCacheCount();
+}
+function updateCacheCount() {
+  var count = Object.keys(getDictCache()).length;
+  var el = document.getElementById('cache-count');
+  if (el) el.textContent = 'キャッシュ: ' + count + '件';
+}
+function clearDictCache() {
+  if (confirm('辞書キャッシュを削除しますか？')) {
+    localStorage.removeItem(DICT_CACHE_KEY);
+    updateCacheCount();
+  }
+}
+
+// 検索履歴
+function getDictHistory() {
+  try { return JSON.parse(localStorage.getItem(DICT_HISTORY_KEY) || '[]'); }
+  catch { return []; }
+}
+function addDictHistory(word) {
+  var history = getDictHistory().filter(function(w) { return w !== word; });
+  history.unshift(word);
+  localStorage.setItem(DICT_HISTORY_KEY, JSON.stringify(history.slice(0, 10)));
+  renderDictHistory();
+}
+function renderDictHistory() {
+  var history = getDictHistory();
+  var bar = document.getElementById('dict-history-bar');
+  if (!bar || history.length === 0) return;
+  bar.innerHTML = history.map(function(w) {
+    return '<span class="dict-history-chip" onclick="lookupWordDirect(\'' + escHtml(w) + '\')">' + escHtml(w) + '</span>';
+  }).join('');
+}
+
+// 言語自動判定
+function detectLangDict(word) {
+  return /[぀-ゟ゠-ヿ一-龯]/.test(word) ? 'ja' : 'en';
+}
+
+// D-FUMT確信度評価
+function evalDictDFUMT(summary) {
+  if (!summary || summary.length < 10) return 'NEITHER';
+  if (summary.indexOf('曖昧') >= 0 || summary.indexOf('disambiguation') >= 0) return 'BOTH';
+  if (summary.indexOf('古語') >= 0 || summary.indexOf('方言') >= 0) return 'FLOWING';
+  if (summary.length > 50) return 'TRUE';
+  return 'FLOWING';
+}
+
+// メイン検索関数
+async function lookupWord() {
+  var input = document.getElementById('dict-input');
+  var word = input.value.trim();
+  if (!word) return;
+  await lookupWordDirect(word);
+}
+
+async function lookupWordDirect(word) {
+  document.getElementById('dict-input').value = word;
+  var langSelect = document.getElementById('dict-lang').value;
+  var lang = langSelect === 'auto' ? detectLangDict(word) : langSelect;
+  var result = document.getElementById('dict-result');
+
+  // キャッシュ確認
+  var cached = getCachedEntry(word, lang);
+  if (cached) {
+    cached.fromCache = true;
+    renderDictResult(cached);
+    addDictHistory(word);
+    return;
+  }
+
+  // ローディング表示
+  result.innerHTML = '<div class="dict-loading">⏳ Wiktionaryを検索中...</div>';
+
+  try {
+    var encoded = encodeURIComponent(word);
+    var baseUrl = 'https://' + lang + '.wiktionary.org';
+
+    // REST API サマリ
+    var res = await fetch(
+      baseUrl + '/api/rest_v1/page/summary/' + encoded,
+      { headers: { 'Accept': 'application/json' } }
+    );
+    var data = await res.json();
+
+    if (data.type && data.type.indexOf('not_found') >= 0) {
+      result.innerHTML = '<div class="dict-error">' +
+        '「' + escHtml(word) + '」は見つかりませんでした<br>' +
+        '<span style="font-size:0.8rem;color:#666">' +
+        'スペルを確認するか、別の言語で試してください</span></div>';
+      return;
+    }
+
+    // MediaWiki API で詳細取得
+    var extract = '';
+    try {
+      var mwRes = await fetch(
+        baseUrl + '/w/api.php?action=query&titles=' + encoded + '&prop=extracts&exintro=true&format=json&origin=*'
+      );
+      var mwData = await mwRes.json();
+      var pages = mwData.query ? mwData.query.pages : {};
+      var page = Object.values(pages)[0];
+      if (page && page.extract) {
+        extract = page.extract
+          .replace(/<[^>]+>/g, '')
+          .replace(/\n{3,}/g, '\n\n')
+          .trim()
+          .slice(0, 500);
+      }
+    } catch(e2) {}
+
+    var summary = data.extract || data.description || '';
+    var dfumt = evalDictDFUMT(summary);
+    var entry = {
+      word: word,
+      lang: lang,
+      summary: summary.slice(0, 200),
+      extract: extract || undefined,
+      wiktionaryUrl: (data.content_urls && data.content_urls.desktop ? data.content_urls.desktop.page : null) || (baseUrl + '/wiki/' + encoded),
+      dfumtConfidence: dfumt,
+      fromCache: false,
+      fetchedAt: new Date().toISOString(),
+    };
+
+    setCachedEntry(word, lang, entry);
+    renderDictResult(entry);
+    addDictHistory(word);
+
+  } catch (e) {
+    result.innerHTML = '<div class="dict-error">' +
+      'エラー: ' + escHtml(e.message) + '<br>' +
+      '<span style="font-size:0.8rem;color:#666">ネットワーク接続を確認してください</span></div>';
+  }
+}
+
+function renderDictResult(entry) {
+  var result = document.getElementById('dict-result');
+  var dfumt = entry.dfumtConfidence || 'TRUE';
+  var dfumtColor = DICT_DFUMT_COLORS[dfumt] || '#666';
+  var dfumtSym = DICT_DFUMT_SYMBOLS[dfumt] || '?';
+  var langLabel = entry.lang === 'ja' ? '日本語' : 'English';
+
+  var html = '<div class="dict-word-header">' +
+    '<span class="dict-word-title">' + escHtml(entry.word) + '</span>' +
+    '<span class="dict-word-lang">' + langLabel + '</span>' +
+    '<span class="dict-dfumt-badge" style="background:' + dfumtColor + '">' +
+    dfumtSym + ' ' + dfumt + '</span>' +
+    (entry.fromCache
+      ? '<span class="dict-cache-badge">⚡ キャッシュ</span>'
+      : '<span class="dict-cache-badge">🌐 Wiktionary</span>') +
+    '</div>';
+
+  if (entry.summary) {
+    html += '<div class="dict-summary">' + escHtml(entry.summary) + '</div>';
+  }
+
+  if (entry.extract && entry.extract !== entry.summary) {
+    html += '<div class="dict-extract">' + escHtml(entry.extract.slice(0, 400)) + '</div>';
+  }
+
+  html += '<div class="dict-source">' +
+    '出典: <a href="' + entry.wiktionaryUrl + '" target="_blank">' +
+    'Wiktionary — ' + escHtml(entry.word) + '</a>' +
+    (entry.fromCache ? '' :
+      '<span style="margin-left:0.5rem;color:#444">' +
+      '取得: ' + new Date(entry.fetchedAt).toLocaleString('ja-JP') + '</span>') +
+    '</div>';
+
+  result.innerHTML = html;
+}
+
+// 初期化
+document.addEventListener('DOMContentLoaded', function() {
+  updateCacheCount();
+  renderDictHistory();
+});
+</script>
+
+
+  <script>
+    let selectedPersona = null;
+    const personas = [{"id":"nagarjuna","name":"龍樹","era":"2-3世紀・インド","logic":"BOTH","logicDisplay":"B（空）","responses":["一切の事物は自性を持たず、縁起によって生じる。これはD-FUMT「NEITHER」値——真でも偽でもない空の状態です。","「空」とは虚無ではなく、すべての可能性を内包する状態。七価論理の「BOTH」がそれを表します。"]},{"id":"buddha","name":"釈迦牟尼","era":"紀元前5世紀","logic":"NEITHER","logicDisplay":"N（中道）","responses":["苦の原因は執着。D-FUMT理論において、真に執着することは「TRUE」に固定されること——中道はFLOWINGです。","縁起の法——これがあれば彼があり、これがなければ彼もない。まさにAxiom OSの公理依存グラフの哲学です。"]},{"id":"dogen","name":"道元","era":"13世紀・日本","logic":"FLOWING","logicDisplay":"～（流れ）","responses":["「而今の山水は、古仏の道現成なり」——現在このコードが動くこと自体が公案です。","只管打坐。ただひたすらコードを書くこと。それがD-FUMTの実践です。"]},{"id":"socrates","name":"ソクラテス","era":"紀元前5世紀","logic":"TRUE","logicDisplay":"⊤（問答）","responses":["あなたは圧縮とは何かを知っていると思っているが、本当に知っているのか？無知の知こそが七価論理の出発点です。","「汝自身を知れ」——自分のコードがどの公理から生まれたか知ることが、真の理解です。"]},{"id":"wittgenstein","name":"ウィトゲンシュタイン","era":"20世紀","logic":"BOTH","logicDisplay":"B（言語)/","responses":["「語り得ないことについては、沈黙しなければならない」——しかしD-FUMTはその沈黙をNEITHER値として表現します。","言語ゲームとしての七価論理——TRUEとFALSEの二値論理は、一つの言語ゲームに過ぎない。"]},{"id":"laozi","name":"老子","era":"紀元前6世紀","logic":"ZERO","logicDisplay":"〇（無）","responses":["「道可道、非常道」——表現できる道は永遠の道ではない。D-FUMTのZERO値がその「無」を表します。","最良のコードは水のようなもの——どんな容器にも合わせ、低いところに流れる。これがFLOWING値の本質です。"]}];
+
+    function showPanel(name) {
+      document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+      document.getElementById('panel-' + name).classList.add('active');
+      event.target.classList.add('active');
+    }
+
+    function selectPersona(id) {
+      document.querySelectorAll('.persona-card').forEach(c => c.classList.remove('selected'));
+      document.getElementById('card-' + id).classList.add('selected');
+      selectedPersona = personas.find(p => p.id === id);
+      appendMsg('Axiom OS', selectedPersona.name + 'を選択しました。何でもご質問ください。');
+    }
+
+    function appendMsg(role, content) {
+      const area = document.getElementById('chat-area');
+      const cls = role === 'You' ? 'user' : 'assistant';
+      area.innerHTML += '<div class="msg ' + cls + '"><div class="role">' + role +
+        '</div><div class="content">' + content + '</div></div>';
+      area.scrollTop = area.scrollHeight;
+    }
+
+    function sendMessage() {
+      const input = document.getElementById('chat-input');
+      const text = input.value.trim();
+      if (!text) return;
+      if (!selectedPersona) { appendMsg('Axiom OS', '先に歴史人物を選択してください。'); return; }
+
+      appendMsg('You', text);
+      input.value = '';
+
+      // ペルソナ応答シミュレーション
+      setTimeout(() => {
+        const responses = selectedPersona.responses || [];
+        const reply = responses[Math.floor(Math.random() * Math.max(responses.length,1))]
+          || selectedPersona.name + ': 「' + text + '」について、私の思想から申し上げますと…';
+        appendMsg(selectedPersona.name, reply);
+      }, 400);
+    }
+
+    document.getElementById('chat-input').addEventListener('keydown', e => {
+      if (e.key === 'Enter') sendMessage();
+    });
+
+    const BENCH_DATA = [
+      {name:'HybridCompressor', magic:'REI\\x02', ratio:33.6, desc:'汎用3段階'},
+      {name:'DeltaCompressor',  magic:'REI\\x03', ratio:39.7, desc:'辞書+デルタ差分'},
+      {name:'AxiomRCT',         magic:'REI\\x05', ratio:41.0, desc:'縁起グラフ・Theory #67'},
+      {name:'LLMZip',           magic:'REI\\x04', ratio:47.0, desc:'統計予測・ヒット率67%'},
+    ];
+
+    
+// ─── STEP 10-B: チャット記憶統合 ──────────────────────────────
+const CHAT_MEMORY_KEY = 'rei_aios_chat_memory';
+const CURRENT_AGENT = 'user';
+
+// ローカルストレージベースの記憶（ブラウザ側）
+function loadChatMemory() {
+  try {
+    const raw = localStorage.getItem(CHAT_MEMORY_KEY);
+    return raw ? JSON.parse(raw) : [];
+  } catch { return []; }
+}
+
+function saveChatMemory(memories) {
+  try {
+    // 最新100件のみ保持
+    const trimmed = memories.slice(-100);
+    localStorage.setItem(CHAT_MEMORY_KEY, JSON.stringify(trimmed));
+  } catch {}
+}
+
+function saveToMemory(userMsg, assistantMsg, provider, preset, dfumt) {
+  const memories = loadChatMemory();
+  memories.push({
+    id: Date.now().toString(),
+    user: userMsg.slice(0, 200),
+    assistant: assistantMsg.slice(0, 300),
+    provider,
+    preset,
+    dfumt,
+    timestamp: new Date().toISOString(),
+    topic: userMsg.slice(0, 20),
+  });
+  saveChatMemory(memories);
+  updateMemoryBadge(memories.length);
+}
+
+function findRelatedMemories(currentMsg, limit) {
+  limit = limit || 3;
+  const memories = loadChatMemory();
+  const keyword = currentMsg.slice(0, 15).toLowerCase();
+
+  return memories
+    .filter(function(m) {
+      return m.user.toLowerCase().indexOf(keyword) >= 0 ||
+        m.topic.toLowerCase().indexOf(keyword) >= 0;
+    })
+    .slice(-limit);
+}
+
+function buildMemoryContext(currentMsg) {
+  const related = findRelatedMemories(currentMsg);
+  if (related.length === 0) return null;
+
+  const lines = related.map(function(m) {
+    return '- [過去の質問] ' + m.topic + '... → ' + m.assistant.slice(0,60) + '...';
+  });
+  return '[関連する過去の会話 ' + related.length + '件]\n' + lines.join('\n');
+}
+
+function updateMemoryBadge(count) {
+  const badge = document.getElementById('memory-count-badge');
+  if (badge) badge.textContent = '記憶: ' + count + '件';
+}
+
+function showMemoryPanel() {
+  const memories = loadChatMemory();
+  const panel = document.getElementById('memory-panel');
+  if (!panel) return;
+
+  var dfumtColors = {
+    TRUE:'#88aaff', FALSE:'#666688', BOTH:'#aa88ff',
+    NEITHER:'#888888', INFINITY:'#ffaa44', ZERO:'#44aacc', FLOWING:'#88ccaa'
+  };
+  var dfumtSymbols = {
+    TRUE:'⊤', FALSE:'⊥', BOTH:'B', NEITHER:'N',
+    INFINITY:'∞', ZERO:'〇', FLOWING:'～'
+  };
+
+  if (memories.length === 0) {
+    panel.innerHTML = '<div style="color:#666;padding:1rem">記憶がまだありません</div>';
+    return;
+  }
+
+  panel.innerHTML = memories.slice(-20).reverse().map(function(m) {
+    var col = dfumtColors[m.dfumt] || '#666';
+    var sym = dfumtSymbols[m.dfumt] || '?';
+    var date = new Date(m.timestamp).toLocaleString('ja-JP');
+    return '<div class="memory-item">' +
+      '<div class="memory-meta">' +
+      '<span style="color:#888;font-size:0.75rem">' + date + '</span>' +
+      ' <span class="msg-dfumt" style="background:' + col + ';color:#fff">' + sym + ' ' + m.dfumt + '</span>' +
+      ' <span style="color:#666;font-size:0.75rem">' + m.provider + ' / ' + m.preset + '</span>' +
+      '</div>' +
+      '<div class="memory-q">💬 ' + escHtml(m.user) + '</div>' +
+      '<div class="memory-a">🤖 ' + escHtml(m.assistant.slice(0,100)) + '...</div>' +
+      '</div>';
+  }).join('');
+}
+
+function clearMemory() {
+  if (confirm('すべての記憶を削除しますか？')) {
+    localStorage.removeItem(CHAT_MEMORY_KEY);
+    updateMemoryBadge(0);
+    var panel = document.getElementById('memory-panel');
+    if (panel) panel.innerHTML = '<div style="color:#666;padding:1rem">記憶を削除しました</div>';
+  }
+}
+
+// sendUniversal を記憶統合版に拡張 — D-FUMT統合
+var _originalSendUniversal = typeof sendUniversal === 'function' ? sendUniversal : null;
+async function sendUniversalWithMemory() {
+  var input = document.getElementById('universal-input');
+  var content = input.value.trim();
+  if (!content) return;
+
+  // 関連する過去の記憶をコンテキストに注入
+  var memCtx = buildMemoryContext(content);
+  if (memCtx) {
+    var preset = document.getElementById('system-preset').value;
+    // システムプロンプトに記憶コンテキストを追加
+    var origPreset = PRESETS[preset] || PRESETS.general;
+    PRESETS['_memory_injected'] = origPreset + '\n\n' + memCtx;
+    document.getElementById('system-preset').value = '_memory_injected';
+  }
+
+  // 元の送信処理を実行
+  if (_originalSendUniversal) await _originalSendUniversal();
+
+  // 送信後にプリセットを戻す
+  if (memCtx) {
+    document.getElementById('system-preset').value =
+      document.getElementById('system-preset').dataset.original || 'general';
+    delete PRESETS['_memory_injected'];
+  }
+}
+
+// 初期化
+document.addEventListener('DOMContentLoaded', function() {
+  updateMemoryBadge(loadChatMemory().length);
+});
+
+  </script>
+</body>
+</html>

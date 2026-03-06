@@ -9,6 +9,7 @@
 import { generateUniversalChatPanel, DEFAULT_PROVIDERS } from '../chat/universal-chat';
 import { generateMemoryIntegrationScript } from '../chat/chat-memory-bridge';
 import { generateDictionaryPanel } from '../dictionary/wiktionary-client';
+import { PERSONAS as HISTORICAL_PERSONAS } from '../chat/persona-chat-engine';
 
 // ─── WebUI HTML生成 ────────────────────────────────────────────
 export function generateAxiomOsWebUI(options: WebUIOptions = {}): string {
@@ -148,21 +149,35 @@ export function generateAxiomOsWebUI(options: WebUIOptions = {}): string {
   <!-- 歴史人物チャットパネル -->
   <div id="panel-chat" class="panel active">
     <div class="persona-grid" id="persona-grid">
-      ${personas.map(p => `
+      ${HISTORICAL_PERSONAS.map(p => `
       <div class="persona-card" onclick="selectPersona('${p.id}')" id="card-${p.id}">
-        <div class="name">${p.name}</div>
-        <div class="era">${p.era}</div>
-        <span class="logic-badge ${p.logic}">${p.logicDisplay}</span>
+        <div class="name">${p.emoji} ${p.nameJa}</div>
+        <div class="era">${p.period} / ${p.origin}</div>
+        <span class="logic-badge ${p.dfumtAffinity}">${p.dfumtAffinity}</span>
       </div>`).join('')}
+    </div>
+    <div class="persona-provider-bar" style="display:flex;gap:0.5rem;align-items:center;margin-bottom:8px;flex-wrap:wrap">
+      <label style="font-size:0.8rem;color:#888">AIプロバイダー:</label>
+      <select id="persona-provider" onchange="changePersonaProvider()" style="background:var(--surface);color:var(--text);border:1px solid #444;border-radius:6px;padding:0.3rem 0.5rem;font-size:0.8rem">
+        <option value="ollama">Ollama（無料・ローカル）</option>
+        <option value="groq">Groq（無料枠）</option>
+        <option value="anthropic">Claude API</option>
+        <option value="openai">OpenAI GPT</option>
+        <option value="gemini">Gemini（無料枠）</option>
+      </select>
+      <input type="password" id="persona-api-key"
+        placeholder="APIキー（Ollama不要）"
+        style="background:var(--surface);color:var(--text);border:1px solid #555;border-radius:6px;padding:0.3rem 0.5rem;font-size:0.8rem;width:200px"/>
+      <span id="persona-status" style="font-size:0.75rem;color:#666"></span>
     </div>
     <div class="chat-area" id="chat-area">
       <div class="msg assistant">
         <div class="role">Axiom OS</div>
-        <div class="content">歴史上の人物を選択してください。その人物の思想・哲学に基づいてD-FUMT理論を解説します。</div>
+        <div class="content">歴史上の人物を選択してください。LLMを通じて、その人物らしい自然な会話ができます。</div>
       </div>
     </div>
     <div class="chat-input">
-      <input id="chat-input" type="text" placeholder="質問を入力（例: 縁起論について教えてください）" />
+      <input id="chat-input" type="text" placeholder="質問を入力（例: ご飯食べたいですね）" />
       <button onclick="sendMessage()">送信</button>
     </div>
   </div>
@@ -228,7 +243,10 @@ export function generateAxiomOsWebUI(options: WebUIOptions = {}): string {
 
   <script>
     let selectedPersona = null;
-    const personas = ${JSON.stringify(personas)};
+    const historicalPersonas = ${JSON.stringify(HISTORICAL_PERSONAS)};
+    let personaConversations = {};
+    let personaProvider = 'ollama';
+    let personaApiKey = '';
 
     function showPanel(name) {
       document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
@@ -240,19 +258,34 @@ export function generateAxiomOsWebUI(options: WebUIOptions = {}): string {
     function selectPersona(id) {
       document.querySelectorAll('.persona-card').forEach(c => c.classList.remove('selected'));
       document.getElementById('card-' + id).classList.add('selected');
-      selectedPersona = personas.find(p => p.id === id);
-      appendMsg('Axiom OS', selectedPersona.name + 'を選択しました。何でもご質問ください。');
+      selectedPersona = historicalPersonas.find(p => p.id === id);
+      if (!personaConversations[id]) personaConversations[id] = [];
+      appendMsg('Axiom OS', selectedPersona.emoji + ' ' + selectedPersona.nameJa +
+        'を選択しました。' + selectedPersona.greeting);
+    }
+
+    function changePersonaProvider() {
+      personaProvider = document.getElementById('persona-provider').value;
+      personaApiKey = document.getElementById('persona-api-key').value.trim();
+      document.getElementById('persona-status').textContent =
+        personaProvider + ' に切り替えました';
     }
 
     function appendMsg(role, content) {
       const area = document.getElementById('chat-area');
       const cls = role === 'You' ? 'user' : 'assistant';
-      area.innerHTML += '<div class="msg ' + cls + '"><div class="role">' + role +
-        '</div><div class="content">' + content + '</div></div>';
+      area.innerHTML += '<div class="msg ' + cls + '"><div class="role">' +
+        escPersonaHtml(role) +
+        '</div><div class="content">' + escPersonaHtml(content) + '</div></div>';
       area.scrollTop = area.scrollHeight;
     }
 
-    function sendMessage() {
+    function escPersonaHtml(s) {
+      return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;')
+        .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+
+    async function sendMessage() {
       const input = document.getElementById('chat-input');
       const text = input.value.trim();
       if (!text) return;
@@ -261,13 +294,120 @@ export function generateAxiomOsWebUI(options: WebUIOptions = {}): string {
       appendMsg('You', text);
       input.value = '';
 
-      // ペルソナ応答シミュレーション
-      setTimeout(() => {
-        const responses = selectedPersona.responses || [];
-        const reply = responses[Math.floor(Math.random() * Math.max(responses.length,1))]
-          || selectedPersona.name + ': 「' + text + '」について、私の思想から申し上げますと…';
-        appendMsg(selectedPersona.name, reply);
-      }, 400);
+      const pid = selectedPersona.id;
+      if (!personaConversations[pid]) personaConversations[pid] = [];
+      personaConversations[pid].push({ role: 'user', content: text });
+
+      const status = document.getElementById('persona-status');
+      status.textContent = '⏳ ' + selectedPersona.nameJa + ' が考え中...';
+
+      try {
+        const apiKey = document.getElementById('persona-api-key').value.trim();
+        const response = await callPersonaAPI({
+          provider: personaProvider,
+          apiKey: apiKey,
+          systemPrompt: selectedPersona.systemPrompt,
+          messages: personaConversations[pid],
+        });
+        personaConversations[pid].push({ role: 'assistant', content: response });
+        appendMsg(selectedPersona.emoji + ' ' + selectedPersona.nameJa, response);
+        status.textContent = '✓ ' + personaProvider + ' via LLM';
+      } catch (e) {
+        // フォールバック応答
+        const fallback = getPersonaFallback(selectedPersona, text);
+        personaConversations[pid].push({ role: 'assistant', content: fallback });
+        appendMsg(selectedPersona.emoji + ' ' + selectedPersona.nameJa, fallback);
+        status.textContent = '⚠ フォールバック応答（' + e.message + '）';
+      }
+    }
+
+    async function callPersonaAPI(opts) {
+      var provider = opts.provider, apiKey = opts.apiKey;
+      var systemPrompt = opts.systemPrompt, messages = opts.messages;
+      var msgs = messages.map(function(m) { return { role: m.role, content: m.content }; });
+
+      if (provider === 'ollama') {
+        var res = await fetch('http://localhost:11434/api/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            model: 'llama3.2',
+            messages: [{ role: 'system', content: systemPrompt }].concat(msgs),
+            stream: false,
+          }),
+        });
+        var data = await res.json();
+        return (data.message ? data.message.content : '') || data.response || '';
+      } else if (provider === 'anthropic') {
+        var res = await fetch('https://api.anthropic.com/v1/messages', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-api-key': apiKey,
+            'anthropic-version': '2023-06-01',
+          },
+          body: JSON.stringify({
+            model: 'claude-haiku-4-5-20251001', max_tokens: 500,
+            system: systemPrompt, messages: msgs,
+          }),
+        });
+        var data = await res.json();
+        if (data.error) throw new Error(data.error.message);
+        return data.content && data.content[0] ? data.content[0].text : '';
+      } else if (provider === 'gemini') {
+        var geminiMsgs = msgs.map(function(m) {
+          return { role: m.role === 'assistant' ? 'model' : 'user', parts: [{ text: m.content }] };
+        });
+        var res = await fetch(
+          'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=' + apiKey,
+          { method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ contents: geminiMsgs }) });
+        var data = await res.json();
+        if (data.error) throw new Error(data.error.message);
+        return data.candidates && data.candidates[0] && data.candidates[0].content
+          ? data.candidates[0].content.parts[0].text : '';
+      } else {
+        // OpenAI互換（Groq・OpenAI等）
+        var baseUrls = {
+          openai: 'https://api.openai.com/v1',
+          groq: 'https://api.groq.com/openai/v1',
+        };
+        var defaultModels = { openai: 'gpt-4o-mini', groq: 'llama-3.3-70b-versatile' };
+        var baseUrl = baseUrls[provider] || 'https://api.groq.com/openai/v1';
+        var res = await fetch(baseUrl + '/chat/completions', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + apiKey },
+          body: JSON.stringify({
+            model: defaultModels[provider] || 'gpt-4o-mini',
+            messages: [{ role: 'system', content: systemPrompt }].concat(msgs),
+            max_tokens: 500, temperature: 0.8,
+          }),
+        });
+        var data = await res.json();
+        if (data.error) throw new Error(typeof data.error === 'string' ? data.error : data.error.message);
+        return data.choices && data.choices[0] ? data.choices[0].message.content : '';
+      }
+    }
+
+    function getPersonaFallback(persona, msg) {
+      var lower = msg.toLowerCase();
+      if (lower.indexOf('ご飯') >= 0 || lower.indexOf('食べ') >= 0 ||
+          lower.indexOf('食事') >= 0 || lower.indexOf('料理') >= 0) {
+        var foodReply = {
+          nagarjuna: 'それは良いですね。食もまた縁起によって生じる。何を食べたいですか？',
+          buddha: '食欲は自然なもの。中道をもって食事を楽しんでください。',
+          dogen: '食事もまた修行のひとつ。丁寧にいただきましょう。何を召し上がりますか？',
+          socrates: '空腹は知恵の友とも言う。何を食べるつもりですか？',
+          wittgenstein: '食欲は語りえる欲求ですね。何にしますか？',
+          laozi: '腹が減れば食べる。それが道。何を食べますか？',
+          confucius: '食事は礼の基本。しっかり食べましょう。何をいただきますか？',
+          kant: '食欲は自然な欲求です。節度をもって食事をとりましょう。',
+          nietzsche: '食べよ！生への意志だ。何を食べる？',
+          himiko: '大地の恵みに感謝して。今日は何をいただきますか？',
+        };
+        return foodReply[persona.id] || 'それは良いですね。何を食べたいですか？';
+      }
+      return persona.nameJa + 'として、「' + msg + '」についてお答えします。（LLM接続でより自然な会話ができます）';
     }
 
     document.getElementById('chat-input').addEventListener('keydown', e => {
