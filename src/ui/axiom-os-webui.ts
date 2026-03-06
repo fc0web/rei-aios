@@ -1,15 +1,18 @@
 /**
  * Rei-AIOS STEP 7-A — Axiom OS WebUI
- * 歴史人物チャット・公理ブラウザ・圧縮ベンチマークを
+ * 歴史人物チャット・公理ブラウザ・圧縮ベンチマーク・汎用チャットを
  * 一枚のHTMLファイルとして生成するジェネレータ。
  *
  * ibushi-gin（渋銀）デザイン哲学: 暗めのシルバー基調・最小限のUI
  */
 
+import { generateUniversalChatPanel, DEFAULT_PROVIDERS } from '../chat/universal-chat';
+
 // ─── WebUI HTML生成 ────────────────────────────────────────────
 export function generateAxiomOsWebUI(options: WebUIOptions = {}): string {
   const personas = options.personas ?? DEFAULT_PERSONAS;
   const theories = options.theories ?? DEFAULT_THEORIES;
+  const universalChatPanel = generateUniversalChatPanel(DEFAULT_PROVIDERS);
 
   return `<!DOCTYPE html>
 <html lang="ja">
@@ -133,6 +136,7 @@ export function generateAxiomOsWebUI(options: WebUIOptions = {}): string {
     <button class="active" onclick="showPanel('chat')">歴史人物チャット</button>
     <button onclick="showPanel('axioms')">公理ブラウザ</button>
     <button onclick="showPanel('bench')">圧縮ベンチマーク</button>
+    <button onclick="showPanel('universal')">汎用チャット</button>
   </nav>
 
   <!-- 歴史人物チャットパネル -->
@@ -188,6 +192,8 @@ export function generateAxiomOsWebUI(options: WebUIOptions = {}): string {
       </tr>`).join('')}
     </table>
   </div>
+
+  ${universalChatPanel}
 
   <script>
     let selectedPersona = null;
