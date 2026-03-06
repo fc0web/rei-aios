@@ -11,6 +11,8 @@
  *   T-04: チャット履歴の自動圧縮（深夜2時）
  *   T-05: D-FUMT 公理整合性チェック（毎週月曜）
  *   T-06: 更新確認（6時間ごと / AIOSUpdater連携）
+ *   T-07: Axiom Discovery（24時間ごと）
+ *   T-08: D-FUMT 全理論整合性チェック（毎週月曜）
  */
 
 import * as fs from 'fs';
@@ -19,6 +21,7 @@ import { TaskScheduler } from './task-scheduler';
 import type { AIOSUpdater } from '../auto-update/updater';
 import { AxiomProposalQueue } from '../../axiom-os/axiom-proposal-queue';
 import { AxiomDiscoveryAgent } from '../../axiom-os/axiom-discovery-agent';
+import { DFUMTConsistencyChecker } from '../../axiom-os/dfumt-consistency-checker';
 
 // ─── 型定義 ────────────────────────────────────────────
 
@@ -286,6 +289,26 @@ export function registerDefaultTasks(
         log(`[T-07] エクスポート: ${exportPath}`);
       }
       return `Discovery: found=${report.found} queued=${report.queued} skipped=${report.skipped}`;
+    },
+  });
+
+  // ─── T-08: D-FUMT 全理論整合性チェック ─────────────
+  scheduler.register({
+    id: 'dfumt-consistency',
+    name: 'D-FUMT 全理論整合性チェック',
+    trigger: { type: 'cron', expression: '0 6 * * 1' }, // 毎週月曜6時
+    enabled: true,
+    maxRetries: 1,
+    retryBaseMs: 3000,
+    timeoutMs: 30000,
+    fn: async () => {
+      const checker = new DFUMTConsistencyChecker();
+      const report = checker.checkAll();
+      log(`[T-08] 整合スコア: ${(report.consistencyScore * 100).toFixed(1)}% 矛盾: ${report.contradictionsFound}件`);
+      const reportPath = path.join(config.dataDir, 'dfumt-consistency-report.json');
+      fs.writeFileSync(reportPath, JSON.stringify(report, null, 2));
+      log(`[T-08] レポート保存: ${reportPath}`);
+      return `Consistency: ${(report.consistencyScore * 100).toFixed(1)}% contradictions=${report.contradictionsFound}`;
     },
   });
 

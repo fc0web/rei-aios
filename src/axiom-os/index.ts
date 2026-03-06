@@ -141,3 +141,7 @@ export type {
   DiscoveryConfig,
   DiscoveryReport,
 } from './axiom-discovery-agent';
+
+// D-FUMT Consistency Checker (STEP 14)
+export { DFUMTConsistencyChecker } from './dfumt-consistency-checker';
+export type { ConsistencyReport, TheoryPairCheck } from './dfumt-consistency-checker';
