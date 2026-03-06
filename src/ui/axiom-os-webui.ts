@@ -13,6 +13,8 @@ import { PERSONAS as HISTORICAL_PERSONAS } from '../chat/persona-chat-engine';
 import { generateNostrPanel, DEFAULT_RELAYS } from '../p2p/nostr-axiom-share';
 import { generateViewpointSelectorScript } from '../chat/dfumt-viewpoints';
 import { AxiomGraphEngine } from '../visualization/axiom-graph';
+import { generateCalculatorPanel, generateCalculatorScript } from '../logic/dfumt-calculator';
+import { generateContradictionPanel, generateContradictionScript } from '../logic/contradiction-detector-enhanced';
 
 // ─── WebUI HTML生成 ────────────────────────────────────────────
 export function generateAxiomOsWebUI(options: WebUIOptions = {}): string {
@@ -25,6 +27,10 @@ export function generateAxiomOsWebUI(options: WebUIOptions = {}): string {
   const viewpointScript = generateViewpointSelectorScript();
   const axiomGraphEngine = new AxiomGraphEngine();
   const axiomGraphScript = axiomGraphEngine.generateCanvasScript();
+  const calculatorPanel = generateCalculatorPanel();
+  const calculatorScript = generateCalculatorScript();
+  const contradictionPanel = generateContradictionPanel();
+  const contradictionScript = generateContradictionScript();
 
   return `<!DOCTYPE html>
 <html lang="ja">
@@ -205,6 +211,8 @@ export function generateAxiomOsWebUI(options: WebUIOptions = {}): string {
     <button onclick="showPanel('memory')">記憶ログ</button>
     <button onclick="showPanel('dictionary')">辞書</button>
     <button onclick="showPanel('nostr')">Nostr共有</button>
+    <button onclick="showPanel('calculator')">七価計算機</button>
+    <button onclick="showPanel('contradiction')">矛盾検出</button>
   </nav>
 
   <!-- 歴史人物チャットパネル -->
@@ -325,6 +333,10 @@ export function generateAxiomOsWebUI(options: WebUIOptions = {}): string {
   ${dictionaryPanel}
 
   ${nostrPanel}
+
+  ${calculatorPanel}
+
+  ${contradictionPanel}
 
   <script>
     let selectedPersona = null;
@@ -505,6 +517,12 @@ export function generateAxiomOsWebUI(options: WebUIOptions = {}): string {
       {name:'AxiomRCT',         magic:'REI\\\\x05', ratio:41.0, desc:'縁起グラフ・Theory #67'},
       {name:'LLMZip',           magic:'REI\\\\x04', ratio:47.0, desc:'統計予測・ヒット率67%'},
     ];
+
+    // ─── STEP 13-C: 七価論理計算機スクリプト ────────────────
+    ${calculatorScript}
+
+    // ─── STEP 13-D: 矛盾検出エンジンスクリプト ──────────────
+    ${contradictionScript}
 
     // ─── STEP 13-A: D-FUMT視点セレクター ────────────────────
     ${viewpointScript}
