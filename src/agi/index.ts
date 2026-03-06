@@ -49,6 +49,10 @@ export type { ArbitrageResult, ArbitrageConfig, ReasoningPath, PathResult } from
 // ★ Phase 3 re-exports
 export { ContextMemory } from './context-memory';
 export type { MemoryEntry, MemorySearchOptions, MemorySearchResult, MemoryStats, ContextMemoryConfig } from './context-memory';
+// Phase 7 re-exports
+export * from './dfumt-task-types';
+export { DFUMTTaskManager } from './dfumt-task-manager';
+export * from './persona-task-processor';
 
 /**
  * AGILayer — Phase 1 統合クラス
