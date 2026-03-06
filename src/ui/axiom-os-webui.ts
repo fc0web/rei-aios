@@ -15,6 +15,7 @@ import { generateViewpointSelectorScript } from '../chat/dfumt-viewpoints';
 import { AxiomGraphEngine } from '../visualization/axiom-graph';
 import { generateCalculatorPanel, generateCalculatorScript } from '../logic/dfumt-calculator';
 import { generateContradictionPanel, generateContradictionScript } from '../logic/contradiction-detector-enhanced';
+import { generateConfidencePanel, generateConfidenceScript } from '../knowledge/confidence-tracker';
 
 // ─── WebUI HTML生成 ────────────────────────────────────────────
 export function generateAxiomOsWebUI(options: WebUIOptions = {}): string {
@@ -31,6 +32,8 @@ export function generateAxiomOsWebUI(options: WebUIOptions = {}): string {
   const calculatorScript = generateCalculatorScript();
   const contradictionPanel = generateContradictionPanel();
   const contradictionScript = generateContradictionScript();
+  const confidencePanel = generateConfidencePanel();
+  const confidenceScript = generateConfidenceScript();
 
   return `<!DOCTYPE html>
 <html lang="ja">
@@ -213,6 +216,7 @@ export function generateAxiomOsWebUI(options: WebUIOptions = {}): string {
     <button onclick="showPanel('nostr')">Nostr共有</button>
     <button onclick="showPanel('calculator')">七価計算機</button>
     <button onclick="showPanel('contradiction')">矛盾検出</button>
+    <button onclick="showPanel('confidence')">確信度</button>
   </nav>
 
   <!-- 歴史人物チャットパネル -->
@@ -337,6 +341,8 @@ export function generateAxiomOsWebUI(options: WebUIOptions = {}): string {
   ${calculatorPanel}
 
   ${contradictionPanel}
+
+  ${confidencePanel}
 
   <script>
     let selectedPersona = null;
@@ -523,6 +529,9 @@ export function generateAxiomOsWebUI(options: WebUIOptions = {}): string {
 
     // ─── STEP 13-D: 矛盾検出エンジンスクリプト ──────────────
     ${contradictionScript}
+
+    // ─── STEP 13-E: 確信度トラッキングスクリプト ──────────────
+    ${confidenceScript}
 
     // ─── STEP 13-A: D-FUMT視点セレクター ────────────────────
     ${viewpointScript}

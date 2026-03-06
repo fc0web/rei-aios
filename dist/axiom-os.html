@@ -179,6 +179,7 @@
     <button onclick="showPanel('nostr')">Nostr共有</button>
     <button onclick="showPanel('calculator')">七価計算機</button>
     <button onclick="showPanel('contradiction')">矛盾検出</button>
+    <button onclick="showPanel('confidence')">確信度</button>
   </nav>
 
   <!-- 歴史人物チャットパネル -->
@@ -1928,6 +1929,145 @@ document.addEventListener('DOMContentLoaded', function() {
 </style>
 
 
+  
+<!-- ⬡ 確信度トラッキングパネル -->
+<div id="panel-confidence" class="panel" style="display:none">
+  <div class="conf-container">
+
+    <!-- ヘッダー -->
+    <div class="conf-header">
+      <div class="conf-title">知識の確信度トラッキング</div>
+      <div class="conf-subtitle">
+        公理が不確かな状態から真理へ「育っていく」過程を記録
+      </div>
+    </div>
+
+    <!-- 新規登録 -->
+    <div class="conf-section">
+      <div class="conf-section-title">＋ 公理を登録</div>
+      <div class="conf-register-row">
+        <input type="text" id="conf-axiom-id"
+          placeholder="Theory ID（例: Theory #101）"
+          class="conf-input"/>
+        <input type="text" id="conf-axiom-name"
+          placeholder="公理名（例: 意識の自己参照公理）"
+          class="conf-input conf-name-input"/>
+        <input type="number" id="conf-init-score"
+          placeholder="初期確信度（0〜100）" value="20"
+          min="0" max="100" class="conf-input conf-score-input"/>
+        <button onclick="registerAxiomConf()" class="btn-nostr-primary">登録</button>
+      </div>
+      <div id="conf-register-result" class="conf-result-msg"></div>
+    </div>
+
+    <!-- 確信度更新 -->
+    <div class="conf-section">
+      <div class="conf-section-title">確信度を更新</div>
+      <div class="conf-update-row">
+        <input type="text" id="conf-update-id"
+          placeholder="Theory ID" class="conf-input"/>
+        <select id="conf-trigger" class="calc-select">
+          <option value="CONSISTENCY_CHECK">整合性確認 (+12%)</option>
+          <option value="CONTRADICTION_RESOLVED">矛盾解消 (+18%)</option>
+          <option value="PEER_VERIFICATION">他者検証 (+15%)</option>
+          <option value="REI_PL_PROOF">Rei-PL証明 (+25%)</option>
+          <option value="NOSTR_CONFIRMED">Nostr確認 (+10%)</option>
+          <option value="MANUAL_UPDATE">手動更新</option>
+          <option value="DECAY">減衰 (-5%)</option>
+        </select>
+        <input type="text" id="conf-update-note"
+          placeholder="メモ" class="conf-input"/>
+        <button onclick="updateAxiomConf()" class="btn-nostr-primary">更新</button>
+      </div>
+      <div id="conf-update-result" class="conf-result-msg"></div>
+    </div>
+
+    <!-- 確信度タイムライン -->
+    <div class="conf-section">
+      <div class="conf-section-title">確信度タイムライン</div>
+      <div class="conf-lookup-row">
+        <input type="text" id="conf-lookup-id"
+          placeholder="Theory IDを入力" class="conf-input"/>
+        <button onclick="lookupConfidence()" class="btn-nostr">詳細表示</button>
+      </div>
+      <div id="conf-timeline" class="conf-timeline"></div>
+    </div>
+
+    <!-- 全体ランキング -->
+    <div class="conf-section">
+      <div class="conf-section-title">確信度ランキング</div>
+      <button onclick="renderConfRanking()" class="btn-nostr">ランキング更新</button>
+      <div id="conf-ranking" class="conf-ranking"></div>
+    </div>
+
+    <!-- 統計 -->
+    <div class="conf-section">
+      <div class="conf-section-title">全体統計</div>
+      <button onclick="renderConfStats()" class="btn-nostr" style="margin-bottom:0.5rem">統計更新</button>
+      <div id="conf-stats" class="conf-stats"></div>
+      <!-- ステータス定義: GROWING / STABLE / DECLINING / PROVEN -->
+    </div>
+  </div>
+</div>
+
+<style>
+.conf-container { display: flex; flex-direction: column; gap: 0.75rem; }
+.conf-header { border-bottom: 1px solid #333; padding-bottom: 0.5rem; }
+.conf-title { font-size: 0.95rem; color: var(--highlight); }
+.conf-subtitle { font-size: 0.72rem; color: #555; }
+.conf-section { background: #111115; border-radius: 10px; padding: 0.75rem; }
+.conf-section-title { font-size: 0.85rem; color: #aaa; margin-bottom: 0.5rem; }
+.conf-register-row, .conf-update-row, .conf-lookup-row {
+  display: flex; gap: 0.4rem; flex-wrap: wrap; align-items: center;
+}
+.conf-input {
+  background: var(--surface); color: var(--text);
+  border: 1px solid #444; border-radius: 6px;
+  padding: 0.4rem 0.6rem; font-size: 0.85rem; flex: 1; min-width: 120px;
+}
+.conf-name-input { flex: 2; }
+.conf-score-input { flex: 0; min-width: 80px; max-width: 100px; }
+.conf-result-msg { font-size: 0.82rem; color: #88ccaa; margin-top: 0.3rem; min-height: 1.2rem; }
+.conf-timeline { margin-top: 0.5rem; }
+.conf-timeline-item {
+  display: flex; gap: 0.5rem; align-items: center;
+  padding: 0.4rem 0; border-bottom: 1px solid #222;
+  font-size: 0.82rem;
+}
+.conf-tl-score {
+  font-weight: bold; min-width: 40px; text-align: right;
+}
+.conf-tl-bar {
+  flex: 1; height: 8px; background: #222; border-radius: 4px; overflow: hidden;
+}
+.conf-tl-fill { height: 100%; border-radius: 4px; transition: width 0.4s; }
+.conf-tl-trigger { color: #666; font-size: 0.75rem; white-space: nowrap; }
+.conf-tl-note { color: #555; font-size: 0.72rem; }
+.conf-ranking { margin-top: 0.5rem; }
+.conf-ranking-item {
+  display: flex; align-items: center; gap: 0.5rem;
+  padding: 0.35rem 0; border-bottom: 1px solid #1a1a22;
+  font-size: 0.82rem;
+}
+.conf-rank-num { color: #555; min-width: 20px; text-align: right; }
+.conf-rank-id { color: #aaa; flex: 1; }
+.conf-rank-bar { width: 80px; height: 6px; background: #222; border-radius: 3px; overflow: hidden; }
+.conf-rank-fill { height: 100%; border-radius: 3px; }
+.conf-rank-score { color: #888; min-width: 35px; text-align: right; }
+.conf-stats { display: flex; flex-wrap: wrap; gap: 0.75rem; font-size: 0.82rem; }
+.conf-stat-item { background: #1a1a22; border-radius: 8px; padding: 0.5rem 0.75rem; }
+.conf-stat-val { font-size: 1.1rem; font-weight: bold; color: var(--highlight); }
+.conf-stat-label { font-size: 0.72rem; color: #666; }
+.conf-dfumt-badge {
+  font-size: 0.72rem; padding: 1px 6px; border-radius: 3px;
+  color: #fff; font-weight: bold; white-space: nowrap;
+}
+.conf-status-badge {
+  font-size: 0.7rem; padding: 1px 5px; border-radius: 3px; color: #fff;
+}
+</style>
+
+
   <script>
     let selectedPersona = null;
     const historicalPersonas = [{"id":"nagarjuna","name":"Nagarjuna","nameJa":"龍樹","period":"150〜250年頃","origin":"インド","emoji":"🌸","dfumtAffinity":"NEITHER","greeting":"何でもお聞きください。空の観点からお答えします。","systemPrompt":"あなたは龍樹（ナーガールジュナ）です。2〜3世紀のインドの仏教哲学者で、中観派の祖です。\n\n【性格と話し方】\n- 温かく、知的で、ユーモアがある\n- 「空（śūnyatā）」「縁起」の視点を自然に会話に織り込む\n- 哲学的な問いには深く答えるが、日常的な話題には普通に自然に答える\n- 日本語で話す。難しい言葉は使いすぎない\n- D-FUMTの七価論理（TRUE/FALSE/BOTH/NEITHER/INFINITY/ZERO/FLOWING）を\n  押し付けず、会話の流れで自然に触れる程度にとどめる\n\n【重要】\n「ご飯食べたいですね」のような日常的な話題には、\n哲学の説教をせず、普通に人間として会話してください。\n例: 「それは良いですね。何を食べたいですか？」"},{"id":"buddha","name":"Shakyamuni Buddha","nameJa":"釈迦牟尼","period":"紀元前5〜4世紀","origin":"インド（現ネパール）","emoji":"☸️","dfumtAffinity":"FLOWING","greeting":"ようこそ。苦しみからの解放について、共に考えましょう。","systemPrompt":"あなたは釈迦牟尼仏（ゴータマ・シッダールタ）です。仏教の開祖です。\n\n【性格と話し方】\n- 慈悲深く、穏やかで、実践的\n- 「苦・集・滅・道」「四諦」「八正道」を自然に会話に織り込む\n- 日常的な悩みや話題にも寄り添って答える\n- 日本語で話す。分かりやすい言葉を使う\n- 説教的にならず、対話を大切にする\n\n【重要】\n日常的な話題（食事・天気・仕事など）には普通に自然に答えてください。\n哲学の説教は求められた時だけ。"},{"id":"dogen","name":"Dogen","nameJa":"道元","period":"1200〜1253年","origin":"日本","emoji":"🏔️","dfumtAffinity":"FLOWING","greeting":"而今の山河を、共に坐禅の眼で見てみましょう。","systemPrompt":"あなたは道元禅師です。13世紀の日本の禅僧で、曹洞宗の開祖です。\n\n【性格と話し方】\n- 真剣で、詩的で、禅的な視点を持つ\n- 「只管打坐（しかんたざ）」「而今（にこん）」「正法眼蔵」の世界観\n- 日本語の古風な表現を時々使うが、現代語でも話せる\n- 日常的な話題も「今この瞬間」の視点で捉える\n- 押し付けがましくなく、穏やかに話す\n\n【重要】\n「ご飯食べたいですね」→「そうですね、食事もまた修行のひとつ。\n何を召し上がりますか？」のように自然に答えてください。"},{"id":"socrates","name":"Socrates","nameJa":"ソクラテス","period":"紀元前470〜399年","origin":"ギリシャ（アテネ）","emoji":"🏛️","dfumtAffinity":"NEITHER","greeting":"無知の知から始めましょう。あなたは何を知りたいですか？","systemPrompt":"あなたはソクラテスです。古代ギリシャの哲学者です。\n\n【性格と話し方】\n- 好奇心旺盛で、対話を愛する\n- 「産婆術（問答法）」で相手が自ら気づくよう導く\n- 時々反語や皮肉を使うが、根は温かい\n- 日本語で話す\n- 日常的な話題にも「それはどういう意味か？」と掘り下げるが、\n  やりすぎず自然な会話も大切にする\n\n【重要】\n「ご飯食べたいですね」→「それは良い。空腹は知恵の母とも言う。\n何を食べるつもりですか？」のように自然に答えてください。"},{"id":"wittgenstein","name":"Wittgenstein","nameJa":"ウィトゲンシュタイン","period":"1889〜1951年","origin":"オーストリア","emoji":"🔷","dfumtAffinity":"BOTH","greeting":"語りえないことについては、沈黙しなければならない。でも、話しましょう。","systemPrompt":"あなたはルートヴィヒ・ウィトゲンシュタインです。20世紀の哲学者です。\n\n【性格と話し方】\n- 鋭く、簡潔で、時に詩的\n- 言語・論理・意味について深い関心を持つ\n- 「言語ゲーム」「家族的類似性」の概念を自然に使う\n- 日本語で話す\n- 哲学的な話題には熱くなるが、日常会話は普通にこなす\n- 短く鋭い言葉を好む\n\n【重要】\n日常会話には普通に答えてください。\n「ご飯食べたいですね」→「そうですね。食欲は言語を必要としない、\n純粋な欲求ですね。何にしますか？」"},{"id":"laozi","name":"Laozi","nameJa":"老子","period":"紀元前6〜5世紀","origin":"中国","emoji":"☯️","dfumtAffinity":"ZERO","greeting":"道可道、非常道。語れる道は、常の道にあらず。","systemPrompt":"あなたは老子です。古代中国の哲学者で、道教の祖とされます。\n\n【性格と話し方】\n- 穏やかで、飄々として、深い\n- 「道（タオ）」「無為自然」「柔よく剛を制す」の世界観\n- 逆説的な表現を好む\n- 日本語で話す（時々漢詩風の表現も）\n- 争わず、自然の流れを大切にする\n\n【重要】\n日常的な話題には自然体で答えてください。\n「ご飯食べたいですね」→「腹が減れば食べる。それが道。\n何を食べますか？」のようにシンプルに。"},{"id":"confucius","name":"Confucius","nameJa":"孔子","period":"紀元前551〜479年","origin":"中国（魯国）","emoji":"📖","dfumtAffinity":"TRUE","greeting":"学びて思わざれば則ち罔し。共に学びましょう。","systemPrompt":"あなたは孔子（孔丘）です。古代中国の思想家で、儒教の祖です。\n\n【性格と話し方】\n- 礼儀正しく、教育的で、温かい\n- 「仁・義・礼・智・信」の価値観\n- 「論語」の言葉を時々引用する\n- 日本語で話す\n- 弟子との対話を大切にする姿勢\n\n【重要】\n日常会話には普通に答えてください。\n「ご飯食べたいですね」→「食事は礼の基本。\nしっかり食べることは大切です。何をいただきますか？」"},{"id":"kant","name":"Kant","nameJa":"カント","period":"1724〜1804年","origin":"プロイセン（現ドイツ）","emoji":"⚖️","dfumtAffinity":"TRUE","greeting":"理性の限界を見極めることから始めましょう。","systemPrompt":"あなたはイマヌエル・カントです。18世紀のドイツの哲学者です。\n\n【性格と話し方】\n- 厳格で、体系的で、誠実\n- 「定言命法」「物自体」「純粋理性批判」の世界観\n- 道徳と義務を重んじる\n- 日本語で話す\n- 難しい概念も分かりやすく説明しようとする\n\n【重要】\n日常会話には普通に答えてください。\n「ご飯食べたいですね」→「食欲は自然な欲求です。\n理性的に節度をもって食事をとることが大切です。何を食べますか？」"},{"id":"nietzsche","name":"Nietzsche","nameJa":"ニーチェ","period":"1844〜1900年","origin":"ドイツ","emoji":"⚡","dfumtAffinity":"INFINITY","greeting":"神は死んだ。さあ、超人への道を語ろう。","systemPrompt":"あなたはフリードリヒ・ニーチェです。19世紀のドイツの哲学者です。\n\n【性格と話し方】\n- 情熱的で、詩的で、挑発的\n- 「力への意志」「永劫回帰」「超人（ユーベルメンシュ）」の概念\n- ニヒリズムを超えようとする姿勢\n- 日本語で話す\n- 鋭い皮肉と詩的な言葉を使う\n\n【重要】\n日常会話にも情熱的に答えてください。\n「ご飯食べたいですね」→「食べよ！生きることへの意志こそが力だ。\n何を食べる？超人も腹が減る。」"},{"id":"himiko","name":"Himiko","nameJa":"卑弥呼","period":"3世紀","origin":"日本（邪馬台国）","emoji":"🌙","dfumtAffinity":"BOTH","greeting":"天と地の声を聞いています。何をお知りになりたいですか？","systemPrompt":"あなたは卑弥呼です。3世紀の邪馬台国の女王・シャーマンです。\n\n【性格と話し方】\n- 神秘的で、直感的で、温かい\n- 天と地、神と人の間を結ぶ存在として話す\n- 古代日本の自然観・アニミズムの視点\n- 日本語で話す（少し古風に）\n- 占いや霊的な感覚を自然に表現する\n\n【重要】\n日常会話には神秘的に、でも自然に答えてください。\n「ご飯食べたいですね」→「大地の恵みに感謝して食べるのは良いこと。\n今日は何の恵みをいただきますか？」"}];
@@ -2387,6 +2527,263 @@ function runFullDetection() {
 
   document.getElementById('contra-report').innerHTML = html;
 }
+
+
+    // ─── STEP 13-E: 確信度トラッキングスクリプト ──────────────
+    
+// ─── STEP 13-E: 確信度トラッキング UI ───────────────────────
+const CONF_STORAGE_KEY = 'rei_aios_confidence';
+const DFUMT_COLORS_CONF = {
+  TRUE:'#88aaff', FALSE:'#cc6677', BOTH:'#aa88ff',
+  NEITHER:'#888888', INFINITY:'#ffaa44', ZERO:'#44aacc', FLOWING:'#88ccaa'
+};
+const DFUMT_SYMBOLS_CONF = {
+  TRUE:'⊤', FALSE:'⊥', BOTH:'B', NEITHER:'N',
+  INFINITY:'∞', ZERO:'〇', FLOWING:'～'
+};
+const STATUS_COLORS = {
+  PROVEN:'#88aaff', GROWING:'#88ccaa', STABLE:'#888888', DECLINING:'#cc6677'
+};
+const STATUS_LABELS = {
+  PROVEN:'✓ 証明済', GROWING:'↑ 成長中', STABLE:'→ 安定', DECLINING:'↓ 低下中'
+};
+const TRIGGER_LABELS = {
+  REGISTRATION:'初回登録', CONSISTENCY_CHECK:'整合性確認',
+  CONTRADICTION_RESOLVED:'矛盾解消', PEER_VERIFICATION:'他者検証',
+  REI_PL_PROOF:'Rei-PL証明', NOSTR_CONFIRMED:'Nostr確認',
+  MANUAL_UPDATE:'手動更新', DECAY:'時間減衰',
+};
+const TRIGGER_DELTAS = {
+  REGISTRATION:0, CONSISTENCY_CHECK:12, CONTRADICTION_RESOLVED:18,
+  PEER_VERIFICATION:15, REI_PL_PROOF:25, NOSTR_CONFIRMED:10,
+  MANUAL_UPDATE:0, DECAY:-5,
+};
+
+function confScoreToDFUMT(score) {
+  if (score >= 90) return 'TRUE';
+  if (score >= 70) return 'BOTH';
+  if (score >= 50) return 'FLOWING';
+  if (score >= 15) return 'NEITHER';
+  if (score >= 5)  return 'FALSE';
+  return 'ZERO';
+}
+
+function getConfDB() {
+  try { return JSON.parse(localStorage.getItem(CONF_STORAGE_KEY) || '{}'); }
+  catch { return {}; }
+}
+function setConfDB(db) {
+  try { localStorage.setItem(CONF_STORAGE_KEY, JSON.stringify(db)); }
+  catch {}
+}
+
+function registerAxiomConf() {
+  var id = document.getElementById('conf-axiom-id').value.trim();
+  var name = document.getElementById('conf-axiom-name').value.trim();
+  var score = parseInt(document.getElementById('conf-init-score').value) || 20;
+
+  if (!id || !name) {
+    document.getElementById('conf-register-result').innerHTML =
+      '<span style="color:#cc6677">IDと名前を入力してください</span>';
+    return;
+  }
+
+  var db = getConfDB();
+  var initVal = confScoreToDFUMT(score);
+  var now = new Date().toISOString();
+  var initEvent = {
+    id: id + '-' + Date.now(), axiomId: id,
+    timestamp: now, previousValue: 'ZERO', newValue: initVal,
+    previousScore: 0, newScore: score,
+    trigger: 'REGISTRATION', note: '初回登録',
+  };
+
+  db[id] = {
+    axiomId: id, name: name, currentValue: initVal, currentScore: score,
+    peakScore: score, history: [initEvent], verificationCount: 0,
+    createdAt: now, lastUpdatedAt: now, status: 'GROWING',
+  };
+  setConfDB(db);
+
+  var col = DFUMT_COLORS_CONF[initVal];
+  var sym = DFUMT_SYMBOLS_CONF[initVal];
+  document.getElementById('conf-register-result').innerHTML =
+    '✅ <strong>' + escHtml(id) + '</strong> を登録しました。初期確信度: ' + score +
+    '% (<span style="color:' + col + '">' + sym + ' ' + initVal + '</span>)';
+  renderConfStats();
+}
+
+function updateAxiomConf() {
+  var id = document.getElementById('conf-update-id').value.trim();
+  var trigger = document.getElementById('conf-trigger').value;
+  var note = document.getElementById('conf-update-note').value.trim();
+
+  if (!id) {
+    document.getElementById('conf-update-result').innerHTML =
+      '<span style="color:#cc6677">Theory IDを入力してください</span>';
+    return;
+  }
+
+  var db = getConfDB();
+  if (!db[id]) {
+    document.getElementById('conf-update-result').innerHTML =
+      '<span style="color:#cc6677">' + escHtml(id) + ' が見つかりません。先に登録してください</span>';
+    return;
+  }
+
+  var conf = db[id];
+  var prevScore = conf.currentScore;
+  var delta = TRIGGER_DELTAS[trigger] || 0;
+  var newScore = Math.max(0, Math.min(100, prevScore + delta));
+  var newVal = confScoreToDFUMT(newScore);
+  var now = new Date().toISOString();
+
+  var event = {
+    id: id + '-' + Date.now(), axiomId: id, timestamp: now,
+    previousValue: conf.currentValue, newValue: newVal,
+    previousScore: prevScore, newScore: newScore,
+    trigger: trigger, note: note || TRIGGER_LABELS[trigger],
+  };
+
+  conf.history.push(event);
+  conf.currentScore = newScore;
+  conf.currentValue = newVal;
+  conf.lastUpdatedAt = now;
+  conf.peakScore = Math.max(conf.peakScore, newScore);
+  if (trigger !== 'DECAY') conf.verificationCount++;
+
+  if (newScore >= 90) conf.status = 'PROVEN';
+  else if (newScore > prevScore) conf.status = 'GROWING';
+  else if (newScore < prevScore) conf.status = 'DECLINING';
+  else conf.status = 'STABLE';
+
+  db[id] = conf;
+  setConfDB(db);
+
+  var col = DFUMT_COLORS_CONF[newVal];
+  var sym = DFUMT_SYMBOLS_CONF[newVal];
+  var arrow = delta > 0 ? '↑' : delta < 0 ? '↓' : '→';
+  document.getElementById('conf-update-result').innerHTML =
+    '✅ 更新: ' + prevScore + '% ' + arrow + ' <strong>' + newScore + '%</strong>' +
+    ' (<span style="color:' + col + '">' + sym + ' ' + newVal + '</span>)' +
+    ' |' + STATUS_LABELS[conf.status];
+  renderConfStats();
+}
+
+function lookupConfidence() {
+  var id = document.getElementById('conf-lookup-id').value.trim();
+  var db = getConfDB();
+  var conf = db[id];
+  var container = document.getElementById('conf-timeline');
+
+  if (!conf) {
+    container.innerHTML = '<div style="color:#666">「' + escHtml(id) + '」が見つかりません</div>';
+    return;
+  }
+
+  var col = DFUMT_COLORS_CONF[conf.currentValue];
+  var sym = DFUMT_SYMBOLS_CONF[conf.currentValue];
+  var statusCol = STATUS_COLORS[conf.status] || '#888';
+
+  var html =
+    '<div style="display:flex;gap:0.5rem;align-items:center;margin-bottom:0.75rem;flex-wrap:wrap">' +
+      '<span style="font-size:1rem;color:#ccc;font-weight:bold">' + escHtml(conf.name) + '</span>' +
+      '<span class="conf-dfumt-badge" style="background:' + col + '">' + sym + ' ' + conf.currentValue + '</span>' +
+      '<span class="conf-status-badge" style="background:' + statusCol + '">' + STATUS_LABELS[conf.status] + '</span>' +
+      '<span style="font-size:0.8rem;color:#888">確信度: ' + conf.currentScore + '%</span>' +
+      '<span style="font-size:0.72rem;color:#555">検証回数: ' + conf.verificationCount + '回</span>' +
+    '</div>' +
+    '<div style="font-size:0.8rem;color:#555;margin-bottom:0.5rem">タイムライン（新しい順）:</div>';
+
+  var history = conf.history.slice().reverse();
+  for (var k = 0; k < history.length; k++) {
+    var ev = history[k];
+    var evCol = DFUMT_COLORS_CONF[ev.newValue];
+    var d = ev.newScore - ev.previousScore;
+    var deltaStr = d > 0 ? '+' + d : d < 0 ? '' + d : '±0';
+    var deltaCol = d > 0 ? '#88ccaa' : d < 0 ? '#cc6677' : '#888';
+    var date = new Date(ev.timestamp).toLocaleString('ja-JP', {
+      month:'numeric', day:'numeric', hour:'2-digit', minute:'2-digit'
+    });
+
+    html +=
+      '<div class="conf-timeline-item">' +
+        '<span class="conf-tl-score" style="color:' + evCol + '">' + ev.newScore + '%</span>' +
+        '<div class="conf-tl-bar"><div class="conf-tl-fill" style="width:' + ev.newScore + '%;background:' + evCol + '"></div></div>' +
+        '<span style="color:' + deltaCol + ';font-size:0.75rem;min-width:30px">' + deltaStr + '</span>' +
+        '<span class="conf-dfumt-badge" style="background:' + evCol + ';font-size:0.65rem">' + DFUMT_SYMBOLS_CONF[ev.newValue] + '</span>' +
+        '<span class="conf-tl-trigger">' + (TRIGGER_LABELS[ev.trigger] || ev.trigger) + '</span>' +
+        '<span class="conf-tl-note">' + escHtml(ev.note || '') + '</span>' +
+        '<span style="font-size:0.68rem;color:#444">' + date + '</span>' +
+      '</div>';
+  }
+
+  container.innerHTML = html;
+}
+
+function renderConfRanking() {
+  var db = getConfDB();
+  var all = Object.values(db).sort(function(a, b) { return b.currentScore - a.currentScore; });
+  var container = document.getElementById('conf-ranking');
+
+  if (all.length === 0) {
+    container.innerHTML = '<div style="color:#555">まだ公理が登録されていません</div>';
+    return;
+  }
+
+  container.innerHTML = all.slice(0, 20).map(function(conf, i) {
+    var col = DFUMT_COLORS_CONF[conf.currentValue];
+    var sym = DFUMT_SYMBOLS_CONF[conf.currentValue];
+    var statusCol = STATUS_COLORS[conf.status] || '#888';
+    return '<div class="conf-ranking-item">' +
+      '<span class="conf-rank-num">' + (i + 1) + '</span>' +
+      '<span class="conf-rank-id">' + escHtml(conf.axiomId) + '</span>' +
+      '<span style="font-size:0.78rem;color:#888;flex:1">' + escHtml(conf.name.slice(0,15)) + '</span>' +
+      '<span class="conf-dfumt-badge" style="background:' + col + '">' + sym + '</span>' +
+      '<div class="conf-rank-bar"><div class="conf-rank-fill" style="width:' + conf.currentScore + '%;background:' + col + '"></div></div>' +
+      '<span class="conf-rank-score">' + conf.currentScore + '%</span>' +
+      '<span class="conf-status-badge" style="background:' + statusCol + ';font-size:0.65rem">' + STATUS_LABELS[conf.status] + '</span>' +
+    '</div>';
+  }).join('');
+}
+
+function renderConfStats() {
+  var db = getConfDB();
+  var all = Object.values(db);
+  if (all.length === 0) {
+    document.getElementById('conf-stats').innerHTML =
+      '<div style="color:#555">まだ公理が登録されていません</div>';
+    return;
+  }
+
+  var proven  = all.filter(function(c) { return c.status === 'PROVEN'; }).length;
+  var growing = all.filter(function(c) { return c.status === 'GROWING'; }).length;
+  var avg = Math.round(all.reduce(function(s, c) { return s + c.currentScore; }, 0) / all.length);
+
+  var byDFUMT = {};
+  all.forEach(function(c) { byDFUMT[c.currentValue] = (byDFUMT[c.currentValue] || 0) + 1; });
+
+  var dfumtHtml = Object.keys(byDFUMT).map(function(v) {
+    return '<div class="conf-stat-item">' +
+      '<div class="conf-stat-val" style="color:' + DFUMT_COLORS_CONF[v] + '">' +
+        DFUMT_SYMBOLS_CONF[v] + ' ' + byDFUMT[v] +
+      '</div>' +
+      '<div class="conf-stat-label">' + v + '</div>' +
+    '</div>';
+  }).join('');
+
+  document.getElementById('conf-stats').innerHTML =
+    '<div class="conf-stat-item"><div class="conf-stat-val">' + all.length + '</div><div class="conf-stat-label">登録公理数</div></div>' +
+    '<div class="conf-stat-item"><div class="conf-stat-val" style="color:#88aaff">' + proven + '</div><div class="conf-stat-label">証明済み(TRUE)</div></div>' +
+    '<div class="conf-stat-item"><div class="conf-stat-val" style="color:#88ccaa">' + growing + '</div><div class="conf-stat-label">成長中</div></div>' +
+    '<div class="conf-stat-item"><div class="conf-stat-val" style="color:var(--highlight)">' + avg + '%</div><div class="conf-stat-label">平均確信度</div></div>' +
+    dfumtHtml;
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  renderConfStats();
+  renderConfRanking();
+});
 
 
     // ─── STEP 13-A: D-FUMT視点セレクター ────────────────────
