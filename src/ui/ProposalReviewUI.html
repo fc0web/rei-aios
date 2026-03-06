@@ -1,0 +1,1042 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rei Axiom Review — 発見公理審査インターフェース</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;400;600&family=JetBrains+Mono:wght@300;400;600&family=Cormorant+Garamond:ital,wght@0,300;0,600;1,300&display=swap');
+
+  :root {
+    --ink:       #1a1410;
+    --paper:     #f5f0e8;
+    --aged:      #e8dfc8;
+    --vermilion: #c0392b;
+    --gold:      #b8860b;
+    --sage:      #4a6741;
+    --slate:     #5a6a7a;
+    --muted:     #8a7a6a;
+    --border:    #c8b89a;
+    --glow:      rgba(184,134,11,0.15);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Noto Serif JP', serif;
+    font-weight: 300;
+    min-height: 100vh;
+    background-image:
+      radial-gradient(ellipse at 10% 20%, rgba(184,134,11,0.06) 0%, transparent 50%),
+      radial-gradient(ellipse at 90% 80%, rgba(192,57,43,0.05) 0%, transparent 50%);
+  }
+
+  /* ── ヘッダー ── */
+  header {
+    border-bottom: 1px solid var(--border);
+    padding: 2rem 3rem;
+    display: flex;
+    align-items: baseline;
+    gap: 2rem;
+    background: rgba(245,240,232,0.95);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    backdrop-filter: blur(8px);
+  }
+
+  header h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 300;
+    font-size: 1.6rem;
+    letter-spacing: 0.05em;
+    color: var(--ink);
+  }
+
+  header h1 span {
+    font-style: italic;
+    color: var(--gold);
+  }
+
+  .system-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    padding: 0.2rem 0.7rem;
+    border: 1px solid var(--gold);
+    color: var(--gold);
+    letter-spacing: 0.1em;
+  }
+
+  .header-stats {
+    margin-left: auto;
+    display: flex;
+    gap: 2rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--muted);
+  }
+
+  .header-stats .stat { text-align: center; }
+  .header-stats .stat-num { font-size: 1.2rem; color: var(--ink); font-weight: 400; }
+
+  /* ── メインレイアウト ── */
+  main {
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    min-height: calc(100vh - 80px);
+  }
+
+  /* ── サイドバー ── */
+  aside {
+    border-right: 1px solid var(--border);
+    padding: 2rem 1.5rem;
+    background: rgba(232,223,200,0.3);
+  }
+
+  aside h2 {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 1.2rem;
+  }
+
+  .filter-group { margin-bottom: 2rem; }
+
+  .filter-btn {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 0.5rem 0.8rem;
+    background: transparent;
+    border: 1px solid transparent;
+    color: var(--ink);
+    font-family: 'Noto Serif JP', serif;
+    font-size: 0.85rem;
+    font-weight: 300;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-bottom: 0.3rem;
+    text-align: left;
+  }
+
+  .filter-btn:hover { border-color: var(--border); background: rgba(255,255,255,0.4); }
+  .filter-btn.active {
+    border-color: var(--gold);
+    background: var(--glow);
+    color: var(--gold);
+  }
+
+  .filter-badge {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    padding: 0.1rem 0.5rem;
+    background: var(--aged);
+    border-radius: 10px;
+  }
+
+  .filter-btn.active .filter-badge { background: var(--gold); color: white; }
+
+  /* ── 新規探索パネル ── */
+  .discovery-panel {
+    border: 1px dashed var(--border);
+    padding: 1rem;
+    margin-top: 1rem;
+  }
+
+  .discovery-panel h3 {
+    font-size: 0.75rem;
+    color: var(--muted);
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 0.1em;
+    margin-bottom: 0.8rem;
+  }
+
+  .run-btn {
+    width: 100%;
+    padding: 0.6rem;
+    background: var(--ink);
+    color: var(--paper);
+    border: none;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    cursor: pointer;
+    letter-spacing: 0.1em;
+    transition: opacity 0.2s;
+  }
+
+  .run-btn:hover { opacity: 0.8; }
+  .run-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  .discovery-status {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--sage);
+    margin-top: 0.6rem;
+    min-height: 1rem;
+  }
+
+  /* ── カードリスト ── */
+  .card-area {
+    padding: 2rem 3rem;
+    overflow-y: auto;
+  }
+
+  .card-area h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 300;
+    font-size: 1.3rem;
+    margin-bottom: 2rem;
+    padding-bottom: 0.8rem;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .card-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  /* ── 提案カード ── */
+  .proposal-card {
+    border: 1px solid var(--border);
+    background: rgba(255,255,255,0.5);
+    padding: 1.5rem;
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .proposal-card::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 3px;
+    background: var(--border);
+    transition: background 0.3s;
+  }
+
+  .proposal-card:hover { border-color: var(--gold); background: rgba(255,255,255,0.8); }
+  .proposal-card:hover::before { background: var(--gold); }
+
+  .card-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .confidence-badge {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 1.1rem;
+    min-width: 2rem;
+    text-align: center;
+    flex-shrink: 0;
+    padding-top: 0.1rem;
+  }
+
+  .card-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 600;
+    font-size: 1.05rem;
+    line-height: 1.4;
+    flex: 1;
+  }
+
+  .card-meta {
+    display: flex;
+    gap: 0.8rem;
+    margin-bottom: 0.8rem;
+    flex-wrap: wrap;
+  }
+
+  .meta-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    padding: 0.15rem 0.5rem;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    letter-spacing: 0.05em;
+  }
+
+  .meta-tag.source-arxiv     { border-color: #c0392b; color: #c0392b; }
+  .meta-tag.source-wikipedia { border-color: #2980b9; color: #2980b9; }
+  .meta-tag.source-github    { border-color: #27ae60; color: #27ae60; }
+  .meta-tag.source-nostr     { border-color: #8e44ad; color: #8e44ad; }
+  .meta-tag.source-manual    { border-color: var(--gold); color: var(--gold); }
+  .meta-tag.source-theory_evolution { border-color: var(--sage); color: var(--sage); }
+
+  .alignment-bar {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    margin-bottom: 0.8rem;
+  }
+
+  .alignment-bar label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--muted);
+    width: 100px;
+    flex-shrink: 0;
+  }
+
+  .bar-track {
+    flex: 1;
+    height: 2px;
+    background: var(--aged);
+    position: relative;
+  }
+
+  .bar-fill {
+    height: 100%;
+    background: var(--gold);
+    transition: width 0.5s ease;
+  }
+
+  .bar-value {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--ink);
+    width: 2.5rem;
+    text-align: right;
+    flex-shrink: 0;
+  }
+
+  .related-theories {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--slate);
+    margin-bottom: 0.8rem;
+  }
+
+  .axiom-text {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+    color: var(--slate);
+    padding: 0.6rem 0.8rem;
+    background: var(--aged);
+    border-left: 2px solid var(--gold);
+    margin-bottom: 1rem;
+    word-break: break-all;
+  }
+
+  /* ── アクションボタン群 ── */
+  .card-actions {
+    display: flex;
+    gap: 0.8rem;
+    flex-wrap: wrap;
+  }
+
+  .action-btn {
+    padding: 0.4rem 1rem;
+    border: 1px solid;
+    background: transparent;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    cursor: pointer;
+    letter-spacing: 0.05em;
+    transition: all 0.2s;
+  }
+
+  .btn-approve {
+    border-color: var(--sage);
+    color: var(--sage);
+  }
+  .btn-approve:hover { background: var(--sage); color: white; }
+
+  .btn-reject {
+    border-color: var(--vermilion);
+    color: var(--vermilion);
+  }
+  .btn-reject:hover { background: var(--vermilion); color: white; }
+
+  .btn-revise {
+    border-color: var(--gold);
+    color: var(--gold);
+  }
+  .btn-revise:hover { background: var(--gold); color: white; }
+
+  .btn-detail {
+    border-color: var(--border);
+    color: var(--muted);
+  }
+  .btn-detail:hover { border-color: var(--ink); color: var(--ink); }
+
+  /* ── 状態バッジ ── */
+  .status-badge {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.62rem;
+    padding: 0.2rem 0.6rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .status-PENDING  { border: 1px solid var(--gold); color: var(--gold); }
+  .status-APPROVED { border: 1px solid var(--sage); color: var(--sage); background: rgba(74,103,65,0.08); }
+  .status-REJECTED { border: 1px solid var(--vermilion); color: var(--vermilion); background: rgba(192,57,43,0.06); }
+  .status-NEEDS_REVISION { border: 1px solid var(--slate); color: var(--slate); }
+  .status-EXPIRED  { border: 1px solid var(--muted); color: var(--muted); }
+
+  /* ── モーダル ── */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(26,20,16,0.6);
+    z-index: 200;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(4px);
+  }
+
+  .modal-overlay.open { display: flex; }
+
+  .modal {
+    background: var(--paper);
+    border: 1px solid var(--border);
+    padding: 2rem;
+    width: 500px;
+    max-width: 90vw;
+    max-height: 80vh;
+    overflow-y: auto;
+  }
+
+  .modal h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 300;
+    font-size: 1.2rem;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.8rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .modal label {
+    display: block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    margin-bottom: 0.4rem;
+    margin-top: 1rem;
+  }
+
+  .modal input, .modal textarea {
+    width: 100%;
+    padding: 0.6rem;
+    border: 1px solid var(--border);
+    background: rgba(255,255,255,0.6);
+    font-family: 'Noto Serif JP', serif;
+    font-size: 0.85rem;
+    color: var(--ink);
+    resize: vertical;
+    outline: none;
+  }
+
+  .modal input:focus, .modal textarea:focus { border-color: var(--gold); }
+
+  .modal-actions {
+    display: flex;
+    gap: 0.8rem;
+    margin-top: 1.5rem;
+    justify-content: flex-end;
+  }
+
+  /* ── 空状態 ── */
+  .empty-state {
+    text-align: center;
+    padding: 6rem 2rem;
+    color: var(--muted);
+  }
+
+  .empty-state .symbol {
+    font-size: 3rem;
+    display: block;
+    margin-bottom: 1rem;
+    opacity: 0.3;
+  }
+
+  .empty-state p {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+    letter-spacing: 0.1em;
+  }
+
+  /* ── トースト通知 ── */
+  .toast {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    padding: 0.8rem 1.5rem;
+    background: var(--ink);
+    color: var(--paper);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    letter-spacing: 0.05em;
+    transform: translateY(4rem);
+    opacity: 0;
+    transition: all 0.3s;
+    z-index: 300;
+  }
+
+  .toast.show { transform: translateY(0); opacity: 1; }
+  .toast.sage  { background: var(--sage); }
+  .toast.vermilion { background: var(--vermilion); }
+
+  /* ── スクロールバー ── */
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: var(--aged); }
+  ::-webkit-scrollbar-thumb { background: var(--border); }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Rei Axiom <span>Review</span></h1>
+  <div class="system-tag" id="systemTag">〇 ZERO</div>
+  <div class="header-stats">
+    <div class="stat"><div class="stat-num" id="statPending">0</div>審査待ち</div>
+    <div class="stat"><div class="stat-num" id="statApproved">0</div>承認済み</div>
+    <div class="stat"><div class="stat-num" id="statRejected">0</div>却下</div>
+    <div class="stat"><div class="stat-num" id="statTotal">0</div>総計</div>
+  </div>
+</header>
+
+<main>
+  <aside>
+    <div class="filter-group">
+      <h2>ステータス</h2>
+      <button class="filter-btn active" data-filter="PENDING" onclick="setFilter('PENDING')">
+        審査待ち <span class="filter-badge" id="badge-PENDING">0</span>
+      </button>
+      <button class="filter-btn" data-filter="APPROVED" onclick="setFilter('APPROVED')">
+        承認済み <span class="filter-badge" id="badge-APPROVED">0</span>
+      </button>
+      <button class="filter-btn" data-filter="NEEDS_REVISION" onclick="setFilter('NEEDS_REVISION')">
+        修正依頼 <span class="filter-badge" id="badge-NEEDS_REVISION">0</span>
+      </button>
+      <button class="filter-btn" data-filter="REJECTED" onclick="setFilter('REJECTED')">
+        却下 <span class="filter-badge" id="badge-REJECTED">0</span>
+      </button>
+      <button class="filter-btn" data-filter="ALL" onclick="setFilter('ALL')">
+        全て <span class="filter-badge" id="badge-ALL">0</span>
+      </button>
+    </div>
+
+    <div class="filter-group">
+      <h2>発見源</h2>
+      <button class="filter-btn" data-filter="arxiv" onclick="setSourceFilter('arxiv')">arXiv <span class="filter-badge" id="badge-arxiv">0</span></button>
+      <button class="filter-btn" data-filter="wikipedia" onclick="setSourceFilter('wikipedia')">Wikipedia <span class="filter-badge" id="badge-wikipedia">0</span></button>
+      <button class="filter-btn" data-filter="github" onclick="setSourceFilter('github')">GitHub <span class="filter-badge" id="badge-github">0</span></button>
+      <button class="filter-btn" data-filter="manual" onclick="setSourceFilter('manual')">手動入力 <span class="filter-badge" id="badge-manual">0</span></button>
+    </div>
+
+    <div class="discovery-panel">
+      <h3>探索エージェント</h3>
+      <button class="run-btn" id="runDiscovery" onclick="runDiscovery()">▶ 探索を実行</button>
+      <div class="discovery-status" id="discoveryStatus">待機中</div>
+    </div>
+
+    <div class="discovery-panel" style="margin-top:1rem">
+      <h3>手動追加</h3>
+      <button class="run-btn" onclick="openManualModal()" style="background:var(--gold)">+ 提案を追加</button>
+    </div>
+
+    <div class="discovery-panel" style="margin-top:1rem">
+      <h3>承認済みエクスポート</h3>
+      <button class="run-btn" onclick="exportApproved()" style="background:var(--sage)">↓ JSON エクスポート</button>
+    </div>
+  </aside>
+
+  <div class="card-area">
+    <h2 id="areaTitle">審査待ち <small style="font-size:0.8rem;color:var(--muted);margin-left:0.5rem;font-weight:300">Pending Review</small></h2>
+    <div class="card-list" id="cardList"></div>
+  </div>
+</main>
+
+<!-- レビューモーダル -->
+<div class="modal-overlay" id="reviewModal">
+  <div class="modal">
+    <h3 id="modalTitle">審査</h3>
+    <label>公理テキスト</label>
+    <input type="text" id="modalAxiom" placeholder="axiom text">
+    <label>カテゴリ</label>
+    <input type="text" id="modalCategory" placeholder="logic / mathematics / eastern-philosophy ...">
+    <label>キーワード（カンマ区切り）</label>
+    <input type="text" id="modalKeywords" placeholder="龍樹, 四値論理, catuskoti">
+    <label>レビューコメント / 修正依頼</label>
+    <textarea id="modalNote" rows="3" placeholder="承認理由、却下理由、修正依頼の内容..."></textarea>
+    <div class="modal-actions">
+      <button class="action-btn btn-detail" onclick="closeModal('reviewModal')">キャンセル</button>
+      <button class="action-btn btn-revise" id="modalReviseBtn" onclick="submitRevision()">修正依頼</button>
+      <button class="action-btn btn-reject" id="modalRejectBtn" onclick="submitReview('REJECTED')">却下</button>
+      <button class="action-btn btn-approve" id="modalApproveBtn" onclick="submitReview('APPROVED')">承認</button>
+    </div>
+  </div>
+</div>
+
+<!-- 手動追加モーダル -->
+<div class="modal-overlay" id="manualModal">
+  <div class="modal">
+    <h3>公理候補を手動追加</h3>
+    <label>タイトル / 出典</label>
+    <input type="text" id="manualTitle" placeholder="論文名、書籍名、URL等">
+    <label>公理テキスト *</label>
+    <input type="text" id="manualAxiom" placeholder="公理の核心を1行で">
+    <label>カテゴリ *</label>
+    <input type="text" id="manualCategory" placeholder="logic / eastern-philosophy / consciousness ...">
+    <label>キーワード（カンマ区切り）*</label>
+    <input type="text" id="manualKeywords" placeholder="龍樹, 縁起, dependent origination">
+    <label>D-FUMT関連理論ID（任意）</label>
+    <input type="text" id="manualRelated" placeholder="dfumt-catuskoti, dfumt-flowing-value">
+    <label>整合性メモ</label>
+    <textarea id="manualNote" rows="2" placeholder="既存理論との関係、追加理由"></textarea>
+    <div class="modal-actions">
+      <button class="action-btn btn-detail" onclick="closeModal('manualModal')">キャンセル</button>
+      <button class="action-btn btn-approve" onclick="submitManual()">キューに追加</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ══════════════════════════════════════════════════════════════
+// データストア（実際はAxiomProposalQueueが担当）
+// ══════════════════════════════════════════════════════════════
+
+const SYMBOLS = {
+  TRUE: '\u22A4', FALSE: '\u22A5', BOTH: 'B', NEITHER: 'N',
+  INFINITY: '\u221E', ZERO: '\u3007', FLOWING: '\uFF5E'
+};
+
+const SYMBOL_COLORS = {
+  TRUE: '#4a6741', FALSE: '#c0392b', BOTH: '#8e44ad',
+  NEITHER: '#5a6a7a', INFINITY: '#b8860b', ZERO: '#8a7a6a', FLOWING: '#2980b9'
+};
+
+let proposals = [];
+let currentFilter = 'PENDING';
+let sourceFilter = null;
+let editingId = null;
+let counter = 0;
+
+// ── デモデータ ──
+const DEMO_PROPOSALS = [
+  {
+    id: 'proposal-20260307-0001', status: 'PENDING',
+    seed: { id: 'disc-001', axiom: '[arxiv] Paraconsistent Logic and Buddhist Madhyamaka', category: 'logic', keywords: ['paraconsistent', '\u4E2D\u8AD6', 'nagarjuna', 'dialethism'] },
+    source: 'arxiv', sourceUrl: 'https://arxiv.org/abs/example', sourceTitle: 'Paraconsistent Logic and Buddhist Madhyamaka: A Formal Analysis',
+    discoveredAt: Date.now() - 86400000, discoveryScore: 0.82,
+    confidenceTag: 'TRUE',
+    dfumtAlignment: { relatedTheoryIds: ['dfumt-catuskoti', 'dfumt-flowing-value'], alignmentScore: 0.71, alignmentNote: '\u95A2\u9023\u7406\u8AD6: dfumt-catuskoti, dfumt-flowing-value', isContradicting: false },
+    expiresAt: Date.now() + 29 * 86400000,
+  },
+  {
+    id: 'proposal-20260307-0002', status: 'PENDING',
+    seed: { id: 'disc-002', axiom: '[wikipedia] Process Philosophy \u2014 becoming over being', category: 'western-philosophy', keywords: ['whitehead', 'process', 'becoming', 'ontology'] },
+    source: 'wikipedia', sourceUrl: 'https://en.wikipedia.org/wiki/Process_philosophy',
+    sourceTitle: 'Process Philosophy',
+    discoveredAt: Date.now() - 43200000, discoveryScore: 0.61,
+    confidenceTag: 'FLOWING',
+    dfumtAlignment: { relatedTheoryIds: ['dfumt-flowing-value', 'dfumt-chrono-math'], alignmentScore: 0.55, alignmentNote: '\u95A2\u9023\u7406\u8AD6: dfumt-flowing-value, dfumt-chrono-math', isContradicting: false },
+    expiresAt: Date.now() + 29 * 86400000,
+  },
+  {
+    id: 'proposal-20260307-0003', status: 'PENDING',
+    seed: { id: 'disc-003', axiom: '[arxiv] Integrated Information Theory and Consciousness Mathematics', category: 'consciousness', keywords: ['IIT', 'phi', 'consciousness', 'integrated information'] },
+    source: 'arxiv', sourceUrl: 'https://arxiv.org/abs/example2',
+    sourceTitle: 'IIT 4.0: The Formalization of Integrated Information Theory',
+    discoveredAt: Date.now() - 3600000, discoveryScore: 0.91,
+    confidenceTag: 'TRUE',
+    dfumtAlignment: { relatedTheoryIds: ['dfumt-consciousness-math', 'dfumt-life-creation'], alignmentScore: 0.88, alignmentNote: '\u95A2\u9023\u7406\u8AD6: dfumt-consciousness-math, dfumt-life-creation', isContradicting: false },
+    expiresAt: Date.now() + 29 * 86400000,
+  },
+  {
+    id: 'proposal-20260307-0004', status: 'APPROVED',
+    seed: { id: 'disc-004', axiom: '[wikipedia] Ny\u0101ya \u2014 Indian logic, pramana epistemology', category: 'eastern-philosophy', keywords: ['nyaya', 'pramana', 'indian logic', '\u8AD6\u7406'] },
+    source: 'wikipedia', sourceUrl: 'https://en.wikipedia.org/wiki/Ny%C4%81ya',
+    sourceTitle: 'Ny\u0101ya',
+    discoveredAt: Date.now() - 172800000, discoveryScore: 0.74,
+    confidenceTag: 'TRUE',
+    dfumtAlignment: { relatedTheoryIds: ['dfumt-catuskoti'], alignmentScore: 0.62, alignmentNote: '\u95A2\u9023\u7406\u8AD6: dfumt-catuskoti', isContradicting: false },
+    reviewNote: '\u30A4\u30F3\u30C9\u8AD6\u7406\u5B66\u306E\u8A8D\u8B58\u8AD6\u3068\u3057\u3066\u56DB\u5024\u8AD6\u7406\u306E\u6B74\u53F2\u7684\u80CC\u666F\u306B\u8FFD\u52A0\u4FA1\u5024\u3042\u308A',
+    reviewedAt: Date.now() - 86400000,
+    expiresAt: Date.now() + 28 * 86400000,
+  },
+  {
+    id: 'proposal-20260307-0005', status: 'NEEDS_REVISION',
+    seed: { id: 'disc-005', axiom: '[github] formal-logic/modal-checker', category: 'computation', keywords: ['modal logic', 'model checking'] },
+    source: 'github', sourceUrl: 'https://github.com/example/modal-checker',
+    sourceTitle: 'formal-logic/modal-checker',
+    discoveredAt: Date.now() - 259200000, discoveryScore: 0.48,
+    confidenceTag: 'FLOWING',
+    dfumtAlignment: { relatedTheoryIds: [], alignmentScore: 0.22, alignmentNote: 'SEED_KERNEL\u3068\u306E\u76F4\u63A5\u7684\u306A\u95A2\u9023\u306A\u3057', isContradicting: false },
+    revisionRequest: '\u516C\u7406\u30C6\u30AD\u30B9\u30C8\u3092D-FUMT\u306E\u8A00\u8A9E\u306B\u7FFB\u8A33\u3057\u3066\u304F\u3060\u3055\u3044\u3002\u307E\u305F\u4E03\u4FA1\u8AD6\u7406\u3068\u306E\u5BFE\u5FDC\u95A2\u4FC2\u3092\u660E\u8A18\u3057\u3066\u304F\u3060\u3055\u3044\u3002',
+    expiresAt: Date.now() + 27 * 86400000,
+  },
+];
+
+proposals = [...DEMO_PROPOSALS];
+counter = proposals.length;
+
+// ══════════════════════════════════════════════════════════════
+// レンダリング
+// ══════════════════════════════════════════════════════════════
+
+function getFiltered() {
+  let list = proposals;
+  if (currentFilter !== 'ALL') list = list.filter(p => p.status === currentFilter);
+  if (sourceFilter) list = list.filter(p => p.source === sourceFilter);
+  return list;
+}
+
+function render() {
+  updateStats();
+  const list = getFiltered();
+  const container = document.getElementById('cardList');
+
+  if (list.length === 0) {
+    container.innerHTML = `
+      <div class="empty-state">
+        <span class="symbol">\u3007</span>
+        <p>\u8A72\u5F53\u3059\u308B\u63D0\u6848\u304C\u3042\u308A\u307E\u305B\u3093</p>
+      </div>`;
+    return;
+  }
+
+  container.innerHTML = list.map(p => renderCard(p)).join('');
+}
+
+function renderCard(p) {
+  const sym = SYMBOLS[p.confidenceTag] || '\uFF1F';
+  const color = SYMBOL_COLORS[p.confidenceTag] || '#888';
+  const scoreLabel = (p.discoveryScore * 100).toFixed(0) + '%';
+  const alignLabel = (p.dfumtAlignment.alignmentScore * 100).toFixed(0) + '%';
+  const sourceClass = 'source-' + p.source;
+  const daysSince = Math.floor((Date.now() - p.discoveredAt) / 86400000);
+
+  const actions = p.status === 'PENDING' ? `
+    <button class="action-btn btn-approve" onclick="openReview('${p.id}','approve')">\u627F\u8A8D</button>
+    <button class="action-btn btn-reject"  onclick="openReview('${p.id}','reject')">\u5374\u4E0B</button>
+    <button class="action-btn btn-revise"  onclick="openReview('${p.id}','revise')">\u4FEE\u6B63\u4F9D\u983C</button>
+  ` : p.status === 'NEEDS_REVISION' ? `
+    <button class="action-btn btn-approve" onclick="openReview('${p.id}','approve')">\u627F\u8A8D</button>
+    <button class="action-btn btn-reject"  onclick="openReview('${p.id}','reject')">\u5374\u4E0B</button>
+  ` : '<span style="font-family:monospace;font-size:0.7rem;color:var(--muted)">' + (p.reviewNote || '') + '</span>';
+
+  return `
+  <div class="proposal-card" id="card-${p.id}">
+    <span class="status-badge status-${p.status}">${p.status.replace('_', ' ')}</span>
+    <div class="card-header">
+      <div class="confidence-badge" style="color:${color}">${sym}</div>
+      <div class="card-title">${p.sourceTitle || p.seed.axiom}</div>
+    </div>
+    <div class="card-meta">
+      <span class="meta-tag ${sourceClass}">${p.source}</span>
+      <span class="meta-tag">${p.seed.category}</span>
+      <span class="meta-tag">${daysSince === 0 ? '\u4ECA\u65E5' : daysSince + '\u65E5\u524D'}</span>
+      ${p.confidenceTag ? '<span class="meta-tag" style="color:' + color + ';border-color:' + color + '">' + sym + ' ' + p.confidenceTag + '</span>' : ''}
+    </div>
+    <div class="axiom-text">${p.seed.axiom}</div>
+    <div class="alignment-bar">
+      <label>\u767A\u898B\u30B9\u30B3\u30A2</label>
+      <div class="bar-track"><div class="bar-fill" style="width:${p.discoveryScore*100}%"></div></div>
+      <div class="bar-value">${scoreLabel}</div>
+    </div>
+    <div class="alignment-bar">
+      <label>D-FUMT\u6574\u5408\u5EA6</label>
+      <div class="bar-track"><div class="bar-fill" style="width:${p.dfumtAlignment.alignmentScore*100}%;background:var(--sage)"></div></div>
+      <div class="bar-value">${alignLabel}</div>
+    </div>
+    ${p.dfumtAlignment.relatedTheoryIds.length > 0 ? `
+    <div class="related-theories">\u95A2\u9023: ${p.dfumtAlignment.relatedTheoryIds.join(' \u00B7 ')}</div>` : ''}
+    ${p.revisionRequest ? '<div style="font-size:0.75rem;color:var(--gold);padding:0.4rem;border:1px solid var(--gold);margin-bottom:0.8rem">\u4FEE\u6B63\u4F9D\u983C: ' + p.revisionRequest + '</div>' : ''}
+    ${p.seed.keywords.length > 0 ? `
+    <div style="margin-bottom:0.8rem">${p.seed.keywords.map(k => '<span class="meta-tag" style="margin:0.1rem">' + k + '</span>').join('')}</div>` : ''}
+    <div class="card-actions">${actions}</div>
+  </div>`;
+}
+
+function updateStats() {
+  const counts = { PENDING: 0, APPROVED: 0, REJECTED: 0, NEEDS_REVISION: 0, EXPIRED: 0, ALL: proposals.length };
+  const sources = { arxiv: 0, wikipedia: 0, github: 0, nostr: 0, manual: 0, theory_evolution: 0 };
+
+  for (const p of proposals) {
+    counts[p.status] = (counts[p.status] || 0) + 1;
+    sources[p.source] = (sources[p.source] || 0) + 1;
+  }
+
+  document.getElementById('statPending').textContent  = counts.PENDING;
+  document.getElementById('statApproved').textContent = counts.APPROVED;
+  document.getElementById('statRejected').textContent = counts.REJECTED;
+  document.getElementById('statTotal').textContent    = proposals.length;
+
+  for (const [k, v] of Object.entries(counts)) {
+    const el = document.getElementById('badge-' + k);
+    if (el) el.textContent = v;
+  }
+  for (const [k, v] of Object.entries(sources)) {
+    const el = document.getElementById('badge-' + k);
+    if (el) el.textContent = v;
+  }
+
+  // システム状態（七価）
+  const tag = counts.PENDING > 5 ? 'INFINITY' :
+              counts.NEEDS_REVISION > 0 ? 'FLOWING' :
+              counts.PENDING > 0 ? 'TRUE' :
+              counts.APPROVED > 0 ? 'TRUE' : 'ZERO';
+  const tagEl = document.getElementById('systemTag');
+  tagEl.textContent = SYMBOLS[tag] + ' ' + tag;
+  tagEl.style.borderColor = SYMBOL_COLORS[tag];
+  tagEl.style.color = SYMBOL_COLORS[tag];
+}
+
+// ══════════════════════════════════════════════════════════════
+// フィルター
+// ══════════════════════════════════════════════════════════════
+
+const FILTER_LABELS = {
+  PENDING: '\u5BE9\u67FB\u5F85\u3061', APPROVED: '\u627F\u8A8D\u6E08\u307F', REJECTED: '\u5374\u4E0B',
+  NEEDS_REVISION: '\u4FEE\u6B63\u4F9D\u983C', ALL: '\u5168\u3066'
+};
+
+function setFilter(f) {
+  currentFilter = f;
+  sourceFilter = null;
+  document.querySelectorAll('.filter-btn[data-filter]').forEach(b => {
+    b.classList.toggle('active', b.dataset.filter === f);
+  });
+  document.getElementById('areaTitle').innerHTML =
+    (FILTER_LABELS[f] || f) + ' <small style="font-size:0.8rem;color:var(--muted);margin-left:0.5rem;font-weight:300">\u2014 ' + getFiltered().length + ' \u4EF6</small>';
+  render();
+}
+
+function setSourceFilter(src) {
+  sourceFilter = sourceFilter === src ? null : src;
+  document.querySelectorAll('.filter-btn').forEach(b => {
+    if (['arxiv','wikipedia','github','manual'].includes(b.dataset.filter))
+      b.classList.toggle('active', b.dataset.filter === sourceFilter);
+  });
+  render();
+}
+
+// ══════════════════════════════════════════════════════════════
+// レビュー操作
+// ══════════════════════════════════════════════════════════════
+
+let modalMode = 'approve';
+
+function openReview(id, mode) {
+  const p = proposals.find(x => x.id === id);
+  if (!p) return;
+  editingId = id;
+  modalMode = mode;
+
+  document.getElementById('modalTitle').textContent =
+    mode === 'approve' ? '\u627F\u8A8D' : mode === 'reject' ? '\u5374\u4E0B' : '\u4FEE\u6B63\u4F9D\u983C';
+  document.getElementById('modalAxiom').value    = p.seed.axiom;
+  document.getElementById('modalCategory').value = p.seed.category;
+  document.getElementById('modalKeywords').value = p.seed.keywords.join(', ');
+  document.getElementById('modalNote').value     = p.revisionRequest || '';
+
+  document.getElementById('modalApproveBtn').style.display = mode === 'reject'  ? 'none' : '';
+  document.getElementById('modalRejectBtn').style.display  = mode === 'approve' ? 'none' : '';
+  document.getElementById('modalReviseBtn').style.display  = mode === 'revise'  ? ''     : 'none';
+
+  document.getElementById('reviewModal').classList.add('open');
+}
+
+function submitReview(action) {
+  const p = proposals.find(x => x.id === editingId);
+  if (!p) return;
+  const note    = document.getElementById('modalNote').value;
+  const axiom   = document.getElementById('modalAxiom').value;
+  const category= document.getElementById('modalCategory').value;
+  const keywords= document.getElementById('modalKeywords').value.split(',').map(s=>s.trim()).filter(Boolean);
+
+  p.seed.axiom    = axiom;
+  p.seed.category = category;
+  p.seed.keywords = keywords;
+  p.status        = action;
+  p.reviewNote    = note || (action === 'APPROVED' ? '\u627F\u8A8D' : '\u5374\u4E0B');
+  p.reviewedAt    = Date.now();
+
+  closeModal('reviewModal');
+  render();
+  toast(action === 'APPROVED' ? '\u2713 \u627F\u8A8D\u3057\u307E\u3057\u305F' : '\u2717 \u5374\u4E0B\u3057\u307E\u3057\u305F', action === 'APPROVED' ? 'sage' : 'vermilion');
+}
+
+function submitRevision() {
+  const p = proposals.find(x => x.id === editingId);
+  if (!p) return;
+  const request = document.getElementById('modalNote').value;
+  if (!request.trim()) { toast('\u4FEE\u6B63\u4F9D\u983C\u306E\u5185\u5BB9\u3092\u5165\u529B\u3057\u3066\u304F\u3060\u3055\u3044'); return; }
+  p.status = 'NEEDS_REVISION';
+  p.revisionRequest = request;
+  p.reviewedAt = Date.now();
+  closeModal('reviewModal');
+  render();
+  toast('\u4FEE\u6B63\u4F9D\u983C\u3092\u9001\u4FE1\u3057\u307E\u3057\u305F', 'sage');
+}
+
+// ══════════════════════════════════════════════════════════════
+// 手動追加
+// ══════════════════════════════════════════════════════════════
+
+function openManualModal() {
+  ['manualTitle','manualAxiom','manualCategory','manualKeywords','manualRelated','manualNote']
+    .forEach(id => document.getElementById(id).value = '');
+  document.getElementById('manualModal').classList.add('open');
+}
+
+function submitManual() {
+  const axiom    = document.getElementById('manualAxiom').value.trim();
+  const category = document.getElementById('manualCategory').value.trim();
+  const keywords = document.getElementById('manualKeywords').value.split(',').map(s=>s.trim()).filter(Boolean);
+  if (!axiom || !category || keywords.length === 0) {
+    toast('\u516C\u7406\u30C6\u30AD\u30B9\u30C8\u30FB\u30AB\u30C6\u30B4\u30EA\u30FB\u30AD\u30FC\u30EF\u30FC\u30C9\u306F\u5FC5\u9808\u3067\u3059');
+    return;
+  }
+  const related = document.getElementById('manualRelated').value.split(',').map(s=>s.trim()).filter(Boolean);
+  const note    = document.getElementById('manualNote').value;
+  const title   = document.getElementById('manualTitle').value;
+
+  const date = new Date().toISOString().slice(0,10).replace(/-/g,'');
+  const id   = 'proposal-' + date + '-' + String(++counter).padStart(4,'0');
+
+  proposals.unshift({
+    id, status: 'PENDING',
+    seed: { id: 'manual-' + Date.now(), axiom, category, keywords },
+    source: 'manual',
+    sourceTitle: title || '\u624B\u52D5\u5165\u529B',
+    discoveredAt: Date.now(),
+    discoveryScore: 0.9,
+    confidenceTag: 'TRUE',
+    dfumtAlignment: {
+      relatedTheoryIds: related, alignmentScore: 0.7,
+      alignmentNote: note || '\u624B\u52D5\u5165\u529B', isContradicting: false,
+    },
+    expiresAt: Date.now() + 30 * 86400000,
+  });
+
+  closeModal('manualModal');
+  setFilter('PENDING');
+  toast('\u2713 \u30AD\u30E5\u30FC\u306B\u8FFD\u52A0\u3057\u307E\u3057\u305F', 'sage');
+}
+
+// ══════════════════════════════════════════════════════════════
+// 探索シミュレーション
+// ══════════════════════════════════════════════════════════════
+
+const MOCK_DISCOVERIES = [
+  { title: 'Jain Logic: Sy\u0101dv\u0101da and Many-Valued Truth', source: 'arxiv', category: 'eastern-philosophy', keywords: ['syadvada', 'jain', 'many-valued', '\u591A\u5024\u8AD6\u7406'], score: 0.78 },
+  { title: 'Tiantai Buddhism: The Middle Way Threefold Truth', source: 'wikipedia', category: 'eastern-philosophy', keywords: ['\u5929\u53F0', '\u4E2D\u9053', 'tiantai', 'threefold truth'], score: 0.66 },
+  { title: 'Quantum Bayesianism and the Observer Problem', source: 'arxiv', category: 'quantum', keywords: ['QBism', 'observer', 'bayesian', 'quantum'], score: 0.71 },
+  { title: 'coq/stdlib \u2014 Constructive Logic Formalization', source: 'github', category: 'computation', keywords: ['coq', 'constructive', 'formal proof'], score: 0.53 },
+  { title: 'Dissipative Structures and Self-Organization', source: 'wikipedia', category: 'consciousness', keywords: ['dissipative', 'prigogine', 'self-organization', '\u6563\u9038\u69CB\u9020'], score: 0.82 },
+];
+
+let discoveryRunning = false;
+
+async function runDiscovery() {
+  if (discoveryRunning) return;
+  discoveryRunning = true;
+  const btn = document.getElementById('runDiscovery');
+  const status = document.getElementById('discoveryStatus');
+  btn.disabled = true;
+  status.textContent = '\u63A2\u7D22\u4E2D...';
+
+  // シミュレーション
+  await sleep(800); status.textContent = 'arXiv \u3092\u691C\u7D22\u4E2D...';
+  await sleep(600); status.textContent = 'Wikipedia \u3092\u691C\u7D22\u4E2D...';
+  await sleep(500); status.textContent = 'GitHub \u3092\u691C\u7D22\u4E2D...';
+  await sleep(400); status.textContent = '\u30B9\u30B3\u30A2\u30EA\u30F3\u30B0\u4E2D...';
+
+  const discovered = MOCK_DISCOVERIES.slice(0, 2 + Math.floor(Math.random() * 3));
+  let queued = 0;
+
+  for (const d of discovered) {
+    if (d.score >= 0.4) {
+      const date = new Date().toISOString().slice(0,10).replace(/-/g,'');
+      const id = 'proposal-' + date + '-' + String(++counter).padStart(4,'0');
+      proposals.unshift({
+        id, status: 'PENDING',
+        seed: { id: 'disc-' + Date.now(), axiom: '[' + d.source + '] ' + d.title, category: d.category, keywords: d.keywords },
+        source: d.source,
+        sourceTitle: d.title,
+        discoveredAt: Date.now(),
+        discoveryScore: d.score,
+        confidenceTag: d.score > 0.7 ? 'TRUE' : 'FLOWING',
+        dfumtAlignment: {
+          relatedTheoryIds: [], alignmentScore: d.score * 0.8,
+          alignmentNote: '\u81EA\u52D5\u30B9\u30B3\u30A2\u30EA\u30F3\u30B0', isContradicting: false,
+        },
+        expiresAt: Date.now() + 30 * 86400000,
+      });
+      queued++;
+    }
+  }
+
+  await sleep(300);
+  status.textContent = '\u5B8C\u4E86: ' + queued + '\u4EF6\u3092\u30AD\u30E5\u30FC\u306B\u8FFD\u52A0';
+  btn.disabled = false;
+  discoveryRunning = false;
+  setFilter('PENDING');
+  toast('\u2713 ' + queued + '\u4EF6\u306E\u5019\u88DC\u3092\u767A\u898B\u3057\u307E\u3057\u305F', 'sage');
+}
+
+function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+// ══════════════════════════════════════════════════════════════
+// エクスポート
+// ══════════════════════════════════════════════════════════════
+
+function exportApproved() {
+  const approved = proposals.filter(p => p.status === 'APPROVED').map(p => p.seed);
+  if (approved.length === 0) { toast('\u627F\u8A8D\u6E08\u307F\u306E\u63D0\u6848\u304C\u3042\u308A\u307E\u305B\u3093'); return; }
+  const json = JSON.stringify(approved, null, 2);
+  const blob = new Blob([json], { type: 'application/json' });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href = url; a.download = 'rei-axiom-library-' + new Date().toISOString().slice(0,10) + '.json';
+  a.click(); URL.revokeObjectURL(url);
+  toast('\u2713 ' + approved.length + '\u4EF6\u3092\u30A8\u30AF\u30B9\u30DD\u30FC\u30C8\u3057\u307E\u3057\u305F', 'sage');
+}
+
+// ══════════════════════════════════════════════════════════════
+// ユーティリティ
+// ══════════════════════════════════════════════════════════════
+
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+function toast(msg, type) {
+  type = type || '';
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.className = 'toast ' + type + ' show';
+  setTimeout(function() { el.classList.remove('show'); }, 3000);
+}
+
+// クリック外でモーダルを閉じる
+document.querySelectorAll('.modal-overlay').forEach(overlay => {
+  overlay.addEventListener('click', e => {
+    if (e.target === overlay) overlay.classList.remove('open');
+  });
+});
+
+// ── 初期レンダリング ──
+render();
+</script>
+</body>
+</html>
