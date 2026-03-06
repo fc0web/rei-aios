@@ -11,6 +11,7 @@
     "test:step9": "tsx test/step9-ai-home-test.ts",
     "test:step10a": "tsx test/step10a-universal-chat-test.ts",
     "test:step10b": "tsx test/step10b-chat-memory-test.ts",
+    "test:step10c": "tsx test/step10c-dictionary-test.ts",
     "test:seed-kernel": "tsx test/axiom-os-seed-kernel-test.ts",
     "test:compressed-kernel": "tsx test/axiom-os-compressed-kernel-test.ts",
     "test:contradiction": "tsx test/axiom-os-contradiction-detector-test.ts",

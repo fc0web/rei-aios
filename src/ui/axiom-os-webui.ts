@@ -8,6 +8,7 @@
 
 import { generateUniversalChatPanel, DEFAULT_PROVIDERS } from '../chat/universal-chat';
 import { generateMemoryIntegrationScript } from '../chat/chat-memory-bridge';
+import { generateDictionaryPanel } from '../dictionary/wiktionary-client';
 
 // ─── WebUI HTML生成 ────────────────────────────────────────────
 export function generateAxiomOsWebUI(options: WebUIOptions = {}): string {
@@ -15,6 +16,7 @@ export function generateAxiomOsWebUI(options: WebUIOptions = {}): string {
   const theories = options.theories ?? DEFAULT_THEORIES;
   const universalChatPanel = generateUniversalChatPanel(DEFAULT_PROVIDERS);
   const memoryScript = generateMemoryIntegrationScript();
+  const dictionaryPanel = generateDictionaryPanel();
 
   return `<!DOCTYPE html>
 <html lang="ja">
@@ -140,6 +142,7 @@ export function generateAxiomOsWebUI(options: WebUIOptions = {}): string {
     <button onclick="showPanel('bench')">圧縮ベンチマーク</button>
     <button onclick="showPanel('universal')">汎用チャット</button>
     <button onclick="showPanel('memory')">記憶ログ</button>
+    <button onclick="showPanel('dictionary')">辞書</button>
   </nav>
 
   <!-- 歴史人物チャットパネル -->
@@ -220,6 +223,8 @@ export function generateAxiomOsWebUI(options: WebUIOptions = {}): string {
   .memory-a { color: #888899; font-size: 0.8rem; margin-top: 0.2rem; }
   .memory-meta { display: flex; gap: 0.5rem; align-items: center; }
   </style>
+
+  ${dictionaryPanel}
 
   <script>
     let selectedPersona = null;
