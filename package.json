@@ -75,6 +75,8 @@
     "LICENSE"
   ],
   "dependencies": {
-    "better-sqlite3": "^12.6.2"
+    "@types/uuid": "^10.0.0",
+    "better-sqlite3": "^12.6.2",
+    "uuid": "^13.0.0"
   }
 }
