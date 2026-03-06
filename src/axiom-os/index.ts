@@ -126,3 +126,18 @@ export type { EnhancedLLMZipResult } from './axiom-llm-zip-enhanced';
 
 export { AxiomStreamCompressor } from './axiom-stream-compressor';
 export type { StreamConfig, StreamChunk, StreamStats } from './axiom-stream-compressor';
+
+// Axiom Discovery System (STEP 13)
+export { AxiomProposalQueue } from './axiom-proposal-queue';
+export type {
+  AxiomProposal,
+  ProposalStatus,
+  DiscoverySource,
+  QueueStats,
+} from './axiom-proposal-queue';
+
+export { AxiomDiscoveryAgent, DEFAULT_CONFIG } from './axiom-discovery-agent';
+export type {
+  DiscoveryConfig,
+  DiscoveryReport,
+} from './axiom-discovery-agent';

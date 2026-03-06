@@ -16,6 +16,8 @@ import {
   type DiscoveryReport,
 } from '../src/axiom-os/axiom-discovery-agent';
 import { type SeedTheory } from '../src/axiom-os/seed-kernel';
+import * as fs from 'fs';
+import * as path from 'path';
 
 async function runTests() {
   console.log('=== AxiomProposalQueue + DiscoveryAgent Tests ===\n');
@@ -343,6 +345,108 @@ async function runTests() {
   assert(typeof emptyReport.queued === 'number', 'queuedがnumber');
   assert(typeof emptyReport.skipped === 'number', 'skippedがnumber');
   assert(Array.isArray(emptyReport.details), 'detailsが配列');
+
+  // ══════════════════════════════════════════════════════════════
+  // 21. JSON永続化 — save/load
+  // ══════════════════════════════════════════════════════════════
+  console.log('\n--- 21. JSON永続化: save/load ---');
+
+  const tmpDir = path.join(process.cwd(), 'test', 'tmp-persist-test');
+  const persistFile = path.join(tmpDir, 'test-queue.json');
+
+  // クリーンアップ
+  if (fs.existsSync(tmpDir)) fs.rmSync(tmpDir, { recursive: true });
+
+  const pq1 = new AxiomProposalQueue({ persistPath: persistFile });
+  pq1.enqueue({
+    seed: { id: 'persist-1', axiom: '永続化テストA', category: 'logic', keywords: ['test'] },
+    source: 'manual', discoveryScore: 0.7,
+    dfumtAlignment: { relatedTheoryIds: [], alignmentScore: 0.5, alignmentNote: '', isContradicting: false },
+  });
+  pq1.enqueue({
+    seed: { id: 'persist-2', axiom: '永続化テストB', category: 'math', keywords: ['test2'] },
+    source: 'arxiv', discoveryScore: 0.8,
+    dfumtAlignment: { relatedTheoryIds: [], alignmentScore: 0.6, alignmentNote: '', isContradicting: false },
+  });
+
+  assert(fs.existsSync(persistFile), 'JSONファイルが作成される');
+
+  // 新しいインスタンスで読み込み
+  const pq2 = new AxiomProposalQueue({ persistPath: persistFile });
+  assert(pq2.getPending().length === 2, 'JSONから2件復元');
+  const restored = pq2.getPending().find(p => p.seed.axiom === '永続化テストA');
+  assert(restored !== undefined, '復元したデータが正しい');
+
+  // ══════════════════════════════════════════════════════════════
+  // 22. JSON永続化 — pruneStale（REJECTED/EXPIRED自動削除）
+  // ══════════════════════════════════════════════════════════════
+  console.log('\n--- 22. pruneStale: REJECTED/EXPIRED自動削除 ---');
+
+  const rejId = pq2.getPending()[0].id;
+  pq2.reject(rejId, 'テスト却下');
+
+  // JSONを再読み込み → REJECTEDはsave時にpruneされている
+  const pq3 = new AxiomProposalQueue({ persistPath: persistFile });
+  const rejFound = pq3.getById(rejId);
+  assert(rejFound === undefined, 'REJECTEDはsave時に削除される');
+  assert(pq3.getPending().length === 1, 'PENDING 1件のみ残る');
+
+  // ══════════════════════════════════════════════════════════════
+  // 23. exportToFile
+  // ══════════════════════════════════════════════════════════════
+  console.log('\n--- 23. exportToFile ---');
+
+  const exportFile = path.join(tmpDir, 'export-test.json');
+  pq3.enqueue({
+    seed: { id: 'export-1', axiom: 'エクスポートテスト', category: 'test', keywords: [] },
+    source: 'manual', discoveryScore: 0.9,
+    dfumtAlignment: { relatedTheoryIds: [], alignmentScore: 0.7, alignmentNote: '', isContradicting: false },
+  });
+  // 承認して exportApprovedSeeds 用に
+  const allPending = pq3.getPending();
+  if (allPending.length > 0) pq3.approve(allPending[0].id, 'テスト承認');
+
+  pq3.exportToFile(exportFile);
+  assert(fs.existsSync(exportFile), 'エクスポートファイルが作成される');
+
+  const exportData = JSON.parse(fs.readFileSync(exportFile, 'utf-8'));
+  assert(exportData.exportedAt !== undefined, 'exportedAtが存在');
+  assert(exportData.stats !== undefined, 'statsが存在');
+  assert(Array.isArray(exportData.proposals), 'proposalsが配列');
+
+  // ══════════════════════════════════════════════════════════════
+  // 24. enforceMaxSize
+  // ══════════════════════════════════════════════════════════════
+  console.log('\n--- 24. enforceMaxSize ---');
+
+  const maxFile = path.join(tmpDir, 'max-test.json');
+  const pqMax = new AxiomProposalQueue({ persistPath: maxFile, maxSize: 3 });
+  for (let i = 0; i < 5; i++) {
+    pqMax.enqueue({
+      seed: { id: `max-${i}`, axiom: `max test ${i}`, category: 'test', keywords: [] },
+      source: 'manual', discoveryScore: 0.5,
+      dfumtAlignment: { relatedTheoryIds: [], alignmentScore: 0.3, alignmentNote: '', isContradicting: false },
+    });
+  }
+  // maxSize=3 なので save 時に古いPENDINGが削除される
+  const pqMaxReload = new AxiomProposalQueue({ persistPath: maxFile, maxSize: 3 });
+  assert(pqMaxReload.getPending().length <= 3, 'maxSize制限が機能（3件以下）');
+
+  // ══════════════════════════════════════════════════════════════
+  // 25. persistPathなしの場合（メモリのみ）
+  // ══════════════════════════════════════════════════════════════
+  console.log('\n--- 25. persistPathなし（メモリのみ） ---');
+
+  const memQueue = new AxiomProposalQueue();
+  memQueue.enqueue({
+    seed: { id: 'mem-1', axiom: 'memory only', category: 'test', keywords: [] },
+    source: 'manual', discoveryScore: 0.5,
+    dfumtAlignment: { relatedTheoryIds: [], alignmentScore: 0.3, alignmentNote: '', isContradicting: false },
+  });
+  assert(memQueue.getPending().length === 1, 'メモリのみモードで動作');
+
+  // クリーンアップ
+  if (fs.existsSync(tmpDir)) fs.rmSync(tmpDir, { recursive: true });
 
   console.log(`\n=== Results: ${passed} passed, ${failed} failed ===`);
   process.exit(failed === 0 ? 0 : 1);

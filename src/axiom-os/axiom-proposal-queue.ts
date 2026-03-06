@@ -21,6 +21,8 @@
  *   1000件 ≈ 0.5MB
  */
 
+import * as fs from 'fs';
+import * as path from 'path';
 import { type SevenLogicValue, toSymbol } from './seven-logic';
 import { type SeedTheory } from './seed-kernel';
 
@@ -93,6 +95,17 @@ export interface QueueStats {
 export class AxiomProposalQueue {
   private proposals: Map<string, AxiomProposal> = new Map();
   private counter = 0;
+  private readonly persistPath: string | null;
+  private readonly maxSize: number;
+
+  constructor(options: {
+    persistPath?: string;   // 例: 'data/proposal-queue.json'
+    maxSize?: number;       // 最大件数 (default: 500)
+  } = {}) {
+    this.persistPath = options.persistPath ?? null;
+    this.maxSize     = options.maxSize ?? 500;
+    this.load();
+  }
 
   // ══════════════════════════════════════════════════════════════
   // 投入（発見エージェントが使用）
@@ -132,6 +145,7 @@ export class AxiomProposalQueue {
     };
 
     this.proposals.set(id, proposal);
+    this.save();
     return proposal;
   }
 
@@ -146,6 +160,7 @@ export class AxiomProposalQueue {
     p.status = 'APPROVED';
     p.reviewNote = note ?? '承認';
     p.reviewedAt = Date.now();
+    this.save();
     return p;
   }
 
@@ -156,6 +171,7 @@ export class AxiomProposalQueue {
     p.status = 'REJECTED';
     p.reviewNote = reason;
     p.reviewedAt = Date.now();
+    this.save();
     return p;
   }
 
@@ -166,6 +182,7 @@ export class AxiomProposalQueue {
     p.status = 'NEEDS_REVISION';
     p.revisionRequest = request;
     p.reviewedAt = Date.now();
+    this.save();
     return p;
   }
 
@@ -254,6 +271,82 @@ export class AxiomProposalQueue {
         p.status = 'EXPIRED';
       }
     }
+  }
+
+  // ══════════════════════════════════════════════════════════════
+  // JSON永続化
+  // ══════════════════════════════════════════════════════════════
+
+  /** 起動時にJSONから読み込む */
+  private load(): void {
+    if (!this.persistPath) return;
+    try {
+      if (!fs.existsSync(this.persistPath)) return;
+      const raw = fs.readFileSync(this.persistPath, 'utf-8');
+      const data = JSON.parse(raw) as { counter: number; proposals: AxiomProposal[] };
+      this.counter = data.counter ?? 0;
+      for (const p of data.proposals ?? []) {
+        this.proposals.set(p.id, p);
+      }
+    } catch {
+      // 読み込み失敗は無視（空の状態で起動）
+    }
+  }
+
+  /** 変更のたびにJSONへ書き出す */
+  private save(): void {
+    if (!this.persistPath) return;
+    try {
+      // REJECTED / EXPIRED を自動削除してから保存
+      this.pruneStale();
+      // 上限超過なら古いPENDINGから削除
+      this.enforceMaxSize();
+
+      const dir = path.dirname(this.persistPath);
+      if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+
+      const data = {
+        counter: this.counter,
+        savedAt: new Date().toISOString(),
+        proposals: [...this.proposals.values()],
+      };
+      fs.writeFileSync(this.persistPath, JSON.stringify(data, null, 2), 'utf-8');
+    } catch {
+      // 書き込み失敗は無視（メモリ上のデータは保持）
+    }
+  }
+
+  /** REJECTED / EXPIRED を削除（容量削減） */
+  private pruneStale(): void {
+    for (const [id, p] of this.proposals) {
+      if (p.status === 'REJECTED' || p.status === 'EXPIRED') {
+        this.proposals.delete(id);
+      }
+    }
+  }
+
+  /** 上限超過時に古いPENDINGから削除 */
+  private enforceMaxSize(): void {
+    if (this.proposals.size <= this.maxSize) return;
+    const pending = [...this.proposals.values()]
+      .filter(p => p.status === 'PENDING')
+      .sort((a, b) => a.discoveredAt - b.discoveredAt); // 古い順
+    const excess = this.proposals.size - this.maxSize;
+    for (let i = 0; i < excess && i < pending.length; i++) {
+      this.proposals.delete(pending[i].id);
+    }
+  }
+
+  /** 現在のキューをJSONファイルとして手動エクスポート */
+  exportToFile(filePath: string): void {
+    const data = {
+      exportedAt: new Date().toISOString(),
+      stats: this.stats(),
+      proposals: [...this.proposals.values()],
+    };
+    const dir = path.dirname(filePath);
+    if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+    fs.writeFileSync(filePath, JSON.stringify(data, null, 2), 'utf-8');
   }
 
   /**

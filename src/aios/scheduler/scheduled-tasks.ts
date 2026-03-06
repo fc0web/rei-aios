@@ -17,6 +17,8 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { TaskScheduler } from './task-scheduler';
 import type { AIOSUpdater } from '../auto-update/updater';
+import { AxiomProposalQueue } from '../../axiom-os/axiom-proposal-queue';
+import { AxiomDiscoveryAgent } from '../../axiom-os/axiom-discovery-agent';
 
 // ─── 型定義 ────────────────────────────────────────────
 
@@ -26,6 +28,7 @@ export interface ScheduledTasksConfig {
   chatStoreDir?: string;
   updater?: AIOSUpdater;
   log?: (msg: string) => void;
+  discoveryDataDir?: string;   // 例: 'data/discovery'
 }
 
 // ─── registerDefaultTasks ─────────────────────────────
@@ -247,6 +250,42 @@ export function registerDefaultTasks(
 
       fs.writeFileSync(reportFile, JSON.stringify(report, null, 2));
       return `Axiom check: ${allConsistent ? '✅ All consistent' : '⚠️ Inconsistency detected'} (${axioms.length} axioms)`;
+    },
+  });
+
+  // ─── T-07: Axiom Discovery（24時間ごと） ─────────────
+  const discoveryQueue = new AxiomProposalQueue({
+    persistPath: path.join(config.discoveryDataDir ?? config.dataDir, 'proposal-queue.json'),
+    maxSize: 500,
+  });
+  const discoveryAgent = new AxiomDiscoveryAgent(discoveryQueue, {
+    intervalMs: 24 * 60 * 60 * 1000,
+    maxPerRun: 10,
+    minScore: 0.4,
+    enabledSources: ['arxiv', 'wikipedia', 'github'],
+  });
+
+  scheduler.register({
+    id: 'axiom-discovery',
+    name: 'Axiom Discovery（公理探索）',
+    trigger: { type: 'interval', intervalMs: 24 * 60 * 60 * 1000 },
+    enabled: true,
+    maxRetries: 2,
+    retryBaseMs: 30000,
+    timeoutMs: 120000,
+    fn: async () => {
+      const report = await discoveryAgent.discover();
+      log(`[T-07] 発見: ${report.found}件 キュー追加: ${report.queued}件`);
+      // キューをエクスポート（GitHubコミット用）
+      if (report.queued > 0) {
+        const exportPath = path.join(
+          config.discoveryDataDir ?? config.dataDir,
+          `proposal-queue-${new Date().toISOString().slice(0, 10)}.json`
+        );
+        discoveryQueue.exportToFile(exportPath);
+        log(`[T-07] エクスポート: ${exportPath}`);
+      }
+      return `Discovery: found=${report.found} queued=${report.queued} skipped=${report.skipped}`;
     },
   });
 

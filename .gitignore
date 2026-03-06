@@ -1,0 +1,5 @@
+node_modules/
+dist/
+
+# 探索一時キャッシュ
+data/discovery/tmp/
