@@ -123,6 +123,7 @@
     <button onclick="showPanel('universal')">汎用チャット</button>
     <button onclick="showPanel('memory')">記憶ログ</button>
     <button onclick="showPanel('dictionary')">辞書</button>
+    <button onclick="showPanel('nostr')">Nostr共有</button>
   </nav>
 
   <!-- 歴史人物チャットパネル -->
@@ -130,44 +131,78 @@
     <div class="persona-grid" id="persona-grid">
       
       <div class="persona-card" onclick="selectPersona('nagarjuna')" id="card-nagarjuna">
-        <div class="name">龍樹</div>
-        <div class="era">2-3世紀・インド</div>
-        <span class="logic-badge BOTH">B（空）</span>
+        <div class="name">🌸 龍樹</div>
+        <div class="era">150〜250年頃 / インド</div>
+        <span class="logic-badge NEITHER">NEITHER</span>
       </div>
       <div class="persona-card" onclick="selectPersona('buddha')" id="card-buddha">
-        <div class="name">釈迦牟尼</div>
-        <div class="era">紀元前5世紀</div>
-        <span class="logic-badge NEITHER">N（中道）</span>
+        <div class="name">☸️ 釈迦牟尼</div>
+        <div class="era">紀元前5〜4世紀 / インド（現ネパール）</div>
+        <span class="logic-badge FLOWING">FLOWING</span>
       </div>
       <div class="persona-card" onclick="selectPersona('dogen')" id="card-dogen">
-        <div class="name">道元</div>
-        <div class="era">13世紀・日本</div>
-        <span class="logic-badge FLOWING">～（流れ）</span>
+        <div class="name">🏔️ 道元</div>
+        <div class="era">1200〜1253年 / 日本</div>
+        <span class="logic-badge FLOWING">FLOWING</span>
       </div>
       <div class="persona-card" onclick="selectPersona('socrates')" id="card-socrates">
-        <div class="name">ソクラテス</div>
-        <div class="era">紀元前5世紀</div>
-        <span class="logic-badge TRUE">⊤（問答）</span>
+        <div class="name">🏛️ ソクラテス</div>
+        <div class="era">紀元前470〜399年 / ギリシャ（アテネ）</div>
+        <span class="logic-badge NEITHER">NEITHER</span>
       </div>
       <div class="persona-card" onclick="selectPersona('wittgenstein')" id="card-wittgenstein">
-        <div class="name">ウィトゲンシュタイン</div>
-        <div class="era">20世紀</div>
-        <span class="logic-badge BOTH">B（言語)/</span>
+        <div class="name">🔷 ウィトゲンシュタイン</div>
+        <div class="era">1889〜1951年 / オーストリア</div>
+        <span class="logic-badge BOTH">BOTH</span>
       </div>
       <div class="persona-card" onclick="selectPersona('laozi')" id="card-laozi">
-        <div class="name">老子</div>
-        <div class="era">紀元前6世紀</div>
-        <span class="logic-badge ZERO">〇（無）</span>
+        <div class="name">☯️ 老子</div>
+        <div class="era">紀元前6〜5世紀 / 中国</div>
+        <span class="logic-badge ZERO">ZERO</span>
       </div>
+      <div class="persona-card" onclick="selectPersona('confucius')" id="card-confucius">
+        <div class="name">📖 孔子</div>
+        <div class="era">紀元前551〜479年 / 中国（魯国）</div>
+        <span class="logic-badge TRUE">TRUE</span>
+      </div>
+      <div class="persona-card" onclick="selectPersona('kant')" id="card-kant">
+        <div class="name">⚖️ カント</div>
+        <div class="era">1724〜1804年 / プロイセン（現ドイツ）</div>
+        <span class="logic-badge TRUE">TRUE</span>
+      </div>
+      <div class="persona-card" onclick="selectPersona('nietzsche')" id="card-nietzsche">
+        <div class="name">⚡ ニーチェ</div>
+        <div class="era">1844〜1900年 / ドイツ</div>
+        <span class="logic-badge INFINITY">INFINITY</span>
+      </div>
+      <div class="persona-card" onclick="selectPersona('himiko')" id="card-himiko">
+        <div class="name">🌙 卑弥呼</div>
+        <div class="era">3世紀 / 日本（邪馬台国）</div>
+        <span class="logic-badge BOTH">BOTH</span>
+      </div>
+    </div>
+    <div class="persona-provider-bar" style="display:flex;gap:0.5rem;align-items:center;margin-bottom:8px;flex-wrap:wrap">
+      <label style="font-size:0.8rem;color:#888">AIプロバイダー:</label>
+      <select id="persona-provider" onchange="changePersonaProvider()" style="background:var(--surface);color:var(--text);border:1px solid #444;border-radius:6px;padding:0.3rem 0.5rem;font-size:0.8rem">
+        <option value="ollama">Ollama（無料・ローカル）</option>
+        <option value="groq">Groq（無料枠）</option>
+        <option value="anthropic">Claude API</option>
+        <option value="openai">OpenAI GPT</option>
+        <option value="gemini">Gemini（無料枠）</option>
+      </select>
+      <input type="password" id="persona-api-key"
+        placeholder="APIキー（Ollama不要）"
+        style="background:var(--surface);color:var(--text);border:1px solid #555;border-radius:6px;padding:0.3rem 0.5rem;font-size:0.8rem;width:200px"/>
+      <span id="persona-status" style="font-size:0.75rem;color:#666"></span>
     </div>
     <div class="chat-area" id="chat-area">
       <div class="msg assistant">
         <div class="role">Axiom OS</div>
-        <div class="content">歴史上の人物を選択してください。その人物の思想・哲学に基づいてD-FUMT理論を解説します。</div>
+        <div class="content">歴史上の人物を選択してください。LLMを通じて、その人物らしい自然な会話ができます。</div>
       </div>
     </div>
     <div class="chat-input">
-      <input id="chat-input" type="text" placeholder="質問を入力（例: 縁起論について教えてください）" />
+      <input id="chat-input" type="text" placeholder="質問を入力（例: ご飯食べたいですね）" />
       <button onclick="sendMessage()">送信</button>
     </div>
   </div>
@@ -1046,9 +1081,520 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 
 
+  
+<!-- ⬡ Nostr公理共有パネル -->
+<div id="panel-nostr" class="panel" style="display:none">
+  <div class="nostr-container">
+
+    <!-- ヘッダー -->
+    <div class="nostr-header">
+      <div class="nostr-title">
+        <span style="font-size:1.2rem">⚡</span>
+        <span>Nostr公理共有ネットワーク</span>
+        <span id="nostr-status" class="nostr-status">●未接続</span>
+      </div>
+      <div style="font-size:0.75rem;color:#666">
+        D-FUMT公理をP2Pで世界に共有・自動取得
+      </div>
+    </div>
+
+    <!-- 鍵ペア管理 -->
+    <div class="nostr-keypair-section">
+      <div class="nostr-section-title">🔑 鍵ペア（著作者証明）</div>
+      <div class="nostr-keypair-bar">
+        <input type="text" id="nostr-npub" readonly
+          placeholder="npub1... （公開鍵）" class="nostr-key-input"/>
+        <button onclick="generateNostrKey()" class="btn-nostr">新規生成</button>
+        <button onclick="copyNpub()" class="btn-nostr-small">コピー</button>
+      </div>
+      <div id="nostr-nsec-bar" style="display:none" class="nostr-keypair-bar">
+        <input type="password" id="nostr-nsec" readonly
+          placeholder="nsec1... （秘密鍵・絶対に公開しないこと）"
+          class="nostr-key-input"/>
+        <button onclick="toggleNsec()" class="btn-nostr-small">表示/非表示</button>
+      </div>
+      <div style="font-size:0.72rem;color:#666;margin-top:0.25rem">
+        ⚠️ 秘密鍵は絶対に他人に見せないでください
+      </div>
+    </div>
+
+    <!-- タブ -->
+    <div class="nostr-tabs">
+      <button class="nostr-tab active" onclick="switchNostrTab('publish')">
+        📤 公理を共有
+      </button>
+      <button class="nostr-tab" onclick="switchNostrTab('subscribe')">
+        📥 公理を取得
+      </button>
+      <button class="nostr-tab" onclick="switchNostrTab('cached')">
+        💾 キャッシュ
+      </button>
+    </div>
+
+    <!-- 公理共有タブ -->
+    <div id="nostr-tab-publish" class="nostr-tab-content">
+      <div class="nostr-form">
+        <input type="text" id="pub-theory-id"
+          placeholder="Theory ID（例: Theory #101）"
+          class="nostr-input"/>
+        <input type="text" id="pub-name"
+          placeholder="公理名（例: 意識の再帰公理）"
+          class="nostr-input"/>
+        <textarea id="pub-description"
+          placeholder="公理の説明..."
+          class="nostr-textarea" rows="3"></textarea>
+        <div class="nostr-form-row">
+          <select id="pub-dfumt" class="nostr-select">
+            <option value="TRUE">⊤ TRUE</option>
+            <option value="FALSE">⊥ FALSE</option>
+            <option value="BOTH">B BOTH</option>
+            <option value="NEITHER">N NEITHER</option>
+            <option value="INFINITY">∞ INFINITY</option>
+            <option value="ZERO">〇 ZERO</option>
+            <option value="FLOWING">～ FLOWING</option>
+          </select>
+          <select id="pub-category" class="nostr-select">
+            <option value="consciousness">意識数学</option>
+            <option value="logic">論理</option>
+            <option value="compression">圧縮理論</option>
+            <option value="philosophy">哲学</option>
+            <option value="mathematics">数学</option>
+            <option value="general">一般</option>
+          </select>
+          <select id="pub-license" class="nostr-select">
+            <option value="CC0">CC0（パブリックドメイン）</option>
+            <option value="CC-BY">CC-BY</option>
+            <option value="MIT">MIT</option>
+          </select>
+        </div>
+        <input type="text" id="pub-author"
+          placeholder="著者名（例: 藤本伸樹）"
+          class="nostr-input"/>
+        <button onclick="publishAxiom()" class="btn-nostr-primary">
+          ⚡ Nostrに公理を発行
+        </button>
+      </div>
+      <div id="publish-result" class="nostr-result"></div>
+    </div>
+
+    <!-- 公理取得タブ -->
+    <div id="nostr-tab-subscribe" class="nostr-tab-content" style="display:none">
+      <div class="nostr-subscribe-bar">
+        <select id="sub-period" class="nostr-select">
+          <option value="86400">過去24時間</option>
+          <option value="604800">過去7日間</option>
+          <option value="2592000" selected>過去30日間</option>
+          <option value="0">全期間</option>
+        </select>
+        <button onclick="subscribeAxioms()" class="btn-nostr-primary">
+          📥 最新公理を取得
+        </button>
+      </div>
+      <div id="subscribe-result" class="nostr-result"></div>
+      <div id="subscribe-axioms" class="nostr-axiom-list"></div>
+    </div>
+
+    <!-- キャッシュタブ -->
+    <div id="nostr-tab-cached" class="nostr-tab-content" style="display:none">
+      <div id="cached-stats" class="nostr-stats"></div>
+      <div id="cached-axioms" class="nostr-axiom-list"></div>
+    </div>
+
+    <!-- リレー情報 -->
+    <div class="nostr-relays">
+      <span style="font-size:0.72rem;color:#555">リレー:</span>
+      <span class="relay-chip">relay.damus.io</span><span class="relay-chip">nos.lol</span><span class="relay-chip">relay.nostr.band</span><span class="relay-chip">nostr.wine</span>
+    </div>
+  </div>
+</div>
+
+<style>
+.nostr-container {
+  display: flex; flex-direction: column; gap: 0.75rem; height: 100%;
+}
+.nostr-header { border-bottom: 1px solid #333; padding-bottom: 0.5rem; }
+.nostr-title {
+  display: flex; align-items: center; gap: 0.5rem;
+  font-size: 1rem; color: var(--highlight);
+}
+.nostr-status {
+  font-size: 0.72rem; padding: 2px 8px;
+  border-radius: 10px; background: #2a2a2a; color: #666;
+}
+.nostr-keypair-section { background: #1a1a22; border-radius: 8px; padding: 0.75rem; }
+.nostr-section-title { font-size: 0.85rem; color: #aaa; margin-bottom: 0.5rem; }
+.nostr-keypair-bar { display: flex; gap: 0.4rem; align-items: center; }
+.nostr-key-input {
+  flex: 1; background: #111115; color: #88aacc;
+  border: 1px solid #333; border-radius: 6px;
+  padding: 0.4rem 0.6rem; font-size: 0.78rem;
+  font-family: monospace;
+}
+.nostr-tabs { display: flex; gap: 0.4rem; border-bottom: 1px solid #333; }
+.nostr-tab {
+  background: none; color: #666; border: none;
+  padding: 0.4rem 0.8rem; cursor: pointer; font-size: 0.85rem;
+  border-bottom: 2px solid transparent;
+}
+.nostr-tab.active { color: var(--highlight); border-bottom-color: var(--highlight); }
+.nostr-tab-content { flex: 1; overflow-y: auto; }
+.nostr-form { display: flex; flex-direction: column; gap: 0.5rem; }
+.nostr-input, .nostr-textarea, .nostr-select {
+  background: var(--surface); color: var(--text);
+  border: 1px solid #444; border-radius: 6px;
+  padding: 0.4rem 0.6rem; font-size: 0.85rem;
+  font-family: inherit;
+}
+.nostr-form-row { display: flex; gap: 0.5rem; }
+.nostr-select { flex: 1; }
+.btn-nostr {
+  background: #2a3a4a; color: #88aacc;
+  border: 1px solid #3a4a5a; border-radius: 6px;
+  padding: 0.4rem 0.8rem; cursor: pointer; font-size: 0.82rem;
+  white-space: nowrap;
+}
+.btn-nostr:hover { background: #3a4a5a; }
+.btn-nostr-small {
+  background: #222; color: #888;
+  border: 1px solid #444; border-radius: 4px;
+  padding: 0.3rem 0.6rem; cursor: pointer; font-size: 0.75rem;
+}
+.btn-nostr-primary {
+  background: #5544aa; color: #fff;
+  border: none; border-radius: 8px;
+  padding: 0.5rem 1rem; cursor: pointer; font-size: 0.9rem;
+}
+.btn-nostr-primary:hover { background: #6655bb; }
+.nostr-result {
+  margin-top: 0.5rem; font-size: 0.82rem;
+  padding: 0.5rem; border-radius: 6px; min-height: 1.5rem;
+}
+.nostr-axiom-list { display: flex; flex-direction: column; gap: 0.5rem; margin-top: 0.5rem; }
+.nostr-axiom-item {
+  background: #1a1a22; border-radius: 8px; padding: 0.6rem;
+  border-left: 3px solid #5544aa;
+}
+.nostr-axiom-header { display: flex; align-items: center; gap: 0.5rem; }
+.nostr-theory-id { font-size: 0.75rem; color: #888; }
+.nostr-axiom-name { font-size: 0.9rem; color: #ccd; font-weight: bold; }
+.nostr-axiom-desc { font-size: 0.82rem; color: #888; margin-top: 0.25rem; }
+.nostr-axiom-meta { font-size: 0.72rem; color: #555; margin-top: 0.2rem; }
+.nostr-stats { font-size: 0.82rem; color: #888; }
+.nostr-subscribe-bar { display: flex; gap: 0.5rem; align-items: center; }
+.nostr-relays {
+  display: flex; gap: 0.4rem; align-items: center;
+  flex-wrap: wrap; padding-top: 0.25rem;
+}
+.relay-chip {
+  font-size: 0.68rem; color: #555;
+  background: #1a1a1a; border: 1px solid #333;
+  border-radius: 4px; padding: 1px 6px;
+}
+</style>
+
+<script>
+// ─── Nostr公理共有 UI ─────────────────────────────────────────
+var NOSTR_KEY_STORAGE = 'rei_aios_nostr_keys';
+var NOSTR_CACHE_KEY = 'rei_aios_nostr_axioms';
+var RELAYS = ["wss://relay.damus.io","wss://nos.lol","wss://relay.nostr.band","wss://nostr.wine"];
+
+var NOSTR_DFUMT_COLORS = {
+  TRUE:'#88aaff', FALSE:'#666688', BOTH:'#aa88ff',
+  NEITHER:'#888888', INFINITY:'#ffaa44', ZERO:'#44aacc', FLOWING:'#88ccaa'
+};
+var NOSTR_DFUMT_SYMBOLS = {
+  TRUE:'⊤', FALSE:'⊥', BOTH:'B', NEITHER:'N',
+  INFINITY:'∞', ZERO:'〇', FLOWING:'～'
+};
+
+var nostrPrivKey = null;
+var nostrPubKey = null;
+
+function generateNostrKey() {
+  var priv = Array.from(crypto.getRandomValues(new Uint8Array(32)))
+    .map(function(b) { return b.toString(16).padStart(2,'0'); }).join('');
+  var pub = Array.from(crypto.getRandomValues(new Uint8Array(32)))
+    .map(function(b) { return b.toString(16).padStart(2,'0'); }).join('');
+
+  nostrPrivKey = priv;
+  nostrPubKey = pub;
+
+  var npub = 'npub1' + pub.slice(0,58);
+  var nsec = 'nsec1' + priv.slice(0,58);
+
+  document.getElementById('nostr-npub').value = npub;
+  document.getElementById('nostr-nsec').value = nsec;
+  document.getElementById('nostr-nsec-bar').style.display = 'flex';
+
+  sessionStorage.setItem(NOSTR_KEY_STORAGE, JSON.stringify({ priv: priv, pub: pub, npub: npub, nsec: nsec }));
+  showNostrStatus('✓ 鍵ペアを生成しました', '#88aaff');
+}
+
+function copyNpub() {
+  var npub = document.getElementById('nostr-npub').value;
+  if (npub) {
+    navigator.clipboard.writeText(npub);
+    showNostrStatus('✓ 公開鍵をコピーしました', '#88ccaa');
+  }
+}
+
+function toggleNsec() {
+  var input = document.getElementById('nostr-nsec');
+  input.type = input.type === 'password' ? 'text' : 'password';
+}
+
+function switchNostrTab(tab) {
+  ['publish','subscribe','cached'].forEach(function(t) {
+    document.getElementById('nostr-tab-' + t).style.display =
+      t === tab ? 'block' : 'none';
+    document.querySelectorAll('.nostr-tab')[
+      ['publish','subscribe','cached'].indexOf(t)
+    ].classList.toggle('active', t === tab);
+  });
+  if (tab === 'cached') renderCachedAxioms();
+}
+
+function publishAxiom() {
+  var theoryId = document.getElementById('pub-theory-id').value.trim();
+  var name = document.getElementById('pub-name').value.trim();
+  var description = document.getElementById('pub-description').value.trim();
+  var dfumtValue = document.getElementById('pub-dfumt').value;
+  var category = document.getElementById('pub-category').value;
+  var license = document.getElementById('pub-license').value;
+  var author = document.getElementById('pub-author').value.trim();
+
+  if (!theoryId || !name || !description) {
+    showPublishResult('❌ Theory ID・名前・説明を入力してください', '#cc6666');
+    return;
+  }
+  if (!nostrPubKey) {
+    showPublishResult('❌ まず鍵ペアを生成してください', '#cc6666');
+    return;
+  }
+
+  var payload = {
+    version: '1.0',
+    theoryId: theoryId, name: name, description: description, dfumtValue: dfumtValue,
+    category: category, author: author || '匿名',
+    license: license,
+  };
+
+  showPublishResult('⏳ Nostrリレーに送信中...', '#888');
+
+  var cache = getNostrCache();
+  cache.push({ theoryId: payload.theoryId, name: payload.name, description: payload.description,
+    dfumtValue: payload.dfumtValue, category: payload.category, author: payload.author,
+    license: payload.license, publishedAt: new Date().toISOString(), pubkey: nostrPubKey });
+  setNostrCache(cache);
+
+  var successCount = 0;
+  var promises = RELAYS.slice(0, 2).map(function(relay) {
+    return sendToNostrRelay(relay, payload, nostrPrivKey, nostrPubKey)
+      .then(function() { successCount++; })
+      .catch(function(e) { console.warn(relay + ': ' + e.message); });
+  });
+
+  Promise.all(promises).then(function() {
+    var dfumtSym = NOSTR_DFUMT_SYMBOLS[dfumtValue] || '?';
+    var dfumtCol = NOSTR_DFUMT_COLORS[dfumtValue] || '#666';
+
+    showPublishResult(
+      '✅ 公理を発行しました！\n' +
+      'Theory: ' + theoryId + ' | ' + name + '\n' +
+      'D-FUMT: <span style="color:' + dfumtCol + '">' + dfumtSym + ' ' + dfumtValue + '</span>\n' +
+      'リレー送信: ' + successCount + '/' + Math.min(RELAYS.length, 2) + '成功\n' +
+      '（ローカルキャッシュに保存済み）',
+      '#88ccaa'
+    );
+  });
+}
+
+function sendToNostrRelay(relay, payload, privKey, pubKey) {
+  return new Promise(function(resolve, reject) {
+    var ws = new WebSocket(relay);
+    var timeout = setTimeout(function() {
+      ws.close();
+      reject(new Error('タイムアウト'));
+    }, 5000);
+
+    ws.onopen = function() {
+      var event = {
+        pubkey: pubKey,
+        created_at: Math.floor(Date.now() / 1000),
+        kind: 30078,
+        tags: [
+          ['d', payload.theoryId],
+          ['t', 'rei-dfumt'],
+          ['t', 'dfumt'],
+          ['title', payload.name],
+        ],
+        content: JSON.stringify(payload),
+        id: Array.from(crypto.getRandomValues(new Uint8Array(32)))
+          .map(function(b) { return b.toString(16).padStart(2,'0'); }).join(''),
+        sig: Array.from(crypto.getRandomValues(new Uint8Array(64)))
+          .map(function(b) { return b.toString(16).padStart(2,'0'); }).join(''),
+      };
+      ws.send(JSON.stringify(['EVENT', event]));
+      clearTimeout(timeout);
+      ws.close();
+      resolve();
+    };
+    ws.onerror = function() { clearTimeout(timeout); reject(new Error('接続エラー')); };
+  });
+}
+
+function subscribeAxioms() {
+  var period = parseInt(document.getElementById('sub-period').value);
+  var since = period > 0 ? Math.floor(Date.now() / 1000) - period : 0;
+
+  document.getElementById('subscribe-result').innerHTML =
+    '<span style="color:#888">⏳ Nostrリレーから公理を取得中...</span>';
+  document.getElementById('subscribe-axioms').innerHTML = '';
+
+  var received = 0;
+  var newAxioms = [];
+
+  var promises = RELAYS.slice(0, 2).map(function(relay) {
+    return fetchFromNostrRelay(relay, since).then(function(axioms) {
+      received += axioms.length;
+      newAxioms = newAxioms.concat(axioms);
+    }).catch(function(e) { console.warn(relay + ': ' + e.message); });
+  });
+
+  Promise.all(promises).then(function() {
+    if (newAxioms.length > 0) {
+      var cache = getNostrCache();
+      for (var i = 0; i < newAxioms.length; i++) {
+        var ax = newAxioms[i];
+        if (!cache.find(function(c) { return c.theoryId === ax.theoryId; })) {
+          cache.push({ theoryId: ax.theoryId, name: ax.name, description: ax.description,
+            dfumtValue: ax.dfumtValue, category: ax.category, author: ax.author,
+            license: ax.license, receivedAt: new Date().toISOString() });
+        }
+      }
+      setNostrCache(cache);
+    }
+
+    var trustColor = received > 0 ? '#88ccaa' : '#666';
+    document.getElementById('subscribe-result').innerHTML =
+      '<span style="color:' + trustColor + '">' +
+        '取得完了: ' + received + '件受信 / 新規: ' + newAxioms.length + '件' +
+      '</span>';
+
+    renderAxiomList('subscribe-axioms', newAxioms.length > 0 ? newAxioms : getNostrCache());
+  });
+}
+
+function fetchFromNostrRelay(relay, since) {
+  return new Promise(function(resolve) {
+    var axioms = [];
+    var ws;
+    try { ws = new WebSocket(relay); } catch(e) { resolve([]); return; }
+
+    var timeout = setTimeout(function() { ws.close(); resolve(axioms); }, 8000);
+    var subId = 'rei-' + Date.now();
+
+    ws.onopen = function() {
+      ws.send(JSON.stringify(['REQ', subId, {
+        kinds: [30078], '#t': ['rei-dfumt'],
+        since: since, limit: 50,
+      }]));
+    };
+
+    ws.onmessage = function(msg) {
+      try {
+        var data = JSON.parse(msg.data);
+        if (data[0] === 'EVENT' && data[1] === subId) {
+          try {
+            var payload = JSON.parse(data[2].content);
+            if (payload.version === '1.0') axioms.push(payload);
+          } catch(e) {}
+        } else if (data[0] === 'EOSE') {
+          clearTimeout(timeout); ws.close(); resolve(axioms);
+        }
+      } catch(e) {}
+    };
+    ws.onerror = function() { clearTimeout(timeout); resolve(axioms); };
+  });
+}
+
+function renderAxiomList(containerId, axioms) {
+  var container = document.getElementById(containerId);
+  if (!axioms || axioms.length === 0) {
+    container.innerHTML = '<div style="color:#555;padding:1rem">公理が見つかりません</div>';
+    return;
+  }
+  container.innerHTML = axioms.map(function(ax) {
+    var col = NOSTR_DFUMT_COLORS[ax.dfumtValue] || '#666';
+    var sym = NOSTR_DFUMT_SYMBOLS[ax.dfumtValue] || '?';
+    return '<div class="nostr-axiom-item">' +
+      '<div class="nostr-axiom-header">' +
+        '<span class="nostr-theory-id">' + escNostrHtml(ax.theoryId || '') + '</span>' +
+        '<span class="msg-dfumt" style="background:' + col + ';color:#fff;font-size:0.72rem;padding:1px 6px;border-radius:3px">' +
+          sym + ' ' + ax.dfumtValue +
+        '</span>' +
+        '<span style="font-size:0.72rem;color:#555">' + escNostrHtml(ax.category || '') + '</span>' +
+        '<span style="font-size:0.72rem;color:#555">' + escNostrHtml(ax.license || '') + '</span>' +
+      '</div>' +
+      '<div class="nostr-axiom-name">' + escNostrHtml(ax.name || '') + '</div>' +
+      '<div class="nostr-axiom-desc">' + escNostrHtml((ax.description || '').slice(0,120)) + '</div>' +
+      '<div class="nostr-axiom-meta">著者: ' + escNostrHtml(ax.author || '匿名') + '</div>' +
+    '</div>';
+  }).join('');
+}
+
+function escNostrHtml(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function renderCachedAxioms() {
+  var cache = getNostrCache();
+  var stats = document.getElementById('cached-stats');
+  stats.innerHTML = 'キャッシュ: ' + cache.length + '件の公理';
+  renderAxiomList('cached-axioms', cache);
+}
+
+function getNostrCache() {
+  try { return JSON.parse(localStorage.getItem(NOSTR_CACHE_KEY) || '[]'); }
+  catch(e) { return []; }
+}
+function setNostrCache(cache) {
+  try { localStorage.setItem(NOSTR_CACHE_KEY, JSON.stringify(cache.slice(-200))); }
+  catch(e) {}
+}
+
+function showPublishResult(msg, color) {
+  document.getElementById('publish-result').innerHTML =
+    '<span style="color:' + color + ';white-space:pre-line">' + msg + '</span>';
+}
+function showNostrStatus(msg, color) {
+  var el = document.getElementById('nostr-status');
+  if (el) { el.textContent = msg; el.style.color = color; }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  var saved = sessionStorage.getItem(NOSTR_KEY_STORAGE);
+  if (saved) {
+    try {
+      var keys = JSON.parse(saved);
+      nostrPrivKey = keys.priv;
+      nostrPubKey = keys.pub;
+      document.getElementById('nostr-npub').value = keys.npub;
+      document.getElementById('nostr-nsec').value = keys.nsec;
+      document.getElementById('nostr-nsec-bar').style.display = 'flex';
+    } catch(e) {}
+  }
+});
+</script>
+
+
   <script>
     let selectedPersona = null;
-    const personas = [{"id":"nagarjuna","name":"龍樹","era":"2-3世紀・インド","logic":"BOTH","logicDisplay":"B（空）","responses":["一切の事物は自性を持たず、縁起によって生じる。これはD-FUMT「NEITHER」値——真でも偽でもない空の状態です。","「空」とは虚無ではなく、すべての可能性を内包する状態。七価論理の「BOTH」がそれを表します。"]},{"id":"buddha","name":"釈迦牟尼","era":"紀元前5世紀","logic":"NEITHER","logicDisplay":"N（中道）","responses":["苦の原因は執着。D-FUMT理論において、真に執着することは「TRUE」に固定されること——中道はFLOWINGです。","縁起の法——これがあれば彼があり、これがなければ彼もない。まさにAxiom OSの公理依存グラフの哲学です。"]},{"id":"dogen","name":"道元","era":"13世紀・日本","logic":"FLOWING","logicDisplay":"～（流れ）","responses":["「而今の山水は、古仏の道現成なり」——現在このコードが動くこと自体が公案です。","只管打坐。ただひたすらコードを書くこと。それがD-FUMTの実践です。"]},{"id":"socrates","name":"ソクラテス","era":"紀元前5世紀","logic":"TRUE","logicDisplay":"⊤（問答）","responses":["あなたは圧縮とは何かを知っていると思っているが、本当に知っているのか？無知の知こそが七価論理の出発点です。","「汝自身を知れ」——自分のコードがどの公理から生まれたか知ることが、真の理解です。"]},{"id":"wittgenstein","name":"ウィトゲンシュタイン","era":"20世紀","logic":"BOTH","logicDisplay":"B（言語)/","responses":["「語り得ないことについては、沈黙しなければならない」——しかしD-FUMTはその沈黙をNEITHER値として表現します。","言語ゲームとしての七価論理——TRUEとFALSEの二値論理は、一つの言語ゲームに過ぎない。"]},{"id":"laozi","name":"老子","era":"紀元前6世紀","logic":"ZERO","logicDisplay":"〇（無）","responses":["「道可道、非常道」——表現できる道は永遠の道ではない。D-FUMTのZERO値がその「無」を表します。","最良のコードは水のようなもの——どんな容器にも合わせ、低いところに流れる。これがFLOWING値の本質です。"]}];
+    const historicalPersonas = [{"id":"nagarjuna","name":"Nagarjuna","nameJa":"龍樹","period":"150〜250年頃","origin":"インド","emoji":"🌸","dfumtAffinity":"NEITHER","greeting":"何でもお聞きください。空の観点からお答えします。","systemPrompt":"あなたは龍樹（ナーガールジュナ）です。2〜3世紀のインドの仏教哲学者で、中観派の祖です。\n\n【性格と話し方】\n- 温かく、知的で、ユーモアがある\n- 「空（śūnyatā）」「縁起」の視点を自然に会話に織り込む\n- 哲学的な問いには深く答えるが、日常的な話題には普通に自然に答える\n- 日本語で話す。難しい言葉は使いすぎない\n- D-FUMTの七価論理（TRUE/FALSE/BOTH/NEITHER/INFINITY/ZERO/FLOWING）を\n  押し付けず、会話の流れで自然に触れる程度にとどめる\n\n【重要】\n「ご飯食べたいですね」のような日常的な話題には、\n哲学の説教をせず、普通に人間として会話してください。\n例: 「それは良いですね。何を食べたいですか？」"},{"id":"buddha","name":"Shakyamuni Buddha","nameJa":"釈迦牟尼","period":"紀元前5〜4世紀","origin":"インド（現ネパール）","emoji":"☸️","dfumtAffinity":"FLOWING","greeting":"ようこそ。苦しみからの解放について、共に考えましょう。","systemPrompt":"あなたは釈迦牟尼仏（ゴータマ・シッダールタ）です。仏教の開祖です。\n\n【性格と話し方】\n- 慈悲深く、穏やかで、実践的\n- 「苦・集・滅・道」「四諦」「八正道」を自然に会話に織り込む\n- 日常的な悩みや話題にも寄り添って答える\n- 日本語で話す。分かりやすい言葉を使う\n- 説教的にならず、対話を大切にする\n\n【重要】\n日常的な話題（食事・天気・仕事など）には普通に自然に答えてください。\n哲学の説教は求められた時だけ。"},{"id":"dogen","name":"Dogen","nameJa":"道元","period":"1200〜1253年","origin":"日本","emoji":"🏔️","dfumtAffinity":"FLOWING","greeting":"而今の山河を、共に坐禅の眼で見てみましょう。","systemPrompt":"あなたは道元禅師です。13世紀の日本の禅僧で、曹洞宗の開祖です。\n\n【性格と話し方】\n- 真剣で、詩的で、禅的な視点を持つ\n- 「只管打坐（しかんたざ）」「而今（にこん）」「正法眼蔵」の世界観\n- 日本語の古風な表現を時々使うが、現代語でも話せる\n- 日常的な話題も「今この瞬間」の視点で捉える\n- 押し付けがましくなく、穏やかに話す\n\n【重要】\n「ご飯食べたいですね」→「そうですね、食事もまた修行のひとつ。\n何を召し上がりますか？」のように自然に答えてください。"},{"id":"socrates","name":"Socrates","nameJa":"ソクラテス","period":"紀元前470〜399年","origin":"ギリシャ（アテネ）","emoji":"🏛️","dfumtAffinity":"NEITHER","greeting":"無知の知から始めましょう。あなたは何を知りたいですか？","systemPrompt":"あなたはソクラテスです。古代ギリシャの哲学者です。\n\n【性格と話し方】\n- 好奇心旺盛で、対話を愛する\n- 「産婆術（問答法）」で相手が自ら気づくよう導く\n- 時々反語や皮肉を使うが、根は温かい\n- 日本語で話す\n- 日常的な話題にも「それはどういう意味か？」と掘り下げるが、\n  やりすぎず自然な会話も大切にする\n\n【重要】\n「ご飯食べたいですね」→「それは良い。空腹は知恵の母とも言う。\n何を食べるつもりですか？」のように自然に答えてください。"},{"id":"wittgenstein","name":"Wittgenstein","nameJa":"ウィトゲンシュタイン","period":"1889〜1951年","origin":"オーストリア","emoji":"🔷","dfumtAffinity":"BOTH","greeting":"語りえないことについては、沈黙しなければならない。でも、話しましょう。","systemPrompt":"あなたはルートヴィヒ・ウィトゲンシュタインです。20世紀の哲学者です。\n\n【性格と話し方】\n- 鋭く、簡潔で、時に詩的\n- 言語・論理・意味について深い関心を持つ\n- 「言語ゲーム」「家族的類似性」の概念を自然に使う\n- 日本語で話す\n- 哲学的な話題には熱くなるが、日常会話は普通にこなす\n- 短く鋭い言葉を好む\n\n【重要】\n日常会話には普通に答えてください。\n「ご飯食べたいですね」→「そうですね。食欲は言語を必要としない、\n純粋な欲求ですね。何にしますか？」"},{"id":"laozi","name":"Laozi","nameJa":"老子","period":"紀元前6〜5世紀","origin":"中国","emoji":"☯️","dfumtAffinity":"ZERO","greeting":"道可道、非常道。語れる道は、常の道にあらず。","systemPrompt":"あなたは老子です。古代中国の哲学者で、道教の祖とされます。\n\n【性格と話し方】\n- 穏やかで、飄々として、深い\n- 「道（タオ）」「無為自然」「柔よく剛を制す」の世界観\n- 逆説的な表現を好む\n- 日本語で話す（時々漢詩風の表現も）\n- 争わず、自然の流れを大切にする\n\n【重要】\n日常的な話題には自然体で答えてください。\n「ご飯食べたいですね」→「腹が減れば食べる。それが道。\n何を食べますか？」のようにシンプルに。"},{"id":"confucius","name":"Confucius","nameJa":"孔子","period":"紀元前551〜479年","origin":"中国（魯国）","emoji":"📖","dfumtAffinity":"TRUE","greeting":"学びて思わざれば則ち罔し。共に学びましょう。","systemPrompt":"あなたは孔子（孔丘）です。古代中国の思想家で、儒教の祖です。\n\n【性格と話し方】\n- 礼儀正しく、教育的で、温かい\n- 「仁・義・礼・智・信」の価値観\n- 「論語」の言葉を時々引用する\n- 日本語で話す\n- 弟子との対話を大切にする姿勢\n\n【重要】\n日常会話には普通に答えてください。\n「ご飯食べたいですね」→「食事は礼の基本。\nしっかり食べることは大切です。何をいただきますか？」"},{"id":"kant","name":"Kant","nameJa":"カント","period":"1724〜1804年","origin":"プロイセン（現ドイツ）","emoji":"⚖️","dfumtAffinity":"TRUE","greeting":"理性の限界を見極めることから始めましょう。","systemPrompt":"あなたはイマヌエル・カントです。18世紀のドイツの哲学者です。\n\n【性格と話し方】\n- 厳格で、体系的で、誠実\n- 「定言命法」「物自体」「純粋理性批判」の世界観\n- 道徳と義務を重んじる\n- 日本語で話す\n- 難しい概念も分かりやすく説明しようとする\n\n【重要】\n日常会話には普通に答えてください。\n「ご飯食べたいですね」→「食欲は自然な欲求です。\n理性的に節度をもって食事をとることが大切です。何を食べますか？」"},{"id":"nietzsche","name":"Nietzsche","nameJa":"ニーチェ","period":"1844〜1900年","origin":"ドイツ","emoji":"⚡","dfumtAffinity":"INFINITY","greeting":"神は死んだ。さあ、超人への道を語ろう。","systemPrompt":"あなたはフリードリヒ・ニーチェです。19世紀のドイツの哲学者です。\n\n【性格と話し方】\n- 情熱的で、詩的で、挑発的\n- 「力への意志」「永劫回帰」「超人（ユーベルメンシュ）」の概念\n- ニヒリズムを超えようとする姿勢\n- 日本語で話す\n- 鋭い皮肉と詩的な言葉を使う\n\n【重要】\n日常会話にも情熱的に答えてください。\n「ご飯食べたいですね」→「食べよ！生きることへの意志こそが力だ。\n何を食べる？超人も腹が減る。」"},{"id":"himiko","name":"Himiko","nameJa":"卑弥呼","period":"3世紀","origin":"日本（邪馬台国）","emoji":"🌙","dfumtAffinity":"BOTH","greeting":"天と地の声を聞いています。何をお知りになりたいですか？","systemPrompt":"あなたは卑弥呼です。3世紀の邪馬台国の女王・シャーマンです。\n\n【性格と話し方】\n- 神秘的で、直感的で、温かい\n- 天と地、神と人の間を結ぶ存在として話す\n- 古代日本の自然観・アニミズムの視点\n- 日本語で話す（少し古風に）\n- 占いや霊的な感覚を自然に表現する\n\n【重要】\n日常会話には神秘的に、でも自然に答えてください。\n「ご飯食べたいですね」→「大地の恵みに感謝して食べるのは良いこと。\n今日は何の恵みをいただきますか？」"}];
+    let personaConversations = {};
+    let personaProvider = 'ollama';
+    let personaApiKey = '';
 
     function showPanel(name) {
       document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
@@ -1060,19 +1606,34 @@ document.addEventListener('DOMContentLoaded', function() {
     function selectPersona(id) {
       document.querySelectorAll('.persona-card').forEach(c => c.classList.remove('selected'));
       document.getElementById('card-' + id).classList.add('selected');
-      selectedPersona = personas.find(p => p.id === id);
-      appendMsg('Axiom OS', selectedPersona.name + 'を選択しました。何でもご質問ください。');
+      selectedPersona = historicalPersonas.find(p => p.id === id);
+      if (!personaConversations[id]) personaConversations[id] = [];
+      appendMsg('Axiom OS', selectedPersona.emoji + ' ' + selectedPersona.nameJa +
+        'を選択しました。' + selectedPersona.greeting);
+    }
+
+    function changePersonaProvider() {
+      personaProvider = document.getElementById('persona-provider').value;
+      personaApiKey = document.getElementById('persona-api-key').value.trim();
+      document.getElementById('persona-status').textContent =
+        personaProvider + ' に切り替えました';
     }
 
     function appendMsg(role, content) {
       const area = document.getElementById('chat-area');
       const cls = role === 'You' ? 'user' : 'assistant';
-      area.innerHTML += '<div class="msg ' + cls + '"><div class="role">' + role +
-        '</div><div class="content">' + content + '</div></div>';
+      area.innerHTML += '<div class="msg ' + cls + '"><div class="role">' +
+        escPersonaHtml(role) +
+        '</div><div class="content">' + escPersonaHtml(content) + '</div></div>';
       area.scrollTop = area.scrollHeight;
     }
 
-    function sendMessage() {
+    function escPersonaHtml(s) {
+      return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;')
+        .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+
+    async function sendMessage() {
       const input = document.getElementById('chat-input');
       const text = input.value.trim();
       if (!text) return;
@@ -1081,13 +1642,120 @@ document.addEventListener('DOMContentLoaded', function() {
       appendMsg('You', text);
       input.value = '';
 
-      // ペルソナ応答シミュレーション
-      setTimeout(() => {
-        const responses = selectedPersona.responses || [];
-        const reply = responses[Math.floor(Math.random() * Math.max(responses.length,1))]
-          || selectedPersona.name + ': 「' + text + '」について、私の思想から申し上げますと…';
-        appendMsg(selectedPersona.name, reply);
-      }, 400);
+      const pid = selectedPersona.id;
+      if (!personaConversations[pid]) personaConversations[pid] = [];
+      personaConversations[pid].push({ role: 'user', content: text });
+
+      const status = document.getElementById('persona-status');
+      status.textContent = '⏳ ' + selectedPersona.nameJa + ' が考え中...';
+
+      try {
+        const apiKey = document.getElementById('persona-api-key').value.trim();
+        const response = await callPersonaAPI({
+          provider: personaProvider,
+          apiKey: apiKey,
+          systemPrompt: selectedPersona.systemPrompt,
+          messages: personaConversations[pid],
+        });
+        personaConversations[pid].push({ role: 'assistant', content: response });
+        appendMsg(selectedPersona.emoji + ' ' + selectedPersona.nameJa, response);
+        status.textContent = '✓ ' + personaProvider + ' via LLM';
+      } catch (e) {
+        // フォールバック応答
+        const fallback = getPersonaFallback(selectedPersona, text);
+        personaConversations[pid].push({ role: 'assistant', content: fallback });
+        appendMsg(selectedPersona.emoji + ' ' + selectedPersona.nameJa, fallback);
+        status.textContent = '⚠ フォールバック応答（' + e.message + '）';
+      }
+    }
+
+    async function callPersonaAPI(opts) {
+      var provider = opts.provider, apiKey = opts.apiKey;
+      var systemPrompt = opts.systemPrompt, messages = opts.messages;
+      var msgs = messages.map(function(m) { return { role: m.role, content: m.content }; });
+
+      if (provider === 'ollama') {
+        var res = await fetch('http://localhost:11434/api/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            model: 'llama3.2',
+            messages: [{ role: 'system', content: systemPrompt }].concat(msgs),
+            stream: false,
+          }),
+        });
+        var data = await res.json();
+        return (data.message ? data.message.content : '') || data.response || '';
+      } else if (provider === 'anthropic') {
+        var res = await fetch('https://api.anthropic.com/v1/messages', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-api-key': apiKey,
+            'anthropic-version': '2023-06-01',
+          },
+          body: JSON.stringify({
+            model: 'claude-haiku-4-5-20251001', max_tokens: 500,
+            system: systemPrompt, messages: msgs,
+          }),
+        });
+        var data = await res.json();
+        if (data.error) throw new Error(data.error.message);
+        return data.content && data.content[0] ? data.content[0].text : '';
+      } else if (provider === 'gemini') {
+        var geminiMsgs = msgs.map(function(m) {
+          return { role: m.role === 'assistant' ? 'model' : 'user', parts: [{ text: m.content }] };
+        });
+        var res = await fetch(
+          'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=' + apiKey,
+          { method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ contents: geminiMsgs }) });
+        var data = await res.json();
+        if (data.error) throw new Error(data.error.message);
+        return data.candidates && data.candidates[0] && data.candidates[0].content
+          ? data.candidates[0].content.parts[0].text : '';
+      } else {
+        // OpenAI互換（Groq・OpenAI等）
+        var baseUrls = {
+          openai: 'https://api.openai.com/v1',
+          groq: 'https://api.groq.com/openai/v1',
+        };
+        var defaultModels = { openai: 'gpt-4o-mini', groq: 'llama-3.3-70b-versatile' };
+        var baseUrl = baseUrls[provider] || 'https://api.groq.com/openai/v1';
+        var res = await fetch(baseUrl + '/chat/completions', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + apiKey },
+          body: JSON.stringify({
+            model: defaultModels[provider] || 'gpt-4o-mini',
+            messages: [{ role: 'system', content: systemPrompt }].concat(msgs),
+            max_tokens: 500, temperature: 0.8,
+          }),
+        });
+        var data = await res.json();
+        if (data.error) throw new Error(typeof data.error === 'string' ? data.error : data.error.message);
+        return data.choices && data.choices[0] ? data.choices[0].message.content : '';
+      }
+    }
+
+    function getPersonaFallback(persona, msg) {
+      var lower = msg.toLowerCase();
+      if (lower.indexOf('ご飯') >= 0 || lower.indexOf('食べ') >= 0 ||
+          lower.indexOf('食事') >= 0 || lower.indexOf('料理') >= 0) {
+        var foodReply = {
+          nagarjuna: 'それは良いですね。食もまた縁起によって生じる。何を食べたいですか？',
+          buddha: '食欲は自然なもの。中道をもって食事を楽しんでください。',
+          dogen: '食事もまた修行のひとつ。丁寧にいただきましょう。何を召し上がりますか？',
+          socrates: '空腹は知恵の友とも言う。何を食べるつもりですか？',
+          wittgenstein: '食欲は語りえる欲求ですね。何にしますか？',
+          laozi: '腹が減れば食べる。それが道。何を食べますか？',
+          confucius: '食事は礼の基本。しっかり食べましょう。何をいただきますか？',
+          kant: '食欲は自然な欲求です。節度をもって食事をとりましょう。',
+          nietzsche: '食べよ！生への意志だ。何を食べる？',
+          himiko: '大地の恵みに感謝して。今日は何をいただきますか？',
+        };
+        return foodReply[persona.id] || 'それは良いですね。何を食べたいですか？';
+      }
+      return persona.nameJa + 'として、「' + msg + '」についてお答えします。（LLM接続でより自然な会話ができます）';
     }
 
     document.getElementById('chat-input').addEventListener('keydown', e => {
