@@ -48,7 +48,13 @@ export type TheoryCategory =
   | 'consciousness'       // 意識体系理論 (#51)
   | 'philosophy_model'    // 哲学数理モデル (#52)
   | 'existence'           // 存在の最終構造理論 (#66)
-  | 'general';            // 汎用（特定理論に依存しない）
+  | 'general'             // 汎用（特定理論に依存しない）
+  // Phase 7d
+  | 'ancient_universal_code'  // #76: 超古代普遍符号理論
+  | 'dfumt_entropy'           // #77: D-FUMTエントロピー理論
+  | 'universal_pattern'       // #78: 普遍パターン分析理論
+  | 'info_decomp_structure'   // #79: 情報分解構造理論
+  | 'rei_info_pipeline';      // #80: Rei情報技術統合理論
 
 /** LLM弱点の種類 */
 export type WeaknessType =
@@ -266,6 +272,68 @@ const THEORY_REGISTRY: TheoryMeta[] = [
     keywords: ['存在', '根源', '究極', '統合', '宇宙', '全体', 'メタ'],
     constants: ['inf', 'pi', 'phi', 'e'],
     strengthens: ['axiological_strictness', 'novel_concept'],
+  },
+
+  // ─── Phase 7d: 超古代符号 × 情報科学統合 ───────────────────
+
+  {
+    category: 'ancient_universal_code',
+    label: '超古代普遍符号理論',
+    description: '易経64卦・DNA64コドン・壁画32符号が同じ数学構造2ⁿを持つ。3万年前から現代まで続く普遍情報符号の統一理論。D-FUMTの普遍公理存在の最強証拠。',
+    keywords: [
+      '易経', 'I Ching', '64卦', 'DNA', 'コドン', '壁画', '洞窟', '符号', '暗号',
+      '超古代', '先史', '暦', 'カレンダー', 'バイナリ', '普遍', '古代コード',
+      'ベンベーコン', 'フォンペッツィンガー', '32符号', '点', 'ドット',
+    ],
+    constants: ['pi', 'e', 'phi'],
+    strengthens: ['axiological_strictness', 'novel_concept', 'truth_evaluation'],
+  },
+  {
+    category: 'dfumt_entropy',
+    label: 'D-FUMTエントロピー理論',
+    description: 'シャノン情報エントロピーをD-FUMT七値論理で拡張。H₇(X) = -Σ p(x)log₇p(x)。通常の2値エントロピー(log₂)を七値(log₇)に昇華し、量子情報・多値論理に対応。',
+    keywords: [
+      'エントロピー', '情報量', 'シャノン', '不確実性', '情報理論', '符号化',
+      '圧縮', 'ビット', 'ナット', '七値', '多値', 'log7', '情報科学',
+    ],
+    constants: ['e', 'gamma', 'phi'],
+    strengthens: ['truth_evaluation', 'numerical_processing', 'knowledge_boundary'],
+  },
+  {
+    category: 'universal_pattern',
+    label: '普遍パターン分析理論',
+    description: '異なる文明・時代・分野に共通する数学的パターンを抽出・比較・統合する理論。PatternMatrixで多文明の構造的一致を可視化する。',
+    keywords: [
+      'パターン', '認識', '分析', '比較', '統計', '相関', '構造',
+      '多文明', '共通', '一致', 'マトリクス', '普遍', 'ヨルバ',
+      'バビロニア', '六十進法', '共通構造',
+    ],
+    constants: ['phi', 'sqrt2', 'gamma'],
+    strengthens: ['causal_reasoning', 'state_management', 'novel_concept'],
+  },
+  {
+    category: 'info_decomp_structure',
+    label: '情報分解構造理論',
+    description: '情報を中心-周辺4層モデルで階層的に分解する理論。不変公理（中心核）→情報科学的構造→情報分析的構造→情報技術的構造→境界（未知）。74%コード削減の理論的根拠。',
+    keywords: [
+      '分解', '構造', '階層', '中心', '周辺', '層', 'レイヤー',
+      '抽象化', 'モジュール', '依存関係', 'アーキテクチャ', '設計',
+      '分割', 'コンポーネント', '境界', 'インターフェース',
+    ],
+    constants: ['phi', 'pi', 'omega'],
+    strengthens: ['long_term_planning', 'state_management', 'causal_reasoning'],
+  },
+  {
+    category: 'rei_info_pipeline',
+    label: 'Rei情報技術統合理論',
+    description: 'Reiパイプライン演算子|>が情報変換の普遍演算であることを示す理論。収集→分析→分類→圧縮→格納→応答の6段階パイプラインがD-FUMT公理と対応する。',
+    keywords: [
+      'パイプライン', '処理', '変換', 'フロー', 'ストリーム', 'ETL',
+      'データフロー', '変換処理', '情報技術', 'IT', 'システム', 'インフラ',
+      'ネットワーク', 'アルゴリズム', 'プロセス', 'ワークフロー',
+    ],
+    constants: ['e', 'phi', 'pi'],
+    strengthens: ['long_term_planning', 'axiological_strictness', 'state_management'],
   },
 ];
 

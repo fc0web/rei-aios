@@ -31,24 +31,58 @@ export abstract class PersonaTaskProcessor {
 
 export class AncientProcessor extends PersonaTaskProcessor {
   readonly personaId: AlienPersonaId = 'ANCIENT';
-  readonly personaName = '\u8d85\u53e4\u4ee3\u4eba';
+  readonly personaName = '超古代人';
+
+  // 天体周期定数（超古代人の知識体系）
+  private readonly SOLAR_YEAR = 365.25;   // 太陽年（日）
+  private readonly LUNAR_MONTH = 29.5;    // 朔望月（日）
+  private readonly VENUS_CYCLE = 584;     // 金星会合周期（日）
+  private readonly JUPITER_CYCLE = 399;   // 木星会合周期（日）
 
   prioritize(tasks: DFUMTTask[]): DFUMTTask[] {
-    const dayOfYear = Math.floor((Date.now() - new Date(new Date().getFullYear(), 0, 0).getTime()) / 86400000);
+    const now = Date.now();
+    const dayOfYear = Math.floor((now - new Date(new Date().getFullYear(), 0, 0).getTime()) / 86400000);
+
     return [...tasks].sort((a, b) => {
-      const phaseA = a.period ? Math.abs((dayOfYear % a.period) / a.period - 0.5) : 0.5;
-      const phaseB = b.period ? Math.abs((dayOfYear % b.period) / b.period - 0.5) : 0.5;
-      return phaseA - phaseB;
+      const scoreA = this.calcAstralAffinity(a, dayOfYear);
+      const scoreB = this.calcAstralAffinity(b, dayOfYear);
+      return scoreB - scoreA;
     });
+  }
+
+  private calcAstralAffinity(task: DFUMTTask, dayOfYear: number): number {
+    const period = task.period ?? this.SOLAR_YEAR;
+    const phase = (dayOfYear % period) / period;
+    return (Math.cos(2 * Math.PI * phase) + 1) / 2;
   }
 
   async process(task: DFUMTTask): Promise<DFUMTTaskResult> {
     const start = Date.now();
-    const cyclePeriod = task.period ?? 365;
-    const currentPhase = (Date.now() / 86400000) % cyclePeriod;
+    const cyclePeriod = task.period ?? this.SOLAR_YEAR;
+    const dayInCycle = (Date.now() / 86400000) % cyclePeriod;
+    const season = this.getSeason(dayInCycle, cyclePeriod);
+    const ancientSymbol = this.getAncientSymbol(task);
+
     return this.makeResult(task, '\u22a4',
-      `[\u8d85\u53e4\u4ee3\u4eba\ud83c\udf00] \u30bf\u30b9\u30af\u300c${task.title}\u300d\u3092\u5468\u671f${cyclePeriod}\u65e5\u306e\u7b2c${Math.floor(currentPhase)}\u65e5\u306b\u51e6\u7406\u3057\u307e\u3057\u305f\u3002\u6b21\u306e\u5de1\u308a\u306b\u5099\u3048\u3066\u87ba\u65cb\u306b\u523b\u307f\u307e\u3059\u3002`,
-      { cyclePeriod, currentPhase }, start);
+      `[超古代人\ud83c\udf00] ${ancientSymbol} タスク「${task.title}」を${season}の第${Math.floor(dayInCycle)}日に処理。周期${cyclePeriod}日の螺旋に刻みました。`,
+      { cyclePeriod, dayInCycle, season, ancientSymbol, theoryRef: 76 },
+      start
+    );
+  }
+
+  private getSeason(day: number, period: number): string {
+    const ratio = day / period;
+    if (ratio < 0.25) return '春（萌芽）';
+    if (ratio < 0.50) return '夏（成長）';
+    if (ratio < 0.75) return '秋（収穫）';
+    return '冬（内省）';
+  }
+
+  private getAncientSymbol(task: DFUMTTask): string {
+    if (task.depth >= 7) return '\ud83c\udf00（螺旋——核心への到達）';
+    if (task.probability > 0.8) return '⚊⚊⚊（乾——純粋な創造力）';
+    if (task.state === '～') return '・・・（点列——始まりを待つ）';
+    return '｜（ライン——進行中）';
   }
 
   interpretError(_e: Error, _t: DFUMTTask): DFUMTTaskState { return '\uff5e'; }
