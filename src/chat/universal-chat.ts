@@ -471,6 +471,9 @@ export function generateUniversalChatPanel(providers: ProviderConfig[]): string 
       <span id="dfumt-badge" class="dfumt-badge">⊤ TRUE</span>
     </div>
 
+    <!-- STEP 13-A: D-FUMT視点セレクター -->
+    <div id="viewpoint-selector-container"></div>
+
     <!-- チャット履歴 -->
     <div id="universal-chat-history" class="chat-history"></div>
 

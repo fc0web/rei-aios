@@ -11,6 +11,8 @@ import { generateMemoryIntegrationScript } from '../chat/chat-memory-bridge';
 import { generateDictionaryPanel } from '../dictionary/wiktionary-client';
 import { PERSONAS as HISTORICAL_PERSONAS } from '../chat/persona-chat-engine';
 import { generateNostrPanel, DEFAULT_RELAYS } from '../p2p/nostr-axiom-share';
+import { generateViewpointSelectorScript } from '../chat/dfumt-viewpoints';
+import { AxiomGraphEngine } from '../visualization/axiom-graph';
 
 // ─── WebUI HTML生成 ────────────────────────────────────────────
 export function generateAxiomOsWebUI(options: WebUIOptions = {}): string {
@@ -20,6 +22,9 @@ export function generateAxiomOsWebUI(options: WebUIOptions = {}): string {
   const memoryScript = generateMemoryIntegrationScript();
   const dictionaryPanel = generateDictionaryPanel();
   const nostrPanel = generateNostrPanel(DEFAULT_RELAYS);
+  const viewpointScript = generateViewpointSelectorScript();
+  const axiomGraphEngine = new AxiomGraphEngine();
+  const axiomGraphScript = axiomGraphEngine.generateCanvasScript();
 
   return `<!DOCTYPE html>
 <html lang="ja">
@@ -131,6 +136,59 @@ export function generateAxiomOsWebUI(options: WebUIOptions = {}): string {
     .BOTH     { background: #3a1a3a; color: #cc88cc; }
     .NEITHER  { background: #1a2a3a; color: #8888cc; }
     .FLOWING  { background: #1a3a3a; color: #88cccc; }
+
+    /* STEP 13-A: 視点セレクター */
+    .viewpoint-selector { margin-bottom: 0.75rem; }
+    .viewpoint-label { font-size: 0.8rem; color: var(--text-dim); margin-bottom: 0.4rem; }
+    .viewpoint-chips { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+    .viewpoint-chip {
+      display: inline-flex; align-items: center; gap: 0.3rem;
+      padding: 0.25rem 0.6rem; border-radius: 16px; cursor: pointer;
+      border: 1px solid var(--border); background: var(--surface);
+      font-size: 0.78rem; color: var(--text-dim); transition: all 0.2s;
+    }
+    .viewpoint-chip.active {
+      border-color: var(--vp-color, var(--highlight));
+      color: var(--vp-color, var(--highlight));
+      background: rgba(136,136,170,0.15);
+    }
+    .viewpoint-chip:hover { border-color: var(--accent); }
+    .vp-symbol { font-size: 0.9rem; }
+
+    /* STEP 13-A: 視点レスポンス */
+    .viewpoint-response {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 6px; padding: 0.6rem 0.8rem; margin-bottom: 0.5rem;
+    }
+    .vp-response-header {
+      display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.4rem;
+    }
+    .vp-badge {
+      font-size: 0.72rem; padding: 1px 8px; border-radius: 10px; color: #fff;
+    }
+    .vp-confidence-bar {
+      flex: 1; height: 6px; background: #2a2a32; border-radius: 3px; overflow: hidden;
+    }
+    .vp-confidence-fill { height: 100%; border-radius: 3px; }
+    .vp-confidence-num { font-size: 0.72rem; color: var(--text-dim); min-width: 2.5rem; text-align: right; }
+    .vp-response-content { font-size: 0.85rem; line-height: 1.6; color: var(--text); }
+
+    /* STEP 13-B: 公理グラフ */
+    .axiom-subtabs { display: flex; gap: 0.5rem; margin-bottom: 0.75rem; }
+    .axiom-subtab {
+      padding: 0.3rem 0.8rem; background: var(--surface); border: 1px solid var(--border);
+      border-radius: 4px; color: var(--text-dim); cursor: pointer; font-size: 0.8rem;
+    }
+    .axiom-subtab.active { border-color: var(--highlight); color: var(--highlight); }
+    #axiom-graph-canvas {
+      width: 100%; height: 500px; background: #12121a; border: 1px solid var(--border);
+      border-radius: 6px;
+    }
+    .graph-legend {
+      display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 0.5rem; font-size: 0.72rem;
+    }
+    .graph-legend-item { display: flex; align-items: center; gap: 0.3rem; color: var(--text-dim); }
+    .graph-legend-color { width: 12px; height: 12px; border-radius: 2px; }
   </style>
 </head>
 <body>
@@ -187,13 +245,35 @@ export function generateAxiomOsWebUI(options: WebUIOptions = {}): string {
 
   <!-- 公理ブラウザパネル -->
   <div id="panel-axioms" class="panel">
-    <div class="theory-list">
-      ${theories.map(t => `
-      <div class="theory-item">
-        <div class="num">Theory #${t.num}</div>
-        <div class="title">${t.title}</div>
-        <div class="desc">${t.description}</div>
-      </div>`).join('')}
+    <div class="axiom-subtabs">
+      <button class="axiom-subtab active" onclick="switchAxiomView('list', this)">リスト表示</button>
+      <button class="axiom-subtab" onclick="switchAxiomView('graph', this)">グラフ表示</button>
+    </div>
+    <div id="axiom-list-view">
+      <div class="theory-list">
+        ${theories.map(t => `
+        <div class="theory-item">
+          <div class="num">Theory #${t.num}</div>
+          <div class="title">${t.title}</div>
+          <div class="desc">${t.description}</div>
+        </div>`).join('')}
+      </div>
+    </div>
+    <div id="axiom-graph-view" style="display:none">
+      <canvas id="axiom-graph-canvas"></canvas>
+      <div id="axiom-detail-panel" style="margin-top:0.5rem"></div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:0.5rem">
+        <div class="graph-legend">
+          <span class="graph-legend-item"><span class="graph-legend-color" style="background:#88aaff"></span>TRUE</span>
+          <span class="graph-legend-item"><span class="graph-legend-color" style="background:#cc6677"></span>FALSE</span>
+          <span class="graph-legend-item"><span class="graph-legend-color" style="background:#aa88ff"></span>BOTH</span>
+          <span class="graph-legend-item"><span class="graph-legend-color" style="background:#888888"></span>NEITHER</span>
+          <span class="graph-legend-item"><span class="graph-legend-color" style="background:#ffaa44"></span>INFINITY</span>
+          <span class="graph-legend-item"><span class="graph-legend-color" style="background:#44aacc"></span>ZERO</span>
+          <span class="graph-legend-item"><span class="graph-legend-color" style="background:#88ccaa"></span>FLOWING</span>
+        </div>
+        <button onclick="resetGraphView()" style="background:#333;color:#ccc;border:none;border-radius:4px;padding:0.3rem 0.6rem;cursor:pointer;font-size:0.75rem">リセット</button>
+      </div>
     </div>
   </div>
 
@@ -425,6 +505,28 @@ export function generateAxiomOsWebUI(options: WebUIOptions = {}): string {
       {name:'AxiomRCT',         magic:'REI\\\\x05', ratio:41.0, desc:'縁起グラフ・Theory #67'},
       {name:'LLMZip',           magic:'REI\\\\x04', ratio:47.0, desc:'統計予測・ヒット率67%'},
     ];
+
+    // ─── STEP 13-A: D-FUMT視点セレクター ────────────────────
+    ${viewpointScript}
+
+    // ─── STEP 13-B: 公理依存グラフ ────────────────────────────
+    ${axiomGraphScript}
+
+    // ── 公理ブラウザ サブタブ切替 ───────────────────────────
+    function switchAxiomView(view, btn) {
+      document.querySelectorAll('.axiom-subtab').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('axiom-list-view').style.display = view === 'list' ? 'block' : 'none';
+      document.getElementById('axiom-graph-view').style.display = view === 'graph' ? 'block' : 'none';
+      if (view === 'graph' && !axiomGraphData) {
+        initAxiomGraph();
+      }
+    }
+
+    // ── 視点セレクター初期化 ─────────────────────────────────
+    if (document.getElementById('viewpoint-selector-container')) {
+      renderViewpointSelector('viewpoint-selector-container');
+    }
 
     ${memoryScript}
   </script>

@@ -108,6 +108,59 @@
     .BOTH     { background: #3a1a3a; color: #cc88cc; }
     .NEITHER  { background: #1a2a3a; color: #8888cc; }
     .FLOWING  { background: #1a3a3a; color: #88cccc; }
+
+    /* STEP 13-A: 視点セレクター */
+    .viewpoint-selector { margin-bottom: 0.75rem; }
+    .viewpoint-label { font-size: 0.8rem; color: var(--text-dim); margin-bottom: 0.4rem; }
+    .viewpoint-chips { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+    .viewpoint-chip {
+      display: inline-flex; align-items: center; gap: 0.3rem;
+      padding: 0.25rem 0.6rem; border-radius: 16px; cursor: pointer;
+      border: 1px solid var(--border); background: var(--surface);
+      font-size: 0.78rem; color: var(--text-dim); transition: all 0.2s;
+    }
+    .viewpoint-chip.active {
+      border-color: var(--vp-color, var(--highlight));
+      color: var(--vp-color, var(--highlight));
+      background: rgba(136,136,170,0.15);
+    }
+    .viewpoint-chip:hover { border-color: var(--accent); }
+    .vp-symbol { font-size: 0.9rem; }
+
+    /* STEP 13-A: 視点レスポンス */
+    .viewpoint-response {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 6px; padding: 0.6rem 0.8rem; margin-bottom: 0.5rem;
+    }
+    .vp-response-header {
+      display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.4rem;
+    }
+    .vp-badge {
+      font-size: 0.72rem; padding: 1px 8px; border-radius: 10px; color: #fff;
+    }
+    .vp-confidence-bar {
+      flex: 1; height: 6px; background: #2a2a32; border-radius: 3px; overflow: hidden;
+    }
+    .vp-confidence-fill { height: 100%; border-radius: 3px; }
+    .vp-confidence-num { font-size: 0.72rem; color: var(--text-dim); min-width: 2.5rem; text-align: right; }
+    .vp-response-content { font-size: 0.85rem; line-height: 1.6; color: var(--text); }
+
+    /* STEP 13-B: 公理グラフ */
+    .axiom-subtabs { display: flex; gap: 0.5rem; margin-bottom: 0.75rem; }
+    .axiom-subtab {
+      padding: 0.3rem 0.8rem; background: var(--surface); border: 1px solid var(--border);
+      border-radius: 4px; color: var(--text-dim); cursor: pointer; font-size: 0.8rem;
+    }
+    .axiom-subtab.active { border-color: var(--highlight); color: var(--highlight); }
+    #axiom-graph-canvas {
+      width: 100%; height: 500px; background: #12121a; border: 1px solid var(--border);
+      border-radius: 6px;
+    }
+    .graph-legend {
+      display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 0.5rem; font-size: 0.72rem;
+    }
+    .graph-legend-item { display: flex; align-items: center; gap: 0.3rem; color: var(--text-dim); }
+    .graph-legend-color { width: 12px; height: 12px; border-radius: 2px; }
   </style>
 </head>
 <body>
@@ -209,47 +262,69 @@
 
   <!-- 公理ブラウザパネル -->
   <div id="panel-axioms" class="panel">
-    <div class="theory-list">
-      
-      <div class="theory-item">
-        <div class="num">Theory #1</div>
-        <div class="title">四値catuṣkoṭi論理</div>
-        <div class="desc">真・偽・両方・どちらでもない。インド哲学の四句を論理値として形式化。</div>
+    <div class="axiom-subtabs">
+      <button class="axiom-subtab active" onclick="switchAxiomView('list', this)">リスト表示</button>
+      <button class="axiom-subtab" onclick="switchAxiomView('graph', this)">グラフ表示</button>
+    </div>
+    <div id="axiom-list-view">
+      <div class="theory-list">
+        
+        <div class="theory-item">
+          <div class="num">Theory #1</div>
+          <div class="title">四値catuṣkoṭi論理</div>
+          <div class="desc">真・偽・両方・どちらでもない。インド哲学の四句を論理値として形式化。</div>
+        </div>
+        <div class="theory-item">
+          <div class="num">Theory #3</div>
+          <div class="title">零π拡張理論</div>
+          <div class="desc">零と円周率の関係を数学的に探求。ZERO値（4.0）の哲学的基盤。</div>
+        </div>
+        <div class="theory-item">
+          <div class="num">Theory #5</div>
+          <div class="title">螺旋数論</div>
+          <div class="desc">黄金比φと螺旋構造の関係。std/math.phi()の理論的根拠。</div>
+        </div>
+        <div class="theory-item">
+          <div class="num">Theory #7</div>
+          <div class="title">意識数学SAC公理</div>
+          <div class="desc">意識をC1-C6の公理系として形式化。AIの自己認識モデル。</div>
+        </div>
+        <div class="theory-item">
+          <div class="num">Theory #12</div>
+          <div class="title">UMTE（統一数学理論拡張）</div>
+          <div class="desc">U1-U5: 数学の基礎を七価論理で再構築。</div>
+        </div>
+        <div class="theory-item">
+          <div class="num">Theory #23</div>
+          <div class="title">D-FUMT完全七価論理</div>
+          <div class="desc">四値catuṣkoṭiをINFINITY/ZERO/FLOWINGで拡張した七価体系。</div>
+        </div>
+        <div class="theory-item">
+          <div class="num">Theory #67</div>
+          <div class="title">RCT（Rei圧縮理論）</div>
+          <div class="desc">縁起グラフの最小全域木を用いた意味保持圧縮。マジックバイトREI\x05。</div>
+        </div>
+        <div class="theory-item">
+          <div class="num">Theory #75</div>
+          <div class="title">SEED_KERNEL統合理論</div>
+          <div class="desc">75理論の統合核。全D-FUMT理論の交差点。</div>
+        </div>
       </div>
-      <div class="theory-item">
-        <div class="num">Theory #3</div>
-        <div class="title">零π拡張理論</div>
-        <div class="desc">零と円周率の関係を数学的に探求。ZERO値（4.0）の哲学的基盤。</div>
-      </div>
-      <div class="theory-item">
-        <div class="num">Theory #5</div>
-        <div class="title">螺旋数論</div>
-        <div class="desc">黄金比φと螺旋構造の関係。std/math.phi()の理論的根拠。</div>
-      </div>
-      <div class="theory-item">
-        <div class="num">Theory #7</div>
-        <div class="title">意識数学SAC公理</div>
-        <div class="desc">意識をC1-C6の公理系として形式化。AIの自己認識モデル。</div>
-      </div>
-      <div class="theory-item">
-        <div class="num">Theory #12</div>
-        <div class="title">UMTE（統一数学理論拡張）</div>
-        <div class="desc">U1-U5: 数学の基礎を七価論理で再構築。</div>
-      </div>
-      <div class="theory-item">
-        <div class="num">Theory #23</div>
-        <div class="title">D-FUMT完全七価論理</div>
-        <div class="desc">四値catuṣkoṭiをINFINITY/ZERO/FLOWINGで拡張した七価体系。</div>
-      </div>
-      <div class="theory-item">
-        <div class="num">Theory #67</div>
-        <div class="title">RCT（Rei圧縮理論）</div>
-        <div class="desc">縁起グラフの最小全域木を用いた意味保持圧縮。マジックバイトREI\x05。</div>
-      </div>
-      <div class="theory-item">
-        <div class="num">Theory #75</div>
-        <div class="title">SEED_KERNEL統合理論</div>
-        <div class="desc">75理論の統合核。全D-FUMT理論の交差点。</div>
+    </div>
+    <div id="axiom-graph-view" style="display:none">
+      <canvas id="axiom-graph-canvas"></canvas>
+      <div id="axiom-detail-panel" style="margin-top:0.5rem"></div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:0.5rem">
+        <div class="graph-legend">
+          <span class="graph-legend-item"><span class="graph-legend-color" style="background:#88aaff"></span>TRUE</span>
+          <span class="graph-legend-item"><span class="graph-legend-color" style="background:#cc6677"></span>FALSE</span>
+          <span class="graph-legend-item"><span class="graph-legend-color" style="background:#aa88ff"></span>BOTH</span>
+          <span class="graph-legend-item"><span class="graph-legend-color" style="background:#888888"></span>NEITHER</span>
+          <span class="graph-legend-item"><span class="graph-legend-color" style="background:#ffaa44"></span>INFINITY</span>
+          <span class="graph-legend-item"><span class="graph-legend-color" style="background:#44aacc"></span>ZERO</span>
+          <span class="graph-legend-item"><span class="graph-legend-color" style="background:#88ccaa"></span>FLOWING</span>
+        </div>
+        <button onclick="resetGraphView()" style="background:#333;color:#ccc;border:none;border-radius:4px;padding:0.3rem 0.6rem;cursor:pointer;font-size:0.75rem">リセット</button>
       </div>
     </div>
   </div>
@@ -353,6 +428,9 @@
       </select>
       <span id="dfumt-badge" class="dfumt-badge">⊤ TRUE</span>
     </div>
+
+    <!-- STEP 13-A: D-FUMT視点セレクター -->
+    <div id="viewpoint-selector-container"></div>
 
     <!-- チャット履歴 -->
     <div id="universal-chat-history" class="chat-history"></div>
@@ -1768,6 +1846,380 @@ document.addEventListener('DOMContentLoaded', function() {
       {name:'AxiomRCT',         magic:'REI\\x05', ratio:41.0, desc:'縁起グラフ・Theory #67'},
       {name:'LLMZip',           magic:'REI\\x04', ratio:47.0, desc:'統計予測・ヒット率67%'},
     ];
+
+    // ─── STEP 13-A: D-FUMT視点セレクター ────────────────────
+    
+// ─── STEP 13-A: D-FUMT七価論理7視点セレクター ──────────────
+const DFUMT_VIEWPOINTS_CONFIG = [{"value":"TRUE","symbol":"⊤","nameJa":"論理的視点","nameEn":"Logical","color":"#88aaff","description":"事実・論理・証拠に基づいて確定的に答える","systemPromptAddition":"\n【回答スタイル: ⊤ TRUE（論理的視点）】\n事実と論理に基づいて、確定的・断言的に答えてください。\n根拠を明示し、論理的な構造で回答してください。\n曖昧な表現は避け、明確に述べてください。"},{"value":"FALSE","symbol":"⊥","nameJa":"批判的視点","nameEn":"Critical","color":"#cc6677","description":"反論・問題点・リスクを指摘する","systemPromptAddition":"\n【回答スタイル: ⊥ FALSE（批判的視点）】\n反論・問題点・リスク・デメリットの観点から答えてください。\n「なぜそれが問題か」「何が欠けているか」を中心に述べてください。\n建設的な批判として、改善点も示してください。"},{"value":"BOTH","symbol":"B","nameJa":"両面視点","nameEn":"Both Sides","color":"#aa88ff","description":"賛否・メリットデメリット両方を提示する","systemPromptAddition":"\n【回答スタイル: B BOTH（両面視点）】\n賛成側と反対側、メリットとデメリット、両方の観点から答えてください。\n「一方では...、他方では...」という構造で回答してください。\nどちらか一方に偏らず、公平に両面を示してください。"},{"value":"NEITHER","symbol":"N","nameJa":"中立視点","nameEn":"Neutral","color":"#888888","description":"判断を保留し、問いをより深く掘り下げる","systemPromptAddition":"\n【回答スタイル: N NEITHER（中立視点）】\n即断せず、問いそのものを深く掘り下げてください。\n「そもそもこの問いは何を前提としているか」\n「本当に問うべきことは何か」を探ってください。\nソクラテス的な問い返しも有効です。"},{"value":"INFINITY","symbol":"∞","nameJa":"発散視点","nameEn":"Expansive","color":"#ffaa44","description":"可能性を最大限に広げ、斬新なアイデアを出す","systemPromptAddition":"\n【回答スタイル: ∞ INFINITY（発散視点）】\n可能性を最大限に広げて答えてください。\n「もしこうだったら」「極端に言えば」「宇宙規模で考えると」\nなど、通常の枠を超えた発想で回答してください。\n創造的・革新的・斬新なアイデアを優先してください。"},{"value":"ZERO","symbol":"〇","nameJa":"本質視点","nameEn":"Essential","color":"#44aacc","description":"本質・核心だけを最小限の言葉で答える","systemPromptAddition":"\n【回答スタイル: 〇 ZERO（本質視点）】\n余分なものを全て削ぎ落とし、本質だけを答えてください。\nできるだけ短く、しかし深く。\n「一言で言えば何か」を意識してください。\n禅問答のように、核心を突いた言葉で答えてください。"},{"value":"FLOWING","symbol":"～","nameJa":"変化視点","nameEn":"Dynamic","color":"#88ccaa","description":"時間軸・プロセス・変化の観点で答える","systemPromptAddition":"\n【回答スタイル: ～ FLOWING（変化視点）】\n時間の流れ・変化・プロセスの観点から答えてください。\n「過去はどうだったか」「現在はどうか」「未来はどうなるか」\n「この状況はどのように変化していくか」を中心に述べてください。\n静的な答えではなく、動的・流動的な視点で回答してください。"}];
+
+let selectedViewpoints = new Set(['TRUE', 'FALSE', 'BOTH']);
+
+function renderViewpointSelector(containerId) {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+
+  container.innerHTML = `
+    <div class="viewpoint-selector">
+      <div class="viewpoint-label">回答視点を選択（複数可）:</div>
+      <div class="viewpoint-chips">
+        ${DFUMT_VIEWPOINTS_CONFIG.map(vp => `
+          <label class="viewpoint-chip ${selectedViewpoints.has(vp.value) ? 'active' : ''}"
+            style="--vp-color: ${vp.color}"
+            onclick="toggleViewpoint('${vp.value}', this)">
+            <input type="checkbox" value="${vp.value}"
+              ${selectedViewpoints.has(vp.value) ? 'checked' : ''}
+              style="display:none"/>
+            <span class="vp-symbol">${vp.symbol}</span>
+            <span class="vp-name">${vp.nameJa}</span>
+          </label>
+        `).join('')}
+      </div>
+      <div style="font-size:0.72rem;color:#555;margin-top:0.25rem">
+        選択中: <span id="selected-count">${selectedViewpoints.size}</span>視点
+        （多いほど回答生成に時間がかかります）
+      </div>
+    </div>
+  `;
+}
+
+function toggleViewpoint(value, labelEl) {
+  if (selectedViewpoints.has(value)) {
+    if (selectedViewpoints.size <= 1) return; // 最低1つは必要
+    selectedViewpoints.delete(value);
+    labelEl.classList.remove('active');
+  } else {
+    selectedViewpoints.add(value);
+    labelEl.classList.add('active');
+  }
+  const countEl = document.getElementById('selected-count');
+  if (countEl) countEl.textContent = selectedViewpoints.size;
+}
+
+function renderMultiViewpointResponse(containerId, responses) {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+
+  container.innerHTML = responses.map(r => {
+    const vp = r.viewpoint;
+    const barWidth = r.confidence + '%';
+    return `
+      <div class="viewpoint-response">
+        <div class="vp-response-header">
+          <span class="vp-badge" style="background:${vp.color}">
+            ${vp.symbol} ${vp.nameJa}
+          </span>
+          <span class="vp-provider" style="font-size:0.72rem;color:#555">
+            ${r.provider} | ${r.latencyMs}ms
+          </span>
+          <div class="vp-confidence-bar">
+            <div class="vp-confidence-fill"
+              style="width:${barWidth};background:${vp.color}"></div>
+          </div>
+          <span class="vp-confidence-num">${r.confidence}%</span>
+        </div>
+        <div class="vp-response-content">
+          ${escHtml(r.content)}
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+
+    // ─── STEP 13-B: 公理依存グラフ ────────────────────────────
+    
+// ─── STEP 13-B: 公理依存グラフ ──────────────────────────────
+let axiomGraphData = null;
+let selectedAxiomNode = null;
+let graphScale = 1.0;
+let graphOffsetX = 0;
+let graphOffsetY = 0;
+let isDragging = false;
+let dragStartX = 0;
+let dragStartY = 0;
+
+const DFUMT_GRAPH_STYLE = {"TRUE":{"color":"#1a2a4a","border":"#88aaff","shape":"rect"},"FALSE":{"color":"#2a1a1a","border":"#cc6677","shape":"rect"},"BOTH":{"color":"#2a1a4a","border":"#aa88ff","shape":"diamond"},"NEITHER":{"color":"#2a2a2a","border":"#888888","shape":"circle"},"INFINITY":{"color":"#2a1a00","border":"#ffaa44","shape":"hexagon"},"ZERO":{"color":"#001a2a","border":"#44aacc","shape":"circle"},"FLOWING":{"color":"#0a2a1a","border":"#88ccaa","shape":"rounded"}};
+const EDGE_STYLE = {"depends":{"color":"#5566aa","dash":[]},"derives":{"color":"#55aa66","dash":[5,3]},"contradicts":{"color":"#aa5566","dash":[3,3]},"extends":{"color":"#aa9944","dash":[8,3]}};
+
+function initAxiomGraph() {
+  const canvas = document.getElementById('axiom-graph-canvas');
+  if (!canvas) return;
+
+  const ctx = canvas.getContext('2d');
+  canvas.width = canvas.offsetWidth || 800;
+  canvas.height = canvas.offsetHeight || 500;
+
+  // グラフデータ初期化
+  axiomGraphData = buildAxiomGraphData(canvas.width, canvas.height);
+  drawAxiomGraph(ctx, axiomGraphData, canvas.width, canvas.height);
+
+  // マウスイベント
+  canvas.addEventListener('click', (e) => onGraphClick(e, canvas, ctx));
+  canvas.addEventListener('wheel', (e) => onGraphWheel(e, canvas, ctx));
+  canvas.addEventListener('mousedown', (e) => { isDragging = true; dragStartX = e.offsetX; dragStartY = e.offsetY; });
+  canvas.addEventListener('mousemove', (e) => {
+    if (isDragging) {
+      graphOffsetX += e.offsetX - dragStartX;
+      graphOffsetY += e.offsetY - dragStartY;
+      dragStartX = e.offsetX;
+      dragStartY = e.offsetY;
+      drawAxiomGraph(ctx, axiomGraphData, canvas.width, canvas.height);
+    }
+    onGraphHover(e, canvas);
+  });
+  canvas.addEventListener('mouseup', () => { isDragging = false; });
+}
+
+function buildAxiomGraphData(width, height) {
+  const nodes = [
+    { id: '#1',  label: '四値論理基礎',      description: 'catuskoti四値論理の基礎', dfumtValue: 'TRUE',     category: 'logic' },
+    { id: '#2',  label: '七価論理拡張',      description: 'D-FUMT七価論理への拡張',  dfumtValue: 'BOTH',     category: 'logic' },
+    { id: '#3',  label: '空理論',            description: 'sunyataの数学的記述',     dfumtValue: 'NEITHER',  category: 'philosophy' },
+    { id: '#5',  label: '縁起公理',          description: '依存発生の公理系',        dfumtValue: 'FLOWING',  category: 'philosophy' },
+    { id: '#10', label: '零π理論',           description: 'ゼロと円周率の関係',      dfumtValue: 'ZERO',     category: 'mathematics' },
+    { id: '#23', label: '螺旋数論',          description: '黄金比と螺旋の数学',      dfumtValue: 'INFINITY', category: 'mathematics' },
+    { id: '#45', label: 'SAC意識公理',       description: '意識数学の公理群C1-C6',   dfumtValue: 'BOTH',     category: 'consciousness' },
+    { id: '#67', label: 'RCT圧縮理論',      description: 'Rei圧縮理論（11/15勝）', dfumtValue: 'TRUE',     category: 'compression' },
+    { id: '#76', label: 'UMTE統一理論',     description: '統一数学的真理体系U1-U5', dfumtValue: 'FLOWING',  category: 'mathematics' },
+    { id: '#87', label: '非数値数学',        description: '数値を超えた数学',        dfumtValue: 'NEITHER',  category: 'mathematics' },
+    { id: '#92', label: 'MMRT多次元推論',   description: '多次元推論理論',          dfumtValue: 'INFINITY', category: 'logic' },
+    { id: '#100', label: '公理ネット完全性', description: '公理ネットワーク完全性定理', dfumtValue: 'TRUE',  category: 'meta' },
+  ];
+
+  const edges = [
+    { from: '#1',  to: '#2',   type: 'extends',     label: '拡張' },
+    { from: '#2',  to: '#45',  type: 'derives',     label: '派生' },
+    { from: '#2',  to: '#92',  type: 'derives',     label: '派生' },
+    { from: '#3',  to: '#5',   type: 'depends',     label: '依存' },
+    { from: '#5',  to: '#45',  type: 'depends',     label: '依存' },
+    { from: '#10', to: '#23',  type: 'extends',     label: '拡張' },
+    { from: '#23', to: '#67',  type: 'derives',     label: '応用' },
+    { from: '#45', to: '#76',  type: 'derives',     label: '派生' },
+    { from: '#67', to: '#100', type: 'depends',     label: '依存' },
+    { from: '#76', to: '#87',  type: 'extends',     label: '拡張' },
+    { from: '#87', to: '#92',  type: 'depends',     label: '依存' },
+    { from: '#92', to: '#100', type: 'depends',     label: '依存' },
+    { from: '#1',  to: '#3',   type: 'contradicts', label: '矛盾?' },
+  ];
+
+  // 階層レイアウト計算
+  const levels = new Map();
+  const hasIncoming = new Set(edges.map(e => e.to));
+  const roots = nodes.filter(n => !hasIncoming.has(n.id)).map(n => n.id);
+  roots.forEach(r => levels.set(r, 0));
+
+  const queue = [...roots];
+  while (queue.length > 0) {
+    const current = queue.shift();
+    const currentLevel = levels.get(current) || 0;
+    edges.filter(e => e.from === current).forEach(e => {
+      if ((levels.get(e.to) || 0) <= currentLevel) {
+        levels.set(e.to, currentLevel + 1);
+        queue.push(e.to);
+      }
+    });
+  }
+
+  const levelNodes = new Map();
+  levels.forEach((level, nodeId) => {
+    if (!levelNodes.has(level)) levelNodes.set(level, []);
+    levelNodes.get(level).push(nodeId);
+  });
+
+  const maxLevel = Math.max(...levels.values(), 0);
+  const padding = 80;
+  const levelHeight = (height - padding * 2) / (maxLevel + 1);
+  const nodeMap = new Map(nodes.map(n => [n.id, n]));
+
+  levelNodes.forEach((nodeIds, level) => {
+    const nodeWidth = (width - padding * 2) / (nodeIds.length + 1);
+    nodeIds.forEach((nodeId, i) => {
+      const node = nodeMap.get(nodeId);
+      if (node) {
+        node.x = padding + nodeWidth * (i + 1);
+        node.y = padding + levelHeight * level + levelHeight / 2;
+      }
+    });
+  });
+
+  nodes.forEach(n => { if (!n.x) { n.x = width / 2; n.y = height - padding; } });
+
+  return { nodes, edges };
+}
+
+function drawAxiomGraph(ctx, graph, width, height) {
+  ctx.clearRect(0, 0, width, height);
+  ctx.save();
+  ctx.translate(graphOffsetX, graphOffsetY);
+  ctx.scale(graphScale, graphScale);
+
+  const nodeMap = new Map(graph.nodes.map(n => [n.id, n]));
+
+  // エッジを描画
+  graph.edges.forEach(edge => {
+    const from = nodeMap.get(edge.from);
+    const to = nodeMap.get(edge.to);
+    if (!from || !to || !from.x || !to.x) return;
+
+    const style = EDGE_STYLE[edge.type] || { color: '#666', dash: [] };
+    ctx.beginPath();
+    ctx.setLineDash(style.dash);
+    ctx.strokeStyle = style.color;
+    ctx.lineWidth = 1.5;
+    ctx.moveTo(from.x, from.y);
+    ctx.lineTo(to.x, to.y);
+    ctx.stroke();
+
+    // 矢印を描画
+    const angle = Math.atan2(to.y - from.y, to.x - from.x);
+    const arrowX = to.x - Math.cos(angle) * 30;
+    const arrowY = to.y - Math.sin(angle) * 30;
+    ctx.beginPath();
+    ctx.setLineDash([]);
+    ctx.moveTo(arrowX, arrowY);
+    ctx.lineTo(arrowX - 10 * Math.cos(angle - 0.4), arrowY - 10 * Math.sin(angle - 0.4));
+    ctx.lineTo(arrowX - 10 * Math.cos(angle + 0.4), arrowY - 10 * Math.sin(angle + 0.4));
+    ctx.closePath();
+    ctx.fillStyle = style.color;
+    ctx.fill();
+
+    // エッジラベル
+    if (edge.label) {
+      const midX = (from.x + to.x) / 2;
+      const midY = (from.y + to.y) / 2;
+      ctx.fillStyle = '#666';
+      ctx.font = '10px monospace';
+      ctx.fillText(edge.label, midX, midY);
+    }
+  });
+
+  // ノードを描画
+  graph.nodes.forEach(node => {
+    if (!node.x) return;
+    const style = DFUMT_GRAPH_STYLE[node.dfumtValue] ||
+      { color: '#1a1a2a', border: '#666', shape: 'rect' };
+    const isSelected = selectedAxiomNode?.id === node.id;
+    const w = 100, h = 36;
+
+    ctx.beginPath();
+    ctx.setLineDash([]);
+
+    if (style.shape === 'circle' || style.shape === 'rounded') {
+      ctx.roundRect(node.x - w/2, node.y - h/2, w, h, 8);
+    } else if (style.shape === 'diamond') {
+      ctx.moveTo(node.x, node.y - h/2 - 5);
+      ctx.lineTo(node.x + w/2 + 5, node.y);
+      ctx.lineTo(node.x, node.y + h/2 + 5);
+      ctx.lineTo(node.x - w/2 - 5, node.y);
+      ctx.closePath();
+    } else {
+      ctx.rect(node.x - w/2, node.y - h/2, w, h);
+    }
+
+    ctx.fillStyle = style.color;
+    ctx.fill();
+    ctx.strokeStyle = isSelected ? '#ffffff' : style.border;
+    ctx.lineWidth = isSelected ? 3 : 1.5;
+    ctx.stroke();
+
+    // ノードテキスト
+    ctx.fillStyle = style.border;
+    ctx.font = 'bold 11px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText(node.id, node.x, node.y - 5);
+    ctx.font = '10px sans-serif';
+    ctx.fillStyle = '#cccccc';
+    ctx.fillText(node.label.slice(0, 10), node.x, node.y + 10);
+    ctx.textAlign = 'left';
+  });
+
+  ctx.restore();
+}
+
+function onGraphClick(e, canvas, ctx) {
+  const rect = canvas.getBoundingClientRect();
+  const x = (e.clientX - rect.left - graphOffsetX) / graphScale;
+  const y = (e.clientY - rect.top - graphOffsetY) / graphScale;
+
+  if (!axiomGraphData) return;
+  const hit = axiomGraphData.nodes.find(n => {
+    if (!n.x) return false;
+    return Math.abs(n.x - x) < 60 && Math.abs(n.y - y) < 25;
+  });
+
+  selectedAxiomNode = hit || null;
+  drawAxiomGraph(ctx, axiomGraphData, canvas.width, canvas.height);
+
+  if (hit) showAxiomDetail(hit);
+}
+
+function onGraphWheel(e, canvas, ctx) {
+  e.preventDefault();
+  graphScale = Math.max(0.3, Math.min(3.0, graphScale - e.deltaY * 0.001));
+  drawAxiomGraph(ctx, axiomGraphData, canvas.width, canvas.height);
+}
+
+function onGraphHover(e, canvas) {
+  const rect = canvas.getBoundingClientRect();
+  const x = (e.clientX - rect.left - graphOffsetX) / graphScale;
+  const y = (e.clientY - rect.top - graphOffsetY) / graphScale;
+
+  if (!axiomGraphData) return;
+  const hit = axiomGraphData.nodes.find(n => {
+    if (!n.x) return false;
+    return Math.abs(n.x - x) < 60 && Math.abs(n.y - y) < 25;
+  });
+  canvas.style.cursor = hit ? 'pointer' : 'grab';
+}
+
+function showAxiomDetail(node) {
+  const detail = document.getElementById('axiom-detail-panel');
+  if (!detail) return;
+  const style = DFUMT_GRAPH_STYLE[node.dfumtValue] ||
+    { color: '#1a1a2a', border: '#666' };
+
+  detail.innerHTML = `
+    <div style="border-left:4px solid ${style.border};padding:0.5rem 0.75rem;background:#1a1a22;border-radius:6px">
+      <div style="display:flex;gap:0.5rem;align-items:center;margin-bottom:0.4rem">
+        <span style="font-size:1rem;color:${style.border};font-weight:bold">${node.id}</span>
+        <span style="background:${style.border};color:#fff;font-size:0.72rem;padding:1px 8px;border-radius:4px">
+          ${node.dfumtValue}
+        </span>
+        <span style="color:#666;font-size:0.75rem">${node.category}</span>
+      </div>
+      <div style="color:#ccc;font-size:0.9rem;margin-bottom:0.3rem">${node.label}</div>
+      <div style="color:#888;font-size:0.82rem">${node.description}</div>
+    </div>
+  `;
+}
+
+function resetGraphView() {
+  graphScale = 1.0;
+  graphOffsetX = 0;
+  graphOffsetY = 0;
+  const canvas = document.getElementById('axiom-graph-canvas');
+  if (canvas) {
+    const ctx = canvas.getContext('2d');
+    drawAxiomGraph(ctx, axiomGraphData, canvas.width, canvas.height);
+  }
+}
+
+
+    // ── 公理ブラウザ サブタブ切替 ───────────────────────────
+    function switchAxiomView(view, btn) {
+      document.querySelectorAll('.axiom-subtab').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('axiom-list-view').style.display = view === 'list' ? 'block' : 'none';
+      document.getElementById('axiom-graph-view').style.display = view === 'graph' ? 'block' : 'none';
+      if (view === 'graph' && !axiomGraphData) {
+        initAxiomGraph();
+      }
+    }
+
+    // ── 視点セレクター初期化 ─────────────────────────────────
+    if (document.getElementById('viewpoint-selector-container')) {
+      renderViewpointSelector('viewpoint-selector-container');
+    }
 
     
 // ─── STEP 10-B: チャット記憶統合 ──────────────────────────────
