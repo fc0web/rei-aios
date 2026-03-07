@@ -1,5 +1,5 @@
 /**
- * Seed Kernel — 75理論の「種」最小表現
+ * Seed Kernel — 87理論の「種」最小表現
  *
  * フルデータ（name・description）を持たず、
  * axiom + category + keywords のみで理論を定義する。
@@ -104,4 +104,22 @@ export const SEED_KERNEL: SeedTheory[] = [
   { id: 'dfumt-orbital-spiral', axiom: 'Orbital=n×e^(iθ)', category: 'number-system', keywords: ['オービタル', '螺旋'] },
   { id: 'dfumt-pmn', axiom: 'PMN=x×e^(iφ)', category: 'number-system', keywords: ['PMN', '位相変調'] },
   { id: 'dfumt-cycron', axiom: 'Cycron=n mod cycle', category: 'number-system', keywords: ['Cycron', '循環数'] },
+
+  // ── Maya × Aztec 情報科学理論 (Theory #68〜72) ──
+  { id: 'dfumt-maya-code', axiom: 'マヤ三層符号: 表意×表音×音節=最小記述長', category: 'computation', keywords: ['マヤ符号', 'ハフマン', '可変長符号', 'hybrid encoding'] },
+  { id: 'dfumt-entropy-zero', axiom: 'H(ZERO)=log₂(7) 最大潜在エントロピー=マヤのゼロ', category: 'mathematics', keywords: ['シャノンエントロピー', 'ZERO', '潜在情報量', 'information theory'] },
+  { id: 'dfumt-aztec-geometry', axiom: '複雑空間=凸多角形の和集合 アステカ土地測量公理', category: 'mathematics', keywords: ['ポリゴン分解', 'アステカ', '空間分割', 'Shoelace'] },
+  { id: 'dfumt-maya-distributed', axiom: '複数プロセス=独立暦 同期点=七価合意 マヤ分散理論', category: 'computation', keywords: ['分散コンピューティング', 'マヤ暦', '合意アルゴリズム', 'consensus'] },
+  { id: 'dfumt-aztec-cycle', axiom: 'LCM(p1,p2)=合流点 アステカ52年=周期合流公理', category: 'mathematics', keywords: ['最小公倍数', 'アステカ', '周期', 'LCM', 'synchronization'] },
+
+  // ── ギリシャ神話理論 (Theory #73〜76) ──
+  { id: 'dfumt-moira', axiom: 'クロト×ラケシス×アトロポス 生成・評価・終了の三相公理', category: 'computation', keywords: ['モイラ', '終了条件', '廃棄', 'termination', 'lifecycle'] },
+  { id: 'dfumt-prometheus', axiom: 'プロメテウス降下: 公理は受け手のレベルに変換されなければならない', category: 'ai-integration', keywords: ['プロメテウス', '知識降下', '変換', 'knowledge transfer'] },
+  { id: 'dfumt-narcissus', axiom: '自己参照ループは必ずバイアスを生む ナルキッソス盲点公理', category: 'logic', keywords: ['ナルキッソス', '自己参照', 'メタ認知', 'self-loop', 'blind spot'] },
+  { id: 'dfumt-ariadne', axiom: '全推論は起点への糸を持つ アリアドネ逆引き公理', category: 'computation', keywords: ['アリアドネ', '逆引き', 'backtrace', 'tracing', 'labyrinth'] },
+
+  // ── 公理の逆理論 (Theory #77〜79) ──
+  { id: 'dfumt-anti-axiom', axiom: '¬A は A と BOTH 状態で共存し新体系の種となる', category: 'logic', keywords: ['反公理', '否定', 'anti-axiom', '非ユークリッド'] },
+  { id: 'dfumt-theorem', axiom: '公理→定理: 演繹は SEED_KERNEL を無限に展開する', category: 'logic', keywords: ['定理', '演繹', 'theorem', 'deduction', 'modus ponens'] },
+  { id: 'dfumt-no-axiom', axiom: 'ZERO は全公理の母体 現れと帰還の循環が創造の本質', category: 'general', keywords: ['無公理', 'ZERO', '無', '創造', 'void', '循環'] },
 ];

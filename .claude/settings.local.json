@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "WebSearch",
+      "WebFetch(domain:registry.npmjs.org)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "Bash(gh api:*)",
+      "Bash(npx tsx:*)",
+      "Bash(npx tsc:*)",
+      "Bash(xargs grep:*)",
+      "Bash(npm install:*)",
+      "Bash(do echo:*)",
+      "Bash(node:*)",
+      "Bash(npm test:*)",
+      "Bash(rm:*)"
+    ]
+  }
+}

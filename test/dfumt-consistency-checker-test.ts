@@ -36,12 +36,12 @@ async function runTests() {
   console.log('\n--- 3. 理論数の確認 ---');
 
   assert(report.totalTheories === SEED_KERNEL.length, `totalTheories === SEED_KERNEL.length (${SEED_KERNEL.length})`);
-  assert(report.totalTheories === 75, '75理論');
+  assert(report.totalTheories === 87, '87理論');
 
   // --- 4. ペア数の確認 ---
   console.log('\n--- 4. ペア数の確認 ---');
 
-  const expectedPairs = 75 * 74 / 2;
+  const expectedPairs = 87 * 86 / 2;
   assert(report.totalPairsChecked === expectedPairs, `全ペア数: ${expectedPairs}`);
 
   // --- 5. 整合スコアの範囲 ---

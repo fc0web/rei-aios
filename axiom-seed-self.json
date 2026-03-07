@@ -1,0 +1,2028 @@
+{
+  "version": "1.0.0",
+  "extractedAt": "2026-03-05T03:23:18.350Z",
+  "sourceDir": "C:\\Users\\user\\rei-aios\\src",
+  "stats": {
+    "files": 148,
+    "originalBytes": 1279088,
+    "axioms": 159,
+    "axiomJsonBytes": 26399,
+    "compressionRatio": 2.063892398333813
+  },
+  "axioms": [
+    {
+      "id": "cae-compare-0000ec9d",
+      "axiom": "a ≡ b ∨ a ≠ b — 等値比較 [===]",
+      "keywords": [
+        "equality",
+        "comparison",
+        "delta",
+        "≡",
+        "ts"
+      ],
+      "category": "logic",
+      "source": "==="
+    },
+    {
+      "id": "cae-constant-05a73763",
+      "axiom": "c = lim(1/∞) — 定数公理 [const]",
+      "keywords": [
+        "constant",
+        "immutable",
+        "identity",
+        "ts"
+      ],
+      "category": "general",
+      "source": "const"
+    },
+    {
+      "id": "cae-compose-50ca50fb",
+      "axiom": "f∘g∘h — 合成パイプライン [Promise]",
+      "keywords": [
+        "composition",
+        "pipeline",
+        "chain",
+        "ts"
+      ],
+      "category": "unified",
+      "source": "Promise"
+    },
+    {
+      "id": "cae-async-50ca50fb",
+      "axiom": "f: A→Promise<B> — 非同期写像 [Promise]",
+      "keywords": [
+        "async",
+        "concurrent",
+        "promise",
+        "～",
+        "ts"
+      ],
+      "category": "expansion",
+      "source": "Promise"
+    },
+    {
+      "id": "cae-branch-00000d1d",
+      "axiom": "P∨¬P — 分岐構造 [if]",
+      "keywords": [
+        "branch",
+        "condition",
+        "logic",
+        "∨",
+        "ts"
+      ],
+      "category": "logic",
+      "source": "if"
+    },
+    {
+      "id": "cae-compose-058e7956",
+      "axiom": "f∘g∘h — 合成パイプライン [await]",
+      "keywords": [
+        "composition",
+        "pipeline",
+        "chain",
+        "ts"
+      ],
+      "category": "unified",
+      "source": "await"
+    },
+    {
+      "id": "cae-async-058e7956",
+      "axiom": "f: A→Promise<B> — 非同期写像 [await]",
+      "keywords": [
+        "async",
+        "concurrent",
+        "promise",
+        "～",
+        "ts"
+      ],
+      "category": "expansion",
+      "source": "await"
+    },
+    {
+      "id": "cae-debug-05c4d208",
+      "axiom": "observe(x) — 観測点 [error]",
+      "keywords": [
+        "observe",
+        "debug",
+        "log",
+        "〇",
+        "ts"
+      ],
+      "category": "general",
+      "source": "error"
+    },
+    {
+      "id": "cae-compose-058d027c",
+      "axiom": "f∘g∘h — 合成パイプライン [async]",
+      "keywords": [
+        "composition",
+        "pipeline",
+        "chain",
+        "ts"
+      ],
+      "category": "unified",
+      "source": "async"
+    },
+    {
+      "id": "cae-async-058d027c",
+      "axiom": "f: A→Promise<B> — 非同期写像 [async]",
+      "keywords": [
+        "async",
+        "concurrent",
+        "promise",
+        "～",
+        "ts"
+      ],
+      "category": "expansion",
+      "source": "async"
+    },
+    {
+      "id": "cae-string-056140cb",
+      "axiom": "f: Σ*→Σ* — 文字列変換 [includes]",
+      "keywords": [
+        "string",
+        "text",
+        "pattern",
+        "Σ",
+        "ts"
+      ],
+      "category": "general",
+      "source": "includes"
+    },
+    {
+      "id": "cae-error-05a0eebb",
+      "axiom": "P∨¬P∨⊥ — エラー分岐 [catch]",
+      "keywords": [
+        "error",
+        "exception",
+        "fault",
+        "⊥",
+        "ts"
+      ],
+      "category": "logic",
+      "source": "catch"
+    },
+    {
+      "id": "cae-collection-0034af1a",
+      "axiom": "S ⊕ x = S' — コレクション変換 [push]",
+      "keywords": [
+        "collection",
+        "array",
+        "list",
+        "⊕",
+        "ts"
+      ],
+      "category": "computation",
+      "source": "push"
+    },
+    {
+      "id": "cae-module-4cd6ec4c",
+      "axiom": "M₁ → M₂ — モジュール依存 [export]",
+      "keywords": [
+        "module",
+        "dependency",
+        "import",
+        "export",
+        "ts"
+      ],
+      "category": "unified",
+      "source": "export"
+    },
+    {
+      "id": "cae-error-0001c1bb",
+      "axiom": "P∨¬P∨⊥ — エラー分岐 [try]",
+      "keywords": [
+        "error",
+        "exception",
+        "fault",
+        "⊥",
+        "ts"
+      ],
+      "category": "logic",
+      "source": "try"
+    },
+    {
+      "id": "cae-class-1df56d39",
+      "axiom": "T: Type → ∃x∈T — 型構造 [interface]",
+      "keywords": [
+        "class",
+        "type",
+        "structure",
+        "object",
+        "ts"
+      ],
+      "category": "mathematics",
+      "source": "interface"
+    },
+    {
+      "id": "cae-math-046aea06",
+      "axiom": "f: ℝ→ℝ — 数学関数 [Math.]",
+      "keywords": [
+        "math",
+        "numerical",
+        "calculation",
+        "ℝ",
+        "ts"
+      ],
+      "category": "mathematics",
+      "source": "Math."
+    },
+    {
+      "id": "cae-loop-37b90a9a",
+      "axiom": "∀x∈S: f(x) — 反復構造 [reduce]",
+      "keywords": [
+        "iteration",
+        "loop",
+        "sequence",
+        "∀",
+        "ts"
+      ],
+      "category": "computation",
+      "source": "reduce"
+    },
+    {
+      "id": "cae-reduce-37b90a9a",
+      "axiom": "lim f(n)=L — 縮小収束 [reduce]",
+      "keywords": [
+        "reduction",
+        "convergence",
+        "lim",
+        "Ω",
+        "ts"
+      ],
+      "category": "zero_extension",
+      "source": "reduce"
+    },
+    {
+      "id": "cae-error-37b68c61",
+      "axiom": "P∨¬P∨⊥ — エラー分岐 [reject]",
+      "keywords": [
+        "error",
+        "exception",
+        "fault",
+        "⊥",
+        "ts"
+      ],
+      "category": "logic",
+      "source": "reject"
+    },
+    {
+      "id": "cae-string-00367422",
+      "axiom": "f: Σ*→Σ* — 文字列変換 [trim]",
+      "keywords": [
+        "string",
+        "text",
+        "pattern",
+        "Σ",
+        "ts"
+      ],
+      "category": "general",
+      "source": "trim"
+    },
+    {
+      "id": "cae-string-062dd9c5",
+      "axiom": "f: Σ*→Σ* — 文字列変換 [match]",
+      "keywords": [
+        "string",
+        "text",
+        "pattern",
+        "Σ",
+        "ts"
+      ],
+      "category": "general",
+      "source": "match"
+    },
+    {
+      "id": "cae-loop-4bf73488",
+      "axiom": "∀x∈S: f(x) — 反復構造 [filter]",
+      "keywords": [
+        "iteration",
+        "loop",
+        "sequence",
+        "∀",
+        "ts"
+      ],
+      "category": "computation",
+      "source": "filter"
+    },
+    {
+      "id": "cae-loop-0001a55c",
+      "axiom": "∀x∈S: f(x) — 反復構造 [map]",
+      "keywords": [
+        "iteration",
+        "loop",
+        "sequence",
+        "∀",
+        "ts"
+      ],
+      "category": "computation",
+      "source": "map"
+    },
+    {
+      "id": "cae-loop-00018cc9",
+      "axiom": "∀x∈S: f(x) — 反復構造 [for]",
+      "keywords": [
+        "iteration",
+        "loop",
+        "sequence",
+        "∀",
+        "ts"
+      ],
+      "category": "computation",
+      "source": "for"
+    },
+    {
+      "id": "cae-transform-0001a55c",
+      "axiom": "f: A→B — 変換写像 [map]",
+      "keywords": [
+        "transform",
+        "mapping",
+        "morphism",
+        "ts"
+      ],
+      "category": "expansion",
+      "source": "map"
+    },
+    {
+      "id": "cae-compare-000007bf",
+      "axiom": "a ≡ b ∨ a ≠ b — 等値比較 [>=]",
+      "keywords": [
+        "equality",
+        "comparison",
+        "delta",
+        "≡",
+        "ts"
+      ],
+      "category": "logic",
+      "source": ">="
+    },
+    {
+      "id": "cae-compare-00000781",
+      "axiom": "a ≡ b ∨ a ≠ b — 等値比較 [<=]",
+      "keywords": [
+        "equality",
+        "comparison",
+        "delta",
+        "≡",
+        "ts"
+      ],
+      "category": "logic",
+      "source": "<="
+    },
+    {
+      "id": "cae-branch-002f8d39",
+      "axiom": "P∨¬P — 分岐構造 [else]",
+      "keywords": [
+        "branch",
+        "condition",
+        "logic",
+        "∨",
+        "ts"
+      ],
+      "category": "logic",
+      "source": "else"
+    },
+    {
+      "id": "cae-transform-06581ab3",
+      "axiom": "f: A→B — 変換写像 [parse]",
+      "keywords": [
+        "transform",
+        "mapping",
+        "morphism",
+        "ts"
+      ],
+      "category": "expansion",
+      "source": "parse"
+    },
+    {
+      "id": "cae-compose-00364e1d",
+      "axiom": "f∘g∘h — 合成パイプライン [then]",
+      "keywords": [
+        "composition",
+        "pipeline",
+        "chain",
+        "ts"
+      ],
+      "category": "unified",
+      "source": "then"
+    },
+    {
+      "id": "cae-class-05a5a978",
+      "axiom": "T: Type → ∃x∈T — 型構造 [class]",
+      "keywords": [
+        "class",
+        "type",
+        "structure",
+        "object",
+        "ts"
+      ],
+      "category": "mathematics",
+      "source": "class"
+    },
+    {
+      "id": "cae-class-00368f3a",
+      "axiom": "T: Type → ∃x∈T — 型構造 [type]",
+      "keywords": [
+        "class",
+        "type",
+        "structure",
+        "object",
+        "ts"
+      ],
+      "category": "mathematics",
+      "source": "type"
+    },
+    {
+      "id": "cae-error-0401e1e8",
+      "axiom": "P∨¬P∨⊥ — エラー分岐 [Error]",
+      "keywords": [
+        "error",
+        "exception",
+        "fault",
+        "⊥",
+        "ts"
+      ],
+      "category": "logic",
+      "source": "Error"
+    },
+    {
+      "id": "cae-cast-3330496f",
+      "axiom": "A ≅ B — 型同型変換 [typeof]",
+      "keywords": [
+        "cast",
+        "coerce",
+        "isomorphism",
+        "ts"
+      ],
+      "category": "mathematics",
+      "source": "typeof"
+    },
+    {
+      "id": "cae-collection-06873d92",
+      "axiom": "S ⊕ x = S' — コレクション変換 [slice]",
+      "keywords": [
+        "collection",
+        "array",
+        "list",
+        "⊕",
+        "ts"
+      ],
+      "category": "computation",
+      "source": "slice"
+    },
+    {
+      "id": "cae-collection-0031dd2a",
+      "axiom": "S ⊕ x = S' — コレクション変換 [join]",
+      "keywords": [
+        "collection",
+        "array",
+        "list",
+        "⊕",
+        "ts"
+      ],
+      "category": "computation",
+      "source": "join"
+    },
+    {
+      "id": "cae-string-43ce226a",
+      "axiom": "f: Σ*→Σ* — 文字列変換 [toLowerCase]",
+      "keywords": [
+        "string",
+        "text",
+        "pattern",
+        "Σ",
+        "ts"
+      ],
+      "category": "general",
+      "source": "toLowerCase"
+    },
+    {
+      "id": "cae-object-0439b846",
+      "axiom": "{k:v} — 構造体操作 [JSON.]",
+      "keywords": [
+        "object",
+        "record",
+        "map",
+        "key-value",
+        "ts"
+      ],
+      "category": "general",
+      "source": "JSON."
+    },
+    {
+      "id": "cae-module-469e8c5b",
+      "axiom": "M₁ → M₂ — モジュール依存 [import]",
+      "keywords": [
+        "module",
+        "dependency",
+        "import",
+        "export",
+        "ts"
+      ],
+      "category": "unified",
+      "source": "import"
+    },
+    {
+      "id": "cae-module-003017aa",
+      "axiom": "M₁ → M₂ — モジュール依存 [from]",
+      "keywords": [
+        "module",
+        "dependency",
+        "import",
+        "export",
+        "ts"
+      ],
+      "category": "unified",
+      "source": "from"
+    },
+    {
+      "id": "cae-debug-21da3a49",
+      "axiom": "observe(x) — 観測点 [console.]",
+      "keywords": [
+        "observe",
+        "debug",
+        "log",
+        "〇",
+        "ts"
+      ],
+      "category": "general",
+      "source": "console."
+    },
+    {
+      "id": "cae-object-5edd7b70",
+      "axiom": "{k:v} — 構造体操作 [entries]",
+      "keywords": [
+        "object",
+        "record",
+        "map",
+        "key-value",
+        "ts"
+      ],
+      "category": "general",
+      "source": "entries"
+    },
+    {
+      "id": "cae-math-0001a344",
+      "axiom": "f: ℝ→ℝ — 数学関数 [log]",
+      "keywords": [
+        "math",
+        "numerical",
+        "calculation",
+        "ℝ",
+        "ts"
+      ],
+      "category": "mathematics",
+      "source": "log"
+    },
+    {
+      "id": "cae-debug-0001a344",
+      "axiom": "observe(x) — 観測点 [log]",
+      "keywords": [
+        "observe",
+        "debug",
+        "log",
+        "〇",
+        "ts"
+      ],
+      "category": "general",
+      "source": "log"
+    },
+    {
+      "id": "cae-debug-00379286",
+      "axiom": "observe(x) — 観測点 [warn]",
+      "keywords": [
+        "observe",
+        "debug",
+        "log",
+        "〇",
+        "ts"
+      ],
+      "category": "general",
+      "source": "warn"
+    },
+    {
+      "id": "cae-compare-00008381",
+      "axiom": "a ≡ b ∨ a ≠ b — 等値比較 [!==]",
+      "keywords": [
+        "equality",
+        "comparison",
+        "delta",
+        "≡",
+        "ts"
+      ],
+      "category": "logic",
+      "source": "!=="
+    },
+    {
+      "id": "cae-reduce-05a7510f",
+      "axiom": "lim f(n)=L — 縮小収束 [count]",
+      "keywords": [
+        "reduction",
+        "convergence",
+        "lim",
+        "Ω",
+        "ts"
+      ],
+      "category": "zero_extension",
+      "source": "count"
+    },
+    {
+      "id": "cae-cast-00000c32",
+      "axiom": "A ≅ B — 型同型変換 [as]",
+      "keywords": [
+        "cast",
+        "coerce",
+        "isomorphism",
+        "ts"
+      ],
+      "category": "mathematics",
+      "source": "as"
+    },
+    {
+      "id": "cae-collection-108c6a77",
+      "axiom": "S ⊕ x = S' — コレクション変換 [unshift]",
+      "keywords": [
+        "collection",
+        "array",
+        "list",
+        "⊕",
+        "ts"
+      ],
+      "category": "computation",
+      "source": "unshift"
+    },
+    {
+      "id": "cae-object-004c5caf",
+      "axiom": "{k:v} — 構造体操作 [Object.]",
+      "keywords": [
+        "object",
+        "record",
+        "map",
+        "key-value",
+        "ts"
+      ],
+      "category": "general",
+      "source": "Object."
+    },
+    {
+      "id": "cae-collection-3565b984",
+      "axiom": "S ⊕ x = S' — コレクション変換 [splice]",
+      "keywords": [
+        "collection",
+        "array",
+        "list",
+        "⊕",
+        "ts"
+      ],
+      "category": "computation",
+      "source": "splice"
+    },
+    {
+      "id": "cae-collection-06891b1a",
+      "axiom": "S ⊕ x = S' — コレクション変換 [split]",
+      "keywords": [
+        "collection",
+        "array",
+        "list",
+        "⊕",
+        "ts"
+      ],
+      "category": "computation",
+      "source": "split"
+    },
+    {
+      "id": "cae-string-413cb2b4",
+      "axiom": "f: Σ*→Σ* — 文字列変換 [replace]",
+      "keywords": [
+        "string",
+        "text",
+        "pattern",
+        "Σ",
+        "ts"
+      ],
+      "category": "general",
+      "source": "replace"
+    },
+    {
+      "id": "cae-string-69e9ad94",
+      "axiom": "f: Σ*→Σ* — 文字列変換 [toString]",
+      "keywords": [
+        "string",
+        "text",
+        "pattern",
+        "Σ",
+        "ts"
+      ],
+      "category": "general",
+      "source": "toString"
+    },
+    {
+      "id": "cae-reduce-0001be4b",
+      "axiom": "lim f(n)=L — 縮小収束 [sum]",
+      "keywords": [
+        "reduction",
+        "convergence",
+        "lim",
+        "Ω",
+        "ts"
+      ],
+      "category": "zero_extension",
+      "source": "sum"
+    },
+    {
+      "id": "cae-math-067ab18e",
+      "axiom": "f: ℝ→ℝ — 数学関数 [round]",
+      "keywords": [
+        "math",
+        "numerical",
+        "calculation",
+        "ℝ",
+        "ts"
+      ],
+      "category": "mathematics",
+      "source": "round"
+    },
+    {
+      "id": "cae-loop-28732996",
+      "axiom": "∀x∈S: f(x) — 反復構造 [forEach]",
+      "keywords": [
+        "iteration",
+        "loop",
+        "sequence",
+        "∀",
+        "ts"
+      ],
+      "category": "computation",
+      "source": "forEach"
+    },
+    {
+      "id": "cae-transform-38b81db3",
+      "axiom": "f: A→B — 変換写像 [convert]",
+      "keywords": [
+        "transform",
+        "mapping",
+        "morphism",
+        "ts"
+      ],
+      "category": "expansion",
+      "source": "convert"
+    },
+    {
+      "id": "cae-guard-0693a6e6",
+      "axiom": "requires P → Q — 公理ガード [throw]",
+      "keywords": [
+        "guard",
+        "axiom",
+        "precondition",
+        "requires",
+        "ts"
+      ],
+      "category": "logic",
+      "source": "throw"
+    },
+    {
+      "id": "cae-branch-002e7b30",
+      "axiom": "P∨¬P — 分岐構造 [case]",
+      "keywords": [
+        "branch",
+        "condition",
+        "logic",
+        "∨",
+        "ts"
+      ],
+      "category": "logic",
+      "source": "case"
+    },
+    {
+      "id": "cae-branch-350448cc",
+      "axiom": "P∨¬P — 分岐構造 [switch]",
+      "keywords": [
+        "branch",
+        "condition",
+        "logic",
+        "∨",
+        "ts"
+      ],
+      "category": "logic",
+      "source": "switch"
+    },
+    {
+      "id": "cae-object-53ef7f11",
+      "axiom": "{k:v} — 構造体操作 [assign]",
+      "keywords": [
+        "object",
+        "record",
+        "map",
+        "key-value",
+        "ts"
+      ],
+      "category": "general",
+      "source": "assign"
+    },
+    {
+      "id": "cae-module-5c13d641",
+      "axiom": "M₁ → M₂ — モジュール依存 [default]",
+      "keywords": [
+        "module",
+        "dependency",
+        "import",
+        "export",
+        "ts"
+      ],
+      "category": "unified",
+      "source": "default"
+    },
+    {
+      "id": "cae-recursion-46df6674",
+      "axiom": "f(n) = f(n-1) ⊕ base — 再帰構造",
+      "keywords": [
+        "recursion",
+        "self-reference",
+        "induction",
+        "ts"
+      ],
+      "category": "mathematics",
+      "source": "function createDefaultHandlers(bridge: ReiAIOSBridge): Map<TaskType, TaskHandler> {\n  const handlers = new Map<TaskType, TaskHandler>();\n  // ★ Phase 4-2: Google Docs ハンドラ（bridgeから渡すか内部生成）\n  const gdocsHandler = bridge.googleDocsHandler || new GoogleDocsHandler(bridge);\n\n  // ──────────────────────────────\n  // automation: PC自動化\n  // 日本語→Rei変換→実行\n  // ──────────────────────────────\n  handlers.set('automation', async ("
+    },
+    {
+      "id": "cae-string-00364492",
+      "axiom": "f: Σ*→Σ* — 文字列変換 [test]",
+      "keywords": [
+        "string",
+        "text",
+        "pattern",
+        "Σ",
+        "ts"
+      ],
+      "category": "general",
+      "source": "test"
+    },
+    {
+      "id": "cae-guard-54b6e6ea",
+      "axiom": "requires P → Q — 公理ガード [validate]",
+      "keywords": [
+        "guard",
+        "axiom",
+        "precondition",
+        "requires",
+        "ts"
+      ],
+      "category": "logic",
+      "source": "validate"
+    },
+    {
+      "id": "cae-object-311a62de",
+      "axiom": "{k:v} — 構造体操作 [values]",
+      "keywords": [
+        "object",
+        "record",
+        "map",
+        "key-value",
+        "ts"
+      ],
+      "category": "general",
+      "source": "values"
+    },
+    {
+      "id": "cae-compose-38a77192",
+      "axiom": "f∘g∘h — 合成パイプライン [compose]",
+      "keywords": [
+        "composition",
+        "pipeline",
+        "chain",
+        "ts"
+      ],
+      "category": "unified",
+      "source": "compose"
+    },
+    {
+      "id": "cae-math-0001b258",
+      "axiom": "f: ℝ→ℝ — 数学関数 [pow]",
+      "keywords": [
+        "math",
+        "numerical",
+        "calculation",
+        "ℝ",
+        "ts"
+      ],
+      "category": "mathematics",
+      "source": "pow"
+    },
+    {
+      "id": "cae-state-54d081ca",
+      "axiom": "S×A→S' — 状態遷移 [action]",
+      "keywords": [
+        "state",
+        "transition",
+        "mutation",
+        "store",
+        "ts"
+      ],
+      "category": "computation",
+      "source": "action"
+    },
+    {
+      "id": "cae-math-00017872",
+      "axiom": "f: ℝ→ℝ — 数学関数 [abs]",
+      "keywords": [
+        "math",
+        "numerical",
+        "calculation",
+        "ℝ",
+        "ts"
+      ],
+      "category": "mathematics",
+      "source": "abs"
+    },
+    {
+      "id": "cae-compare-05b0bbb8",
+      "axiom": "a ≡ b ∨ a ≠ b — 等値比較 [delta]",
+      "keywords": [
+        "equality",
+        "comparison",
+        "delta",
+        "≡",
+        "ts"
+      ],
+      "category": "logic",
+      "source": "delta"
+    },
+    {
+      "id": "cae-string-17d0ad49",
+      "axiom": "f: Σ*→Σ* — 文字列変換 [toUpperCase]",
+      "keywords": [
+        "string",
+        "text",
+        "pattern",
+        "Σ",
+        "ts"
+      ],
+      "category": "general",
+      "source": "toUpperCase"
+    },
+    {
+      "id": "cae-constant-33a941be",
+      "axiom": "c = lim(1/∞) — 定数公理 [readonly]",
+      "keywords": [
+        "constant",
+        "immutable",
+        "identity",
+        "ts"
+      ],
+      "category": "general",
+      "source": "readonly"
+    },
+    {
+      "id": "cae-guard-414f0165",
+      "axiom": "requires P → Q — 公理ガード [require]",
+      "keywords": [
+        "guard",
+        "axiom",
+        "precondition",
+        "requires",
+        "ts"
+      ],
+      "category": "logic",
+      "source": "require"
+    },
+    {
+      "id": "cae-object-00322df4",
+      "axiom": "{k:v} — 構造体操作 [keys]",
+      "keywords": [
+        "object",
+        "record",
+        "map",
+        "key-value",
+        "ts"
+      ],
+      "category": "general",
+      "source": "keys"
+    },
+    {
+      "id": "cae-module-414f0165",
+      "axiom": "M₁ → M₂ — モジュール依存 [require]",
+      "keywords": [
+        "module",
+        "dependency",
+        "import",
+        "export",
+        "ts"
+      ],
+      "category": "unified",
+      "source": "require"
+    },
+    {
+      "id": "cae-recursion-07044042",
+      "axiom": "f(n) = f(n-1) ⊕ base — 再帰構造",
+      "keywords": [
+        "recursion",
+        "self-reference",
+        "induction",
+        "ts"
+      ],
+      "category": "mathematics",
+      "source": "function createAgent(config: CLIConfig): AgentLoop {\n  const dataDir = path.resolve(config.dataDir);\n  if (!fs.existsSync(dataDir)) {\n    fs.mkdirSync("
+    },
+    {
+      "id": "cae-async-213e0c6c",
+      "axiom": "f: A→Promise<B> — 非同期写像 [EventEmitter]",
+      "keywords": [
+        "async",
+        "concurrent",
+        "promise",
+        "～",
+        "ts"
+      ],
+      "category": "expansion",
+      "source": "EventEmitter"
+    },
+    {
+      "id": "cae-class-4dd2db67",
+      "axiom": "T: Type → ∃x∈T — 型構造 [extends]",
+      "keywords": [
+        "class",
+        "type",
+        "structure",
+        "object",
+        "ts"
+      ],
+      "category": "mathematics",
+      "source": "extends"
+    },
+    {
+      "id": "cae-cast-00000d2a",
+      "axiom": "A ≅ B — 型同型変換 [is]",
+      "keywords": [
+        "cast",
+        "coerce",
+        "isomorphism",
+        "ts"
+      ],
+      "category": "mathematics",
+      "source": "is"
+    },
+    {
+      "id": "cae-state-068ac491",
+      "axiom": "S×A→S' — 状態遷移 [state]",
+      "keywords": [
+        "state",
+        "transition",
+        "mutation",
+        "store",
+        "ts"
+      ],
+      "category": "computation",
+      "source": "state"
+    },
+    {
+      "id": "cae-recursion-7f184f60",
+      "axiom": "f(n) = f(n-1) ⊕ base — 再帰構造",
+      "keywords": [
+        "recursion",
+        "self-reference",
+        "induction",
+        "ts"
+      ],
+      "category": "mathematics",
+      "source": "function parseAgentResponse(raw: string): AgentResponse {\n  // JSON コードブロックを抽出\n  const jsonMatch = raw.match(/```(?:json)?\\s*\\n?([\\s\\S]*?)\\n?```/);\n  const jsonStr = jsonMatch ? jsonMatch[1].trim() : raw.trim();\n\n  try {\n    const parsed = JSON.parse("
+    },
+    {
+      "id": "cae-state-068af8e1",
+      "axiom": "S×A→S' — 状態遷移 [store]",
+      "keywords": [
+        "state",
+        "transition",
+        "mutation",
+        "store",
+        "ts"
+      ],
+      "category": "computation",
+      "source": "store"
+    },
+    {
+      "id": "cae-recursion-27c2254a",
+      "axiom": "f(n) = f(n-1) ⊕ base — 再帰構造",
+      "keywords": [
+        "recursion",
+        "self-reference",
+        "induction",
+        "ts"
+      ],
+      "category": "mathematics",
+      "source": "function createAIOSRoutes(engine: AIOSEngine): AIOSRouteHandler[] {\n  return [\n    // ── チャット ─────────────────────────────────\n    {\n      method: 'POST',\n      pattern: /^\\/api\\/aios\\/chat$/,\n      handler: async ("
+    },
+    {
+      "id": "cae-guard-05a3e508",
+      "axiom": "requires P → Q — 公理ガード [check]",
+      "keywords": [
+        "guard",
+        "axiom",
+        "precondition",
+        "requires",
+        "ts"
+      ],
+      "category": "logic",
+      "source": "check"
+    },
+    {
+      "id": "cae-state-53b6854f",
+      "axiom": "S×A→S' — 状態遷移 [setState]",
+      "keywords": [
+        "state",
+        "transition",
+        "mutation",
+        "store",
+        "ts"
+      ],
+      "category": "computation",
+      "source": "setState"
+    },
+    {
+      "id": "cae-loop-06bdcb31",
+      "axiom": "∀x∈S: f(x) — 反復構造 [while]",
+      "keywords": [
+        "iteration",
+        "loop",
+        "sequence",
+        "∀",
+        "ts"
+      ],
+      "category": "computation",
+      "source": "while"
+    },
+    {
+      "id": "cae-recursion-4f7eafa7",
+      "axiom": "f(n) = f(n-1) ⊕ base — 再帰構造",
+      "keywords": [
+        "recursion",
+        "self-reference",
+        "induction",
+        "ts"
+      ],
+      "category": "mathematics",
+      "source": "function extractCodeBlocks(text: string): string[] {\n  const blocks: string[] = [];\n  const re = /```[\\s\\S]*?```/g;\n  let m;\n  while ("
+    },
+    {
+      "id": "cae-recursion-6cd6548e",
+      "axiom": "f(n) = f(n-1) ⊕ base — 再帰構造",
+      "keywords": [
+        "recursion",
+        "self-reference",
+        "induction",
+        "ts"
+      ],
+      "category": "mathematics",
+      "source": "function extractTextOnly(text: string): string {\n  return text.replace("
+    },
+    {
+      "id": "cae-recursion-7c6f9340",
+      "axiom": "f(n) = f(n-1) ⊕ base — 再帰構造",
+      "keywords": [
+        "recursion",
+        "self-reference",
+        "induction",
+        "ts"
+      ],
+      "category": "mathematics",
+      "source": "function transformLogical(question: string, answer: string, qType: QuestionType): string {\n  const sentences = extractSentences(extractTextOnly(answer));\n  const codes = extractCodeBlocks(answer);\n\n  // 論理的に重要な文を抽出（原因・条件・結論を含む文を優先）\n  const logicalKeywords = /なぜ|原因|理由|ため|から|ので|よって|したがって|条件|前提|結論|つまり|すなわち|because|therefore|thus|since|if|when/i;\n  const logicalSentences = sentences.filter(s => logicalKeywords.test(s)).slice(0, 4);\n  const otherSentences = sentences.filter(s => !logicalKeywords.test("
+    },
+    {
+      "id": "cae-recursion-1954c100",
+      "axiom": "f(n) = f(n-1) ⊕ base — 再帰構造",
+      "keywords": [
+        "recursion",
+        "self-reference",
+        "induction",
+        "ts"
+      ],
+      "category": "mathematics",
+      "source": "function transformPractical(question: string, answer: string, qType: QuestionType): string {\n  const sentences = extractSentences(extractTextOnly(answer));\n  const codes = extractCodeBlocks(answer);\n\n  // 実用的な文を抽出（動詞・手順・具体的な数値を含む文）\n  const actionKeywords = /する|できる|使|実行|開く|入力|設定|起動|クリック|インストール|実装|確認|run|use|install|open|click|set|execute/i;\n  const actionSentences = sentences.filter(s => actionKeywords.test("
+    },
+    {
+      "id": "cae-recursion-74ddb844",
+      "axiom": "f(n) = f(n-1) ⊕ base — 再帰構造",
+      "keywords": [
+        "recursion",
+        "self-reference",
+        "induction",
+        "ts"
+      ],
+      "category": "mathematics",
+      "source": "function transformCritical(question: string, answer: string, qType: QuestionType): string {\n  const sentences = extractSentences(extractTextOnly(answer));\n  const codes = extractCodeBlocks(answer);\n\n  // 断言・絶対的表現を含む文（批判対象として抽出）\n  const absoluteKeywords = /必ず|常に|絶対|すべて|always|never|must|only|best|最良|最適|唯一/i;\n  const absoluteSentences = sentences.filter(s => absoluteKeywords.test("
+    },
+    {
+      "id": "cae-class-368fa850",
+      "axiom": "T: Type → ∃x∈T — 型構造 [implements]",
+      "keywords": [
+        "class",
+        "type",
+        "structure",
+        "object",
+        "ts"
+      ],
+      "category": "mathematics",
+      "source": "implements"
+    },
+    {
+      "id": "cae-math-000009f9",
+      "axiom": "f: ℝ→ℝ — 数学関数 [PI]",
+      "keywords": [
+        "math",
+        "numerical",
+        "calculation",
+        "ℝ",
+        "ts"
+      ],
+      "category": "mathematics",
+      "source": "PI"
+    },
+    {
+      "id": "cae-collection-06856c82",
+      "axiom": "S ⊕ x = S' — コレクション変換 [shift]",
+      "keywords": [
+        "collection",
+        "array",
+        "list",
+        "⊕",
+        "ts"
+      ],
+      "category": "computation",
+      "source": "shift"
+    },
+    {
+      "id": "cae-recursion-11b14be4",
+      "axiom": "f(n) = f(n-1) ⊕ base — 再帰構造",
+      "keywords": [
+        "recursion",
+        "self-reference",
+        "induction",
+        "ts"
+      ],
+      "category": "mathematics",
+      "source": "function defaultEngineMetrics(): EngineMetrics {\n  return {\n    runCount:0, totalMs:0, avgMs:0,\n    lastInputVector:[], lastRunAt:0,\n    seed:       DEFAULT_LAYER_STATE.seed("
+    },
+    {
+      "id": "cae-recursion-53a69036",
+      "axiom": "f(n) = f(n-1) ⊕ base — 再帰構造",
+      "keywords": [
+        "recursion",
+        "self-reference",
+        "induction",
+        "ts"
+      ],
+      "category": "mathematics",
+      "source": "function generateGDocsReiScript(commands: GDocsCommand[]): string {\n  const lines: string[] = [\n    '// Google Docs 自動化スクリプト (Phase 4-2)',\n    '// 生成日時: ' + new Date().toLocaleString("
+    },
+    {
+      "id": "cae-recursion-28a41952",
+      "axiom": "f(n) = f(n-1) ⊕ base — 再帰構造",
+      "keywords": [
+        "recursion",
+        "self-reference",
+        "induction",
+        "ts"
+      ],
+      "category": "mathematics",
+      "source": "function getIntentToReiConverter(config?: IntentToReiConfig): IntentToReiConverter {\n  if (!_instance) {\n    if (!config) {\n      throw new Error(\n        'IntentToReiConverter の初回呼び出し時は config ("
+    },
+    {
+      "id": "cae-collection-50c088ec",
+      "axiom": "S ⊕ x = S' — コレクション変換 [concat]",
+      "keywords": [
+        "collection",
+        "array",
+        "list",
+        "⊕",
+        "ts"
+      ],
+      "category": "computation",
+      "source": "concat"
+    },
+    {
+      "id": "cae-math-00018a1d",
+      "axiom": "f: ℝ→ℝ — 数学関数 [exp]",
+      "keywords": [
+        "math",
+        "numerical",
+        "calculation",
+        "ℝ",
+        "ts"
+      ],
+      "category": "mathematics",
+      "source": "exp"
+    },
+    {
+      "id": "cae-math-05d0240c",
+      "axiom": "f: ℝ→ℝ — 数学関数 [floor]",
+      "keywords": [
+        "math",
+        "numerical",
+        "calculation",
+        "ℝ",
+        "ts"
+      ],
+      "category": "mathematics",
+      "source": "floor"
+    },
+    {
+      "id": "cae-constant-35323192",
+      "axiom": "c = lim(1/∞) — 定数公理 [static]",
+      "keywords": [
+        "constant",
+        "immutable",
+        "identity",
+        "ts"
+      ],
+      "category": "general",
+      "source": "static"
+    },
+    {
+      "id": "cae-math-002e8905",
+      "axiom": "f: ℝ→ℝ — 数学関数 [ceil]",
+      "keywords": [
+        "math",
+        "numerical",
+        "calculation",
+        "ℝ",
+        "ts"
+      ],
+      "category": "mathematics",
+      "source": "ceil"
+    },
+    {
+      "id": "cae-module-3fb45994",
+      "axiom": "M₁ → M₂ — モジュール依存 [module]",
+      "keywords": [
+        "module",
+        "dependency",
+        "import",
+        "export",
+        "ts"
+      ],
+      "category": "unified",
+      "source": "module"
+    },
+    {
+      "id": "cae-compose-003481ae",
+      "axiom": "f∘g∘h — 合成パイプライン [pipe]",
+      "keywords": [
+        "composition",
+        "pipeline",
+        "chain",
+        "ts"
+      ],
+      "category": "unified",
+      "source": "pipe"
+    },
+    {
+      "id": "cae-collection-0001b251",
+      "axiom": "S ⊕ x = S' — コレクション変換 [pop]",
+      "keywords": [
+        "collection",
+        "array",
+        "list",
+        "⊕",
+        "ts"
+      ],
+      "category": "computation",
+      "source": "pop"
+    },
+    {
+      "id": "cae-transform-2e6c30dd",
+      "axiom": "f: A→B — 変換写像 [flatMap]",
+      "keywords": [
+        "transform",
+        "mapping",
+        "morphism",
+        "ts"
+      ],
+      "category": "expansion",
+      "source": "flatMap"
+    },
+    {
+      "id": "cae-state-10f9447a",
+      "axiom": "S×A→S' — 状態遷移 [dispatch]",
+      "keywords": [
+        "state",
+        "transition",
+        "mutation",
+        "store",
+        "ts"
+      ],
+      "category": "computation",
+      "source": "dispatch"
+    },
+    {
+      "id": "cae-constant-05cec176",
+      "axiom": "c = lim(1/∞) — 定数公理 [final]",
+      "keywords": [
+        "constant",
+        "immutable",
+        "identity",
+        "ts"
+      ],
+      "category": "general",
+      "source": "final"
+    },
+    {
+      "id": "cae-compose-05a3d6c1",
+      "axiom": "f∘g∘h — 合成パイプライン [chain]",
+      "keywords": [
+        "composition",
+        "pipeline",
+        "chain",
+        "ts"
+      ],
+      "category": "unified",
+      "source": "chain"
+    },
+    {
+      "id": "cae-error-32dbb67d",
+      "axiom": "P∨¬P∨⊥ — エラー分岐 [finally]",
+      "keywords": [
+        "error",
+        "exception",
+        "fault",
+        "⊥",
+        "ts"
+      ],
+      "category": "logic",
+      "source": "finally"
+    },
+    {
+      "id": "cae-debug-05b09653",
+      "axiom": "observe(x) — 観測点 [debug]",
+      "keywords": [
+        "observe",
+        "debug",
+        "log",
+        "〇",
+        "ts"
+      ],
+      "category": "general",
+      "source": "debug"
+    },
+    {
+      "id": "cae-recursion-2cb003e8",
+      "axiom": "f(n) = f(n-1) ⊕ base — 再帰構造",
+      "keywords": [
+        "recursion",
+        "self-reference",
+        "induction",
+        "ts"
+      ],
+      "category": "mathematics",
+      "source": "function escapeHtml(str: string): string {\n  return str\n    .replace(/&/g, '&amp;')\n    .replace(/</g, '&lt;')\n    .replace(/>/g, '&gt;')\n    .replace("
+    },
+    {
+      "id": "cae-transform-3ebe6b6c",
+      "axiom": "f: A→B — 変換写像 [transform]",
+      "keywords": [
+        "transform",
+        "mapping",
+        "morphism",
+        "ts"
+      ],
+      "category": "expansion",
+      "source": "transform"
+    },
+    {
+      "id": "cae-cast-002e7b3f",
+      "axiom": "A ≅ B — 型同型変換 [cast]",
+      "keywords": [
+        "cast",
+        "coerce",
+        "isomorphism",
+        "ts"
+      ],
+      "category": "mathematics",
+      "source": "cast"
+    },
+    {
+      "id": "cae-guard-53ef8cba",
+      "axiom": "requires P → Q — 公理ガード [assert]",
+      "keywords": [
+        "guard",
+        "axiom",
+        "precondition",
+        "requires",
+        "ts"
+      ],
+      "category": "logic",
+      "source": "assert"
+    },
+    {
+      "id": "cae-cast-50c467c5",
+      "axiom": "A ≅ B — 型同型変換 [coerce]",
+      "keywords": [
+        "cast",
+        "coerce",
+        "isomorphism",
+        "ts"
+      ],
+      "category": "mathematics",
+      "source": "coerce"
+    },
+    {
+      "id": "cae-state-339892a9",
+      "axiom": "S×A→S' — 状態遷移 [mutation]",
+      "keywords": [
+        "state",
+        "transition",
+        "mutation",
+        "store",
+        "ts"
+      ],
+      "category": "computation",
+      "source": "mutation"
+    },
+    {
+      "id": "cae-debug-53ef8cba",
+      "axiom": "observe(x) — 観測点 [assert]",
+      "keywords": [
+        "observe",
+        "debug",
+        "log",
+        "〇",
+        "ts"
+      ],
+      "category": "general",
+      "source": "assert"
+    },
+    {
+      "id": "cae-branch-54d9bd25",
+      "axiom": "P∨¬P — 分岐構造 [ternary]",
+      "keywords": [
+        "branch",
+        "condition",
+        "logic",
+        "∨",
+        "ts"
+      ],
+      "category": "logic",
+      "source": "ternary"
+    },
+    {
+      "id": "cae-transform-222e9920",
+      "axiom": "f: A→B — 変換写像 [serialize]",
+      "keywords": [
+        "transform",
+        "mapping",
+        "morphism",
+        "ts"
+      ],
+      "category": "expansion",
+      "source": "serialize"
+    },
+    {
+      "id": "cae-reduce-00300c01",
+      "axiom": "lim f(n)=L — 縮小収束 [fold]",
+      "keywords": [
+        "reduction",
+        "convergence",
+        "lim",
+        "Ω",
+        "ts"
+      ],
+      "category": "zero_extension",
+      "source": "fold"
+    },
+    {
+      "id": "cae-reduce-003bc562",
+      "axiom": "lim f(n)=L — 縮小収束 [accumulate]",
+      "keywords": [
+        "reduction",
+        "convergence",
+        "lim",
+        "Ω",
+        "ts"
+      ],
+      "category": "zero_extension",
+      "source": "accumulate"
+    },
+    {
+      "id": "cae-reduce-0a70fdbf",
+      "axiom": "lim f(n)=L — 縮小収束 [aggregate]",
+      "keywords": [
+        "reduction",
+        "convergence",
+        "lim",
+        "Ω",
+        "ts"
+      ],
+      "category": "zero_extension",
+      "source": "aggregate"
+    },
+    {
+      "id": "cae-guard-4d6263c2",
+      "axiom": "requires P → Q — 公理ガード [ensure]",
+      "keywords": [
+        "guard",
+        "axiom",
+        "precondition",
+        "requires",
+        "ts"
+      ],
+      "category": "logic",
+      "source": "ensure"
+    },
+    {
+      "id": "cae-class-352a742b",
+      "axiom": "T: Type → ∃x∈T — 型構造 [struct]",
+      "keywords": [
+        "class",
+        "type",
+        "structure",
+        "object",
+        "ts"
+      ],
+      "category": "mathematics",
+      "source": "struct"
+    },
+    {
+      "id": "cae-async-770dd163",
+      "axiom": "f: A→Promise<B> — 非同期写像 [Observable]",
+      "keywords": [
+        "async",
+        "concurrent",
+        "promise",
+        "～",
+        "ts"
+      ],
+      "category": "expansion",
+      "source": "Observable"
+    },
+    {
+      "id": "cae-async-6bc5c460",
+      "axiom": "f: A→Promise<B> — 非同期写像 [Stream]",
+      "keywords": [
+        "async",
+        "concurrent",
+        "promise",
+        "～",
+        "ts"
+      ],
+      "category": "expansion",
+      "source": "Stream"
+    },
+    {
+      "id": "cae-error-303e0fd1",
+      "axiom": "P∨¬P∨⊥ — エラー分岐 [Exception]",
+      "keywords": [
+        "error",
+        "exception",
+        "fault",
+        "⊥",
+        "ts"
+      ],
+      "category": "logic",
+      "source": "Exception"
+    },
+    {
+      "id": "cae-cast-35c3d12c",
+      "axiom": "A ≅ B — 型同型変換 [instanceof]",
+      "keywords": [
+        "cast",
+        "coerce",
+        "isomorphism",
+        "ts"
+      ],
+      "category": "mathematics",
+      "source": "instanceof"
+    },
+    {
+      "id": "cae-math-0035fd20",
+      "axiom": "f: ℝ→ℝ — 数学関数 [sqrt]",
+      "keywords": [
+        "math",
+        "numerical",
+        "calculation",
+        "ℝ",
+        "ts"
+      ],
+      "category": "mathematics",
+      "source": "sqrt"
+    },
+    {
+      "id": "cae-string-73d44649",
+      "axiom": "f: Σ*→Σ* — 文字列変換 [indexOf]",
+      "keywords": [
+        "string",
+        "text",
+        "pattern",
+        "Σ",
+        "ts"
+      ],
+      "category": "general",
+      "source": "indexOf"
+    },
+    {
+      "id": "cae-object-4b7bc569",
+      "axiom": "{k:v} — 構造体操作 [freeze]",
+      "keywords": [
+        "object",
+        "record",
+        "map",
+        "key-value",
+        "ts"
+      ],
+      "category": "general",
+      "source": "freeze"
+    },
+    {
+      "id": "cae-object-35630e8d",
+      "axiom": "{k:v} — 構造体操作 [spread]",
+      "keywords": [
+        "object",
+        "record",
+        "map",
+        "key-value",
+        "ts"
+      ],
+      "category": "general",
+      "source": "spread"
+    },
+    {
+      "id": "cae-state-118894b6",
+      "axiom": "S×A→S' — 状態遷移 [useState]",
+      "keywords": [
+        "state",
+        "transition",
+        "mutation",
+        "store",
+        "ts"
+      ],
+      "category": "computation",
+      "source": "useState"
+    },
+    {
+      "id": "cae-state-4097b7cc",
+      "axiom": "S×A→S' — 状態遷移 [reducer]",
+      "keywords": [
+        "state",
+        "transition",
+        "mutation",
+        "store",
+        "ts"
+      ],
+      "category": "computation",
+      "source": "reducer"
+    },
+    {
+      "id": "cae-debug-0697f145",
+      "axiom": "observe(x) — 観測点 [trace]",
+      "keywords": [
+        "observe",
+        "debug",
+        "log",
+        "〇",
+        "ts"
+      ],
+      "category": "general",
+      "source": "trace"
+    },
+    {
+      "id": "cae-compare-4d378041",
+      "axiom": "a ≡ b ∨ a ≠ b — 等値比較 [equals]",
+      "keywords": [
+        "equality",
+        "comparison",
+        "delta",
+        "≡",
+        "ts"
+      ],
+      "category": "logic",
+      "source": "equals"
+    },
+    {
+      "id": "cae-compare-54345dc0",
+      "axiom": "a ≡ b ∨ a ≠ b — 等値比較 [compareTo]",
+      "keywords": [
+        "equality",
+        "comparison",
+        "delta",
+        "≡",
+        "ts"
+      ],
+      "category": "logic",
+      "source": "compareTo"
+    },
+    {
+      "id": "cae-compare-002f0c05",
+      "axiom": "a ≡ b ∨ a ≠ b — 等値比較 [diff]",
+      "keywords": [
+        "equality",
+        "comparison",
+        "delta",
+        "≡",
+        "ts"
+      ],
+      "category": "logic",
+      "source": "diff"
+    },
+    {
+      "id": "cae-recursion-18719029",
+      "axiom": "f(n) = f(n-1) ⊕ base — 再帰構造",
+      "keywords": [
+        "recursion",
+        "self-reference",
+        "induction",
+        "ts"
+      ],
+      "category": "mathematics",
+      "source": "function fromJson(text: any): string[] {\n  if (Array.isArray(text)) return text;\n  if ("
+    },
+    {
+      "id": "cae-recursion-1c127514",
+      "axiom": "f(n) = f(n-1) ⊕ base — 再帰構造",
+      "keywords": [
+        "recursion",
+        "self-reference",
+        "induction",
+        "ts"
+      ],
+      "category": "mathematics",
+      "source": "function emitExpr(node: ASTNode, ctx: Context): void {\n      switch (node.kind) {\n        case 'Literal':\n          ctx.emit(encodeSevenValue(node.value));\n          break;\n        case 'BinOp':\n          emitExpr(node.left, ctx);\n          emitExpr(node.right, ctx);\n          ctx.emit(opcode(node.op));\n          break;\n        case 'Pipe':\n          emitExpr("
+    },
+    {
+      "id": "cae-recursion-030cf8d5",
+      "axiom": "f(n) = f(n-1) ⊕ base — 再帰構造",
+      "keywords": [
+        "recursion",
+        "self-reference",
+        "induction",
+        "ts"
+      ],
+      "category": "mathematics",
+      "source": "function inferConstantRef(keywords: string[]): string | null {\n  const joined = keywords.join("
+    },
+    {
+      "id": "cae-recursion-215d73ba",
+      "axiom": "f(n) = f(n-1) ⊕ base — 再帰構造",
+      "keywords": [
+        "recursion",
+        "self-reference",
+        "induction",
+        "ts"
+      ],
+      "category": "mathematics",
+      "source": "function inferSevenLogicTag(seed: SeedTheory): string {\n  const text = seed.axiom + ' ' + seed.keywords.join("
+    },
+    {
+      "id": "cae-recursion-26b3a081",
+      "axiom": "f(n) = f(n-1) ⊕ base — 再帰構造",
+      "keywords": [
+        "recursion",
+        "self-reference",
+        "induction",
+        "ts"
+      ],
+      "category": "mathematics",
+      "source": "function generateName(seed: SeedTheory): string {\n  const label = CATEGORY_LABEL[seed.category] ?? seed.category;\n  const tag = inferSevenLogicTag("
+    },
+    {
+      "id": "cae-recursion-7dac5b56",
+      "axiom": "f(n) = f(n-1) ⊕ base — 再帰構造",
+      "keywords": [
+        "recursion",
+        "self-reference",
+        "induction",
+        "ts"
+      ],
+      "category": "mathematics",
+      "source": "function generateDescription(seed: SeedTheory): string {\n  const label = CATEGORY_LABEL[seed.category] ?? seed.category;\n  const tag = inferSevenLogicTag("
+    },
+    {
+      "id": "cae-recursion-662f4463",
+      "axiom": "f(n) = f(n-1) ⊕ base — 再帰構造",
+      "keywords": [
+        "recursion",
+        "self-reference",
+        "induction",
+        "ts"
+      ],
+      "category": "mathematics",
+      "source": "function tokenize(query: string): string[] {\n  // 「について」「とは」「を教えて」等の接尾辞を除去\n  let cleaned = query\n    .replace(/について(教えて)?/g, '')\n    .replace(/とは(何(ですか|か)?)?/g, '')\n    .replace(/って何(ですか|か)?/g, '')\n    .replace(/を教えて(ください)?/g, '')\n    .replace(/は何(ですか|か)/g, '')\n    .replace(/[？?！!。、,.]/g, '')\n    .trim();\n\n  // スペース・全角スペースで分割\n  const parts = cleaned.split(/[\\s　]+/).filter(Boolean);\n\n  // 短すぎるトークン (1文字の助詞等) を除去、ただし漢字1文字は残す\n  const tokens: string[] = [];\n  for (const part of parts) {\n    const lower = part.toLowerCase();\n    // 1文字のひらがな・カタカナ助詞を除外\n    if (lower.length === 1 && /^[ぁ-ゖァ-ヺa-z]$/.test("
+    },
+    {
+      "id": "cae-recursion-66a4df71",
+      "axiom": "f(n) = f(n-1) ⊕ base — 再帰構造",
+      "keywords": [
+        "recursion",
+        "self-reference",
+        "induction",
+        "ts"
+      ],
+      "category": "mathematics",
+      "source": "function collectFiles(dir: string, ext = 'ts'): string[] {\n  if (!fs.existsSync(dir)) return [];\n  const results: string[] = [];\n  for (const entry of fs.readdirSync("
+    },
+    {
+      "id": "cae-recursion-33cd2129",
+      "axiom": "f(n) = f(n-1) ⊕ base — 再帰構造",
+      "keywords": [
+        "recursion",
+        "self-reference",
+        "induction",
+        "ts"
+      ],
+      "category": "mathematics",
+      "source": "function formatBytes(b: number): string {\n  if ("
+    },
+    {
+      "id": "cae-recursion-13357bac",
+      "axiom": "f(n) = f(n-1) ⊕ base — 再帰構造",
+      "keywords": [
+        "recursion",
+        "self-reference",
+        "induction",
+        "ts"
+      ],
+      "category": "mathematics",
+      "source": "function collectFiles(dir: string, extension: string): string[] {\n  const results: string[] = [];\n  if (!fs.existsSync("
+    },
+    {
+      "id": "cae-recursion-7ea935f2",
+      "axiom": "f(n) = f(n-1) ⊕ base — 再帰構造",
+      "keywords": [
+        "recursion",
+        "self-reference",
+        "induction",
+        "ts"
+      ],
+      "category": "mathematics",
+      "source": "function formatBytes(bytes: number): string {\n  if ("
+    },
+    {
+      "id": "cae-recursion-2272ab51",
+      "axiom": "f(n) = f(n-1) ⊕ base — 再帰構造",
+      "keywords": [
+        "recursion",
+        "self-reference",
+        "induction",
+        "ts"
+      ],
+      "category": "mathematics",
+      "source": "function processAll<T>(items: T[], fn: (item: T) => T): T[] {\n  return items.map("
+    },
+    {
+      "id": "cae-recursion-52454485",
+      "axiom": "f(n) = f(n-1) ⊕ base — 再帰構造",
+      "keywords": [
+        "recursion",
+        "self-reference",
+        "induction",
+        "ts"
+      ],
+      "category": "mathematics",
+      "source": "function recursive<T>(value: T, base: (v: T) => boolean, step: (v: T) => T): T {\n  if (base(value)) return value;\n  return recursive("
+    },
+    {
+      "id": "cae-recursion-222a339d",
+      "axiom": "f(n) = f(n-1) ⊕ base — 再帰構造",
+      "keywords": [
+        "recursion",
+        "self-reference",
+        "induction",
+        "ts"
+      ],
+      "category": "mathematics",
+      "source": "function fibonacci(n: number): number {\n  if (n <= 0) return 0;\n  if ("
+    },
+    {
+      "id": "cae-recursion-5bf1ca6f",
+      "axiom": "f(n) = f(n-1) ⊕ base — 再帰構造",
+      "keywords": [
+        "recursion",
+        "self-reference",
+        "induction",
+        "ts"
+      ],
+      "category": "mathematics",
+      "source": "function extendTo(\n  ue: UniversalExtension,\n  targetDegree: number,\n  char: SubscriptChar = 'o',\n): UniversalExtension {\n  let current = ue;\n  while (current.degree < targetDegree) {\n    current = extend("
+    },
+    {
+      "id": "cae-recursion-6fc638b9",
+      "axiom": "f(n) = f(n-1) ⊕ base — 再帰構造",
+      "keywords": [
+        "recursion",
+        "self-reference",
+        "induction",
+        "ts"
+      ],
+      "category": "mathematics",
+      "source": "function reduceTo(\n  ue: UniversalExtension,\n  targetDegree: number,\n): UniversalExtension {\n  let current = ue;\n  while (current.degree > targetDegree && current.degree > 0) {\n    current = reduce("
+    },
+    {
+      "id": "cae-recursion-1fa08cca",
+      "axiom": "f(n) = f(n-1) ⊕ base — 再帰構造",
+      "keywords": [
+        "recursion",
+        "self-reference",
+        "induction",
+        "ts"
+      ],
+      "category": "mathematics",
+      "source": "function compileAndRun(reiSourceCode: string): Promise<ReiPLRunResult> {\n  const wasm = await compile("
+    }
+  ]
+}

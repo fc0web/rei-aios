@@ -145,3 +145,56 @@ export type {
 // D-FUMT Consistency Checker (STEP 14)
 export { DFUMTConsistencyChecker } from './dfumt-consistency-checker';
 export type { ConsistencyReport, TheoryPairCheck } from './dfumt-consistency-checker';
+
+// Maya × Aztec 情報科学実装 (STEP 15)
+export { ReiHuffmanCoder } from './rei-huffman-coder';
+export type { CodeEntry, HybridEncodeResult } from './rei-huffman-coder';
+
+export { ReiEntropyZero } from './rei-entropy-zero';
+export type { EntropyResult, DistributionAnalysis } from './rei-entropy-zero';
+
+export { ReiSpaceGeometry } from './rei-space-geometry';
+export type { Point, ConvexPolygon, SpacePartition, GeometryEvalResult } from './rei-space-geometry';
+
+export { ReiDistributedBus } from './rei-distributed-bus';
+export type { DistributedNode, ConsensusResult } from './rei-distributed-bus';
+
+export { ReiCycleScheduler } from './rei-cycle-scheduler';
+export type { CycleTask, CycleAlignment, TaskSyncStatus } from './rei-cycle-scheduler';
+
+// ギリシャ神話実装 (STEP 16)
+export { MoiraTerminator } from './moira-terminator';
+export type {
+  MoiraPhase, TerminationReason, ReasoningProcess, TheoryDisposal, TerminationJudgment,
+} from './moira-terminator';
+
+export { PrometheusProtocol } from './prometheus-protocol';
+export type {
+  DescentLevel, KnowledgePacket, DescentReport,
+} from './prometheus-protocol';
+
+export { NarcissusDetector } from './narcissus-detector';
+export type {
+  LoopKind, BlindSpotReport, LoopRecord, OscillationPattern,
+} from './narcissus-detector';
+
+export { AriadneTracer } from './ariadne-tracer';
+export type {
+  ThreadNode, BacktraceResult, LabyrinthStats,
+} from './ariadne-tracer';
+
+// 公理の逆 — 反公理・定理・無公理 (STEP 17)
+export { AntiAxiomEngine } from './anti-axiom-engine';
+export type {
+  AntiAxiomKind, AntiAxiom, EmergentSystem, AntiAxiomResult,
+} from './anti-axiom-engine';
+
+export { TheoremDeriver } from './theorem-deriver';
+export type {
+  DeductionRule, Theorem, DerivationResult, TheoremSystem,
+} from './theorem-deriver';
+
+export { NoAxiomVoid } from './no-axiom-void';
+export type {
+  VoidSnapshot, EmergenceEvent, ReturnEvent, ZeroCycle,
+} from './no-axiom-void';
