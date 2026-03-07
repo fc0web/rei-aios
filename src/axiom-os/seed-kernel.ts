@@ -160,4 +160,28 @@ export const SEED_KERNEL: SeedTheory[] = [
   { id: 'dfumt-zero-circular', axiom: 'ZERO→Axioms→Impl→ZERO 円環の閉包', category: 'circular_origin', keywords: ['円環', '循環', '閉包'] },
   { id: 'dfumt-pratityasamutpada', axiom: '∀x→dependent_origin(x,ZERO) 縁起の形式化', category: 'circular_origin', keywords: ['縁起', '依存', '龍樹'] },
   { id: 'dfumt-ineffability', axiom: 'root.ineffable=true 語りえぬものには沈黙せねばならない', category: 'circular_origin', keywords: ['沈黙', '不可説', 'ウィトゲンシュタイン'] },
+
+  // ══════════════════════════════════════════════════════
+  // Phase 6k-HoTT: ∞圏論・ホモトピー型理論 統合
+  // ── ∞圏論的宇宙論 (Theory #91) ────────────────────────
+  { id: 'dfumt-inf-category', axiom: '∞圏: 0-射=対象 n-射=(n-1)-射の射 ∞-射=ZERO収束', category: 'inf_category', keywords: ['∞圏論', 'n-射', '高次構造'] },
+  { id: 'dfumt-inf-limit-zero', axiom: 'lim_{n→∞}n-morphism(n)==ZERO ∞極限はZERO', category: 'inf_category', keywords: ['∞極限', 'ZERO', '収束'] },
+  { id: 'dfumt-inf-colimit-inf', axiom: 'colim_{n→∞}==INFINITY ∞余極限はINFINITY', category: 'inf_category', keywords: ['∞余極限', 'INFINITY', '発散'] },
+  { id: 'dfumt-coherence', axiom: 'MacLane整合性: 全図式が可換 自動充足', category: 'inf_category', keywords: ['整合性', 'MacLane', '可換'] },
+  { id: 'dfumt-flowing-higher-path', axiom: 'FLOWING=高次経路 変化過程の圏論的解釈', category: 'inf_category', keywords: ['FLOWING', '高次経路', '変化'] },
+
+  // ── ホモトピー型理論的論理 (Theory #92) ────────────────
+  { id: 'dfumt-identity-type-both', axiom: 'IdentityType(a=b)↔BOTH 経路存在=矛盾許容', category: 'hott', keywords: ['恒等型', 'BOTH', '経路'] },
+  { id: 'dfumt-empty-path-neither', axiom: '¬∃path(a,b)↔NEITHER 経路不在=判断不能', category: 'hott', keywords: ['空経路', 'NEITHER', '不在'] },
+  { id: 'dfumt-homotopy-flowing', axiom: 'Homotopy(p,q)↔FLOWING 連続変形=流動', category: 'hott', keywords: ['ホモトピー', 'FLOWING', '連続変形'] },
+  { id: 'dfumt-universe-infinity', axiom: 'U_ω=INFINITY 全型を含む宇宙=無限', category: 'hott', keywords: ['宇宙型', 'INFINITY', 'U_ω'] },
+  { id: 'dfumt-empty-type-zero', axiom: 'Empty⊥=ZERO 空型=未観測根源', category: 'hott', keywords: ['空型', 'ZERO', '根源'] },
+  { id: 'dfumt-univalence', axiom: '(A≃B)≃(A=_U B) 同型は等値 単価性公理', category: 'hott', keywords: ['単価性', '同型', '等値'] },
+  { id: 'dfumt-inf-groupoid', axiom: 'Logic7=∞-Groupoid 七価論理は∞群亜群', category: 'hott', keywords: ['∞-Groupoid', '七価', '完全'] },
+
+  // ── 切り詰め階層理論 (Theory #93) ──────────────────────
+  { id: 'dfumt-truncation-0', axiom: 'truncation(0)=Classical TRUE/FALSE 古典論理', category: 'truncation', keywords: ['0切り詰め', '古典論理', '二値'] },
+  { id: 'dfumt-truncation-1', axiom: 'truncation(1)=Catuskoti 四句分別 1次経路', category: 'truncation', keywords: ['1切り詰め', '四句分別', '四値'] },
+  { id: 'dfumt-truncation-inf', axiom: 'truncation(∞)=Logic7 七価論理=最小完全体系', category: 'truncation', keywords: ['∞非切り詰め', '七価論理', '完全'] },
+  { id: 'dfumt-minimal-complete', axiom: 'Logic7は∞-Groupoidの最小完全表現', category: 'truncation', keywords: ['最小完全', '∞-Groupoid', '表現'] },
 ];

@@ -37,6 +37,9 @@ const CATEGORY_MAP: Record<string, string> = {
   'category_theory': 'ct',
   'meta_axiom': 'mx',
   'circular_origin': 'cr',
+  'inf_category': 'ic',
+  'hott': 'ht',
+  'truncation': 'tr',
 };
 
 const CATEGORY_REVERSE: Record<string, string> = Object.fromEntries(

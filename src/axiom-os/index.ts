@@ -234,3 +234,22 @@ export type {
   OntologyTradition, OntologyMapping, ZeroCycleResult,
   DependentOriginResult, RootPrinciple,
 } from './circular-origin-engine';
+
+// InfinityCategoryEngine (Phase 6k-HoTT)
+export { InfinityCategoryEngine } from './infinity-category-engine';
+export type {
+  NMorphism, HigherPath, InfinityCategory, CoherenceResult,
+} from './infinity-category-engine';
+
+// HomotopyTypeEngine (Phase 6k-HoTT)
+export { HomotopyTypeEngine } from './homotopy-type-engine';
+export type {
+  PathKind, IdentityType, Path, Homotopy,
+  TruncationResult, UnivalenceResult, PathInductionResult,
+} from './homotopy-type-engine';
+
+// UniverseHierarchyEngine (Phase 6k-HoTT)
+export { UniverseHierarchyEngine } from './universe-hierarchy-engine';
+export type {
+  Universe, HierarchyResult, FullHierarchyVerification,
+} from './universe-hierarchy-engine';
