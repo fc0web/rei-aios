@@ -122,4 +122,19 @@ export const SEED_KERNEL: SeedTheory[] = [
   { id: 'dfumt-anti-axiom', axiom: '¬A は A と BOTH 状態で共存し新体系の種となる', category: 'logic', keywords: ['反公理', '否定', 'anti-axiom', '非ユークリッド'] },
   { id: 'dfumt-theorem', axiom: '公理→定理: 演繹は SEED_KERNEL を無限に展開する', category: 'logic', keywords: ['定理', '演繹', 'theorem', 'deduction', 'modus ponens'] },
   { id: 'dfumt-no-axiom', axiom: 'ZERO は全公理の母体 現れと帰還の循環が創造の本質', category: 'general', keywords: ['無公理', 'ZERO', '無', '創造', 'void', '循環'] },
+
+  // ══════════════════════════════════════════════════════
+  // STEP 21: 東洋・西洋以外の哲学体系
+  // ── アフリカ哲学 ──────────────────────────────────────
+  { id: 'dfumt-ubuntu', axiom: 'I am because we are — 関係性が存在を生成する', category: 'african', keywords: ['ウブントゥ', 'ubuntu', 'アフリカ哲学', '共同体', '関係存在論'] },
+  { id: 'dfumt-bantu-force', axiom: 'Ntu(Force) — 全存在は動的エネルギーの流れである', category: 'african', keywords: ['バントゥ', 'Ntu', '生命力', 'force ontology', 'アフリカ存在論'] },
+  // ── 中南米・メソアメリカ哲学 ──────────────────────────
+  { id: 'dfumt-teotl', axiom: 'Teotl — 宇宙は一つの動的エネルギーの自己変容である', category: 'mesoamerican', keywords: ['テオトル', 'teotl', 'アステカ哲学', '一元論', '自己変容'] },
+  { id: 'dfumt-nepantla', axiom: 'Nepantla — 対立するものの間に立つ創造的な中間空間', category: 'mesoamerican', keywords: ['ネパントラ', 'nepantla', '中間空間', '境界', '変容'] },
+  // ── オセアニア・先住民族哲学 ──────────────────────────
+  { id: 'dfumt-dreamtime', axiom: 'Dreamtime — 過去・現在・未来が同時に存在する非線形時間', category: 'oceanian', keywords: ['ドリームタイム', 'dreamtime', '非線形時間', '先住民', 'Aboriginal'] },
+  { id: 'dfumt-whakapapa', axiom: 'Whakapapa — 全存在は関係性の系譜として記述される', category: 'oceanian', keywords: ['ワカパパ', 'whakapapa', 'マオリ', '系譜存在論', '関係の連鎖'] },
+  // ── イスラム哲学・スーフィズム ────────────────────────
+  { id: 'dfumt-wahdat-al-wujud', axiom: 'Wahdat al-Wujud — 全存在は一つの実在の顕現である', category: 'islamic', keywords: ['ワフダ', 'wahdat al-wujud', 'イブン・アラビー', '存在一性論', 'スーフィズム'] },
+  { id: 'dfumt-barzakh', axiom: 'Barzakh — 二つの実在の間に存在する中間的境界空間', category: 'islamic', keywords: ['バルザフ', 'barzakh', 'イブン・アラビー', '中間世界', 'isthmus'] },
 ];

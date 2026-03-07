@@ -75,6 +75,23 @@ export const DEFAULT_CONFIG: DiscoveryConfig = {
     'type theory', 'dependent type', 'homotopy type theory',
     'compression theory', 'kolmogorov complexity',
     'minimum description length',
+    // ── アフリカ哲学 ──
+    'ubuntu philosophy', 'ubuntu ontology', 'I am because we are',
+    'bantu ontology', 'ntu force', 'african philosophy',
+    'relational ontology', 'communitarian philosophy',
+    // ── 中南米・メソアメリカ ──
+    'teotl', 'aztec philosophy', 'nahuatl philosophy',
+    'nepantla', 'in-between space', 'mesoamerican philosophy',
+    'tlaltecuhtli', 'ometeotl duality',
+    // ── オセアニア・先住民族 ──
+    'dreamtime ontology', 'aboriginal philosophy',
+    'whakapapa', 'maori philosophy', 'indigenous ontology',
+    'songlines', 'country philosophy',
+    // ── イスラム哲学・スーフィズム ──
+    'ibn arabi', 'wahdat al-wujud', 'barzakh',
+    'sufi philosophy', 'islamic ontology',
+    'ibn sina ontology', 'mulla sadra',
+    'ishraq illuminationism',
   ],
 };
 

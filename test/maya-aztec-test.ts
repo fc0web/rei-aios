@@ -27,7 +27,7 @@ async function runTests() {
   // SEED_KERNEL 80理論
   // ══════════════════════════════════════════════════════════════
   console.log('--- 1. SEED_KERNEL: 80理論 ---');
-  assert(SEED_KERNEL.length === 87, `SEED_KERNEL.length === 87 (got ${SEED_KERNEL.length})`);
+  assert(SEED_KERNEL.length === 95, `SEED_KERNEL.length === 95 (got ${SEED_KERNEL.length})`);
   assert(SEED_KERNEL.some(t => t.id === 'dfumt-maya-code'), 'Theory #68 存在');
   assert(SEED_KERNEL.some(t => t.id === 'dfumt-entropy-zero'), 'Theory #69 存在');
   assert(SEED_KERNEL.some(t => t.id === 'dfumt-aztec-geometry'), 'Theory #70 存在');
