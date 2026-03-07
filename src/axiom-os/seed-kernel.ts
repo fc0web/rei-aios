@@ -263,4 +263,24 @@ export const SEED_KERNEL: SeedTheory[] = [
 
   // ── 逆因果遡及公理 (Theory #106) ────────────────────────
   { id: 'dfumt-reverse-causation', axiom: 'ReverseCausation: 結果→原因の遡及で根本原因を特定', category: 'logic', keywords: ['逆因果', 'reverse', '根本原因', '遡及'] },
+
+  // ══════════════════════════════════════════════════════
+  // Phase 10: 言語限界 (language_limit) Theory #158〜#165
+  // ウィトゲンシュタインの言語哲学とD-FUMT七価論理の形式的統合
+  // ── 写像理論 (Theory #158) ──────────────────────────────
+  { id: 'dfumt-tractatus-picture', axiom: '語(p)=TRUE/FALSE ↔ p∈世界の像 それ以外=ZERO 写像理論', category: 'language_limit', keywords: ['写像理論', 'Tractatus', '命題', '世界の像'] },
+  // ── 沈黙の命令 (Theory #159) ──────────────────────────────
+  { id: 'dfumt-silence-command', axiom: '¬語(p)→p=ZERO 語りえぬものは沈黙せよ（倫理・美・神秘）', category: 'language_limit', keywords: ['沈黙の命令', 'Tractatus7', 'ZERO', 'Unsinn'] },
+  // ── 言語ゲーム (Theory #160) ──────────────────────────────
+  { id: 'dfumt-language-game', axiom: '意味(w,G)=FLOWING 言語ゲーム文脈で意味は流動する', category: 'language_limit', keywords: ['言語ゲーム', 'Sprachspiel', 'FLOWING', '使用'] },
+  // ── 家族的類似 (Theory #161) ──────────────────────────────
+  { id: 'dfumt-family-resemblance', axiom: 'family(A,B,C)=BOTH ∃AB類似∧∃BC類似∧¬∃AC必然 家族的類似', category: 'language_limit', keywords: ['家族的類似', 'BOTH', '境界なし', 'ゲーム概念'] },
+  // ── 私的言語の不可能性 (Theory #162) ──────────────────────
+  { id: 'dfumt-private-language', axiom: 'private_lang(qualia)=NEITHER 私的経験は共有も否定も不可', category: 'language_limit', keywords: ['私的言語', 'NEITHER', 'クオリア', '甲虫の箱'] },
+  // ── 示すこと vs 語ること (Theory #163) ────────────────────
+  { id: 'dfumt-showing-saying', axiom: 'zeigen(p)=NEITHER>ZERO 示せるが語れない・ZEROより豊かな沈黙', category: 'language_limit', keywords: ['示すこと', '語ること', 'NEITHER', 'zeigen'] },
+  // ── 世界の限界 (Theory #164) ──────────────────────────────
+  { id: 'dfumt-language-limit-infinity', axiom: 'limit(言語)=INFINITY 限界は螺旋的に後退し続ける', category: 'language_limit', keywords: ['言語の限界', 'INFINITY', '螺旋', '世界の限界'] },
+  // ── 規則のパラドックス (Theory #165) ──────────────────────
+  { id: 'dfumt-rule-following', axiom: 'rule_following(r)=BOTH クリプキ的不確定性 解釈は常に複数可能', category: 'language_limit', keywords: ['規則のパラドックス', 'BOTH', 'クリプキ', '解釈'] },
 ];

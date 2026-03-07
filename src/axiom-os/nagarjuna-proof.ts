@@ -18,6 +18,7 @@ import { AriadneTracer } from './ariadne-tracer';
 import { NarcissusDetector } from './narcissus-detector';
 import { MoiraTerminator } from './moira-terminator';
 import { type SevenLogicValue } from './seven-logic';
+import type { DFUMTValue } from '../memory/aios-memory';
 import { SEED_KERNEL } from './seed-kernel';
 import { ReiTaskQueue } from './rei-task-queue';
 
@@ -201,4 +202,19 @@ export class NagarjunaProof {
         : `証明未完了: 追加の公理が必要です。`,
     };
   }
+}
+
+// ── ウィトゲンシュタインとの接続（Theory #163）──────────────
+// 龍樹の「空（NEITHER）」= ウィトゲンシュタインの「示せるが語れない（NEITHER）」
+// 両者は2000年の時を超えて同じ構造を指している
+export function connectToWittgenstein(nagarjunaResult: DFUMTValue): string {
+  if (nagarjunaResult === 'NEITHER') {
+    return '龍樹の空性（NEITHER）= ウィトゲンシュタインの示すこと（zeigen）: ' +
+           '語れないが示せる・これがD-FUMTのNEITHERの深層構造';
+  }
+  if (nagarjunaResult === 'ZERO') {
+    return '龍樹の空の空（ZERO）= ウィトゲンシュタインのUnsinn（ナンセンス）: ' +
+           '問い自体が成立しない';
+  }
+  return `龍樹の${nagarjunaResult} → ウィトゲンシュタイン的に語りえる領域`;
 }

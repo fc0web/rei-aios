@@ -6,7 +6,7 @@
  *   2. CausalChainEngine — 因果推論の強化
  *   3. EnhancedTaskPlanner — 長期計画の七価論理不確実性管理
  *   4. RealtimeTheoryIntegrator — リアルタイム学習
- *   5. SEED_KERNEL 157理論確認
+ *   5. SEED_KERNEL 165理論確認
  */
 
 import { NagarjunaChapterScanner } from '../src/axiom-os/nagarjuna-chapter-scanner';
@@ -357,8 +357,8 @@ test('SEED_KERNEL: Theory #105-#106 が含まれる', () => {
   }
 });
 
-test(`SEED_KERNEL: 総理論数 157 (155+2)`, () => {
-  assert(SEED_KERNEL.length === 157, `expected 157, got ${SEED_KERNEL.length}`);
+test(`SEED_KERNEL: 総理論数 165 (155+2)`, () => {
+  assert(SEED_KERNEL.length === 165, `expected 165, got ${SEED_KERNEL.length}`);
 });
 
 test('SEED_KERNEL: カテゴリ一覧', () => {
