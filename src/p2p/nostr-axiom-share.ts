@@ -17,6 +17,16 @@
 import { AIOSMemory } from '../memory/aios-memory';
 import type { DFUMTValue } from '../memory/aios-memory';
 
+// ─── Node.js WebSocket フォールバック ────────────────────────
+async function getWebSocket(): Promise<typeof WebSocket> {
+  if (typeof WebSocket !== 'undefined') {
+    return WebSocket; // ブラウザ環境
+  }
+  // Node.js環境: wsパッケージを動的import
+  const { default: WS } = await import('ws');
+  return WS as unknown as typeof WebSocket;
+}
+
 // ─── 型定義 ──────────────────────────────────────────────────
 export interface NostrKeyPair {
   privateKey: string;   // 64文字hex
@@ -339,24 +349,13 @@ export class NostrAxiomShare {
     relay: string,
     event: AxiomEvent
   ): Promise<void> {
+    const WS = await getWebSocket();
     return new Promise((resolve, reject) => {
-      let ws: any;
-      try {
-        if (typeof WebSocket !== 'undefined') {
-          ws = new WebSocket(relay);
-        } else {
-          // Node.js環境（テスト時）
-          throw new Error('Node.js環境ではWebSocketライブラリが必要');
-        }
-      } catch {
-        // テスト環境用モック
-        resolve();
-        return;
-      }
+      const ws = new WS(relay);
 
       const timeout = setTimeout(() => {
         ws.close();
-        reject(new Error('タイムアウト'));
+        reject(new Error(`タイムアウト: ${relay}`));
       }, 5000);
 
       ws.onopen = () => {
@@ -365,7 +364,9 @@ export class NostrAxiomShare {
 
       ws.onmessage = (msg: any) => {
         try {
-          const data = JSON.parse(msg.data);
+          const data = JSON.parse(
+            typeof msg.data === 'string' ? msg.data : msg.data.toString()
+          );
           if (data[0] === 'OK' && data[1] === event.id) {
             clearTimeout(timeout);
             ws.close();
@@ -375,9 +376,9 @@ export class NostrAxiomShare {
         } catch {}
       };
 
-      ws.onerror = () => {
+      ws.onerror = (err: any) => {
         clearTimeout(timeout);
-        reject(new Error(`${relay} 接続エラー`));
+        reject(new Error(`${relay} 接続エラー: ${err.message ?? err}`));
       };
     });
   }
@@ -387,24 +388,20 @@ export class NostrAxiomShare {
     relay: string,
     filter: object
   ): Promise<AxiomEvent[]> {
+    const WS = await getWebSocket();
     return new Promise((resolve) => {
       const events: AxiomEvent[] = [];
-      let ws: any;
+      const subId = `rei-${Date.now()}`;
 
+      let ws: any;
       try {
-        if (typeof WebSocket !== 'undefined') {
-          ws = new WebSocket(relay);
-        } else {
-          // Node.js環境（テスト時）→ 空配列を返す
-          resolve([]);
-          return;
-        }
-      } catch {
+        ws = new WS(relay);
+      } catch (e: any) {
+        console.warn(`[Nostr] ${relay} 接続失敗: ${e.message}`);
         resolve([]);
         return;
       }
 
-      const subId = `rei-${Date.now()}`;
       const timeout = setTimeout(() => {
         ws.close();
         resolve(events);
@@ -412,11 +409,14 @@ export class NostrAxiomShare {
 
       ws.onopen = () => {
         ws.send(JSON.stringify(['REQ', subId, filter]));
+        console.log(`[Nostr] 📡 ${relay} に接続・購読開始`);
       };
 
       ws.onmessage = (msg: any) => {
         try {
-          const data = JSON.parse(msg.data);
+          const raw = typeof msg.data === 'string' ? msg.data : msg.data.toString();
+          const data = JSON.parse(raw);
+
           if (data[0] === 'EVENT' && data[1] === subId) {
             events.push(data[2] as AxiomEvent);
           } else if (data[0] === 'EOSE') {
@@ -427,9 +427,10 @@ export class NostrAxiomShare {
         } catch {}
       };
 
-      ws.onerror = () => {
+      ws.onerror = (err: any) => {
+        console.warn(`[Nostr] ${relay} エラー: ${err.message ?? err}`);
         clearTimeout(timeout);
-        resolve(events);
+        resolve(events); // エラーでも空で続行
       };
     });
   }

@@ -50,6 +50,7 @@
     "test:silence": "tsx test/silence-basic-test.ts && tsx test/silence-operation-test.ts && tsx test/silence-integration-test.ts",
     "export:theories": "tsx scripts/export-theories.ts",
     "test:github-fetcher": "tsx test/github-axiom-fetcher-test.ts",
+    "test:nostr-live": "tsx test/nostr-live-test.ts",
     "test:real": "tsx test/real-file-extraction-test.ts",
     "extract": "tsx src/cli/rei-extract.ts",
     "extract:self": "tsx src/cli/rei-extract.ts ./src --verbose",
@@ -85,6 +86,7 @@
   },
   "devDependencies": {
     "@types/better-sqlite3": "^7.6.13",
+    "@types/ws": "^8.18.1",
     "rei-pl": "github:fc0web/rei-pl",
     "rimraf": "^5.0.0",
     "tsx": "^4.21.0",
@@ -99,6 +101,7 @@
   "dependencies": {
     "@types/uuid": "^10.0.0",
     "better-sqlite3": "^12.6.2",
-    "uuid": "^13.0.0"
+    "uuid": "^13.0.0",
+    "ws": "^8.19.0"
   }
 }
