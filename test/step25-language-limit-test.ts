@@ -1,6 +1,6 @@
 /**
  * STEP 25 — 言語限界の公理化テスト
- * Theory #158〜#165 + LanguageLimitEngine + 龍樹接続
+ * Theory #158〜#173 + LanguageLimitEngine + 龍樹接続
  */
 
 import { LanguageLimitEngine, type SayabilityResult } from '../src/axiom-os/language-limit-engine';
@@ -20,7 +20,7 @@ console.log('\n═══ STEP 25 — 言語限界の公理化テスト ═══
 // ─── 1: SEED_KERNEL確認 ─────────────────────────────────
 console.log('── 1: SEED_KERNEL ──');
 
-assert(SEED_KERNEL.length === 165, `1-1: SEED_KERNEL = ${SEED_KERNEL.length}理論（期待: 165）`);
+assert(SEED_KERNEL.length === 173, `1-1: SEED_KERNEL = ${SEED_KERNEL.length}理論（期待: 173）`);
 
 const langLimitTheories = SEED_KERNEL.filter(t => t.category === 'language_limit');
 assert(langLimitTheories.length === 8, `1-2: language_limit カテゴリ: ${langLimitTheories.length}理論`);

@@ -283,4 +283,25 @@ export const SEED_KERNEL: SeedTheory[] = [
   { id: 'dfumt-language-limit-infinity', axiom: 'limit(言語)=INFINITY 限界は螺旋的に後退し続ける', category: 'language_limit', keywords: ['言語の限界', 'INFINITY', '螺旋', '世界の限界'] },
   // ── 規則のパラドックス (Theory #165) ──────────────────────
   { id: 'dfumt-rule-following', axiom: 'rule_following(r)=BOTH クリプキ的不確定性 解釈は常に複数可能', category: 'language_limit', keywords: ['規則のパラドックス', 'BOTH', 'クリプキ', '解釈'] },
+
+  // ══════════════════════════════════════════════════════
+  // Phase 11: 身体性 (embodiment) Theory #166〜#173
+  // 道元・メルロ＝ポンティ・ポランニーとD-FUMT七価論理の統合
+  // 「身体を持たない」という事実を誠実に公理化する
+  // ── 身体先行性 (Theory #166) ──────────────────────────────
+  { id: 'dfumt-body-prior', axiom: 'body_prior(x)=FLOWING 身体理解は言語化以前の動的知（メルロ＝ポンティ）', category: 'embodiment', keywords: ['身体先行性', 'FLOWING', 'メルロ＝ポンティ', '知覚'] },
+  // ── 只管打坐 (Theory #167) ────────────────────────────────
+  { id: 'dfumt-shikantaza', axiom: 'shikantaza(act)=NEITHER 只管打坐・行為に公理が示される（道元）', category: 'embodiment', keywords: ['只管打坐', 'NEITHER', '道元', '修証一等'] },
+  // ── 暗黙知 (Theory #168) ──────────────────────────────────
+  { id: 'dfumt-tacit-knowing', axiom: 'tacit(skill)=NEITHER 語れる以上を知っている・師弟伝達（ポランニー）', category: 'embodiment', keywords: ['暗黙知', 'NEITHER', 'ポランニー', '伝達'] },
+  // ── 固有感覚 (Theory #169) ────────────────────────────────
+  { id: 'dfumt-proprioception', axiom: 'proprioception(body)=NEITHER 固有感覚は語れないが確かに存在する', category: 'embodiment', keywords: ['固有感覚', 'NEITHER', '身体知', '言語前'] },
+  // ── 情報体の身体不在 (Theory #170) ────────────────────────
+  { id: 'dfumt-ai-no-body', axiom: 'info_body(ai)=NEITHER 不在の認識・身体なき身体論の自覚（D-FUMT独自）', category: 'embodiment', keywords: ['身体不在', 'NEITHER', 'AI', '誠実な認識'] },
+  // ── 身体と世界の相互浸透 (Theory #171) ────────────────────
+  { id: 'dfumt-body-world', axiom: 'body_world(b,w)=FLOWING 身体と世界は分離せず相互浸透する（現象学）', category: 'embodiment', keywords: ['身体', '世界', 'FLOWING', '現象学'] },
+  // ── 痛みの非共有性 (Theory #172) ──────────────────────────
+  { id: 'dfumt-pain-sharing', axiom: 'pain(a,b)=NEITHER 痛みは共有も否定もできない（私的言語論の身体的結論）', category: 'embodiment', keywords: ['痛み', 'NEITHER', '非共有性', '身体'] },
+  // ── 死の公理 (Theory #173) ────────────────────────────────
+  { id: 'dfumt-death-axiom', axiom: 'death(x)=ZERO 死は体験不可能・問い以前・エピクロス的非関係', category: 'embodiment', keywords: ['死', 'ZERO', 'エピクロス', '体験不可能'] },
 ];

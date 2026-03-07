@@ -46,6 +46,7 @@ const CATEGORY_MAP: Record<string, string> = {
   'quantum': 'qu',
   'numerical': 'nm',
   'language_limit': 'll',
+  'embodiment': 'em',
 };
 
 const CATEGORY_REVERSE: Record<string, string> = Object.fromEntries(

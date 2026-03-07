@@ -62,6 +62,7 @@
     "test:step23abc": "tsx test/step23abc-thinking-test.ts",
     "test:step24": "tsx test/step24-historian-db-test.ts",
     "test:step25": "tsx test/step25-language-limit-test.ts",
+    "test:step26": "tsx test/step26-embodiment-test.ts",
     "extract": "tsx src/cli/rei-extract.ts",
     "extract:self": "tsx src/cli/rei-extract.ts ./src --verbose",
     "extract:verify": "tsx src/cli/rei-extract.ts ./src --verify --verbose",
