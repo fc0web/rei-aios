@@ -220,4 +220,17 @@ export const SEED_KERNEL: SeedTheory[] = [
   { id: 'dfumt-two-truths', axiom: '俗諦(FALSE)←FLOWING→真諦(TRUE) 二諦はFLOWINGで繋がる', category: 'nagarjuna', keywords: ['二諦', '俗諦', '真諦'] },
   { id: 'dfumt-ultimate-neither', axiom: '究極真理==NEITHER 究極は非有非無', category: 'nagarjuna', keywords: ['究極真理', 'NEITHER', '中道'] },
   { id: 'dfumt-middle-path', axiom: '中道==Logic7全体 七価論理が中道の形式表現', category: 'nagarjuna', keywords: ['中道', '七価', '完全'] },
+
+  // ══════════════════════════════════════════════════════
+  // Phase 6k-silence: 沈黙言語理論
+  // ── 沈黙言語理論 (Theory #97) ──────────────────────────
+  { id: 'dfumt-silence-length', axiom: 'dots(n)→Logic7[n] 沈黙の長さが七価値を符号化', category: 'silence', keywords: ['沈黙', '長さ', '七価'] },
+  { id: 'dfumt-silence-pattern', axiom: '沈黙パターン(dot/space/bang)→演算子(AND/OR/確定)', category: 'silence', keywords: ['パターン', '演算子', '構造'] },
+  { id: 'dfumt-silence-awaken', axiom: 'awaken(BOTH/NEITHER,ctx)→確定値 文脈が意味を確定', category: 'silence', keywords: ['覚醒', '文脈', 'ファジー'] },
+  { id: 'dfumt-silence-zero', axiom: 'ZERO==絶対的沈黙==不立文字==ウィトゲンシュタイン', category: 'silence', keywords: ['ZERO', '不立文字', '沈黙'] },
+
+  // ── 沈黙情報圧縮理論 (Theory #98) ──────────────────────
+  { id: 'dfumt-silence-entropy', axiom: 'H(沈黙)=log₂(7)≈2.807 文脈なし最大エントロピー', category: 'silence', keywords: ['エントロピー', 'シャノン', '情報量'] },
+  { id: 'dfumt-silence-3bit', axiom: '7値→3ビット符号化 情報密度87.5%', category: 'silence', keywords: ['3ビット', '符号化', '密度'] },
+  { id: 'dfumt-silence-compression', axiom: '45文字→2文字=95.6%削減 RCT極限形態', category: 'silence', keywords: ['圧縮', 'RCT', '極限'] },
 ];

@@ -267,3 +267,10 @@ export type {
   TwelveLinkEntry, TwelveLinksResult, TwoTruthsResult,
   Logic7Correspondence, SunyataResult,
 } from './nagarjuna-engine';
+
+// SilenceLanguageEngine (Phase 6k-silence)
+export { SilenceLanguageEngine } from './silence-language-engine';
+export type {
+  SilenceSeparator, SilenceLiteral, PatternResult,
+  AwakenContext, SignalAnalysis, EntropyResult,
+} from './silence-language-engine';
