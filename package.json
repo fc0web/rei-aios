@@ -60,6 +60,7 @@
     "test:step22": "tsx test/step22-numerical-multiagent-test.ts",
     "test:step23": "tsx test/step23-integration-test.ts",
     "test:step23abc": "tsx test/step23abc-thinking-test.ts",
+    "test:step24": "tsx test/step24-historian-db-test.ts",
     "extract": "tsx src/cli/rei-extract.ts",
     "extract:self": "tsx src/cli/rei-extract.ts ./src --verbose",
     "extract:verify": "tsx src/cli/rei-extract.ts ./src --verify --verbose",

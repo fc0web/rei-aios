@@ -362,7 +362,7 @@ export const HISTORIAN_DB: HistorianPersona[] = [
   },
 
   {
-    id: 'hirata_atsutane',
+    id: 'hiraga_gennai',
     nameJa: '平賀源内',
     nameEn: 'Hiraga Gennai',
     period: '1728 – 1780',
