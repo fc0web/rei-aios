@@ -181,6 +181,36 @@ export class TheoryEvolution {
   }
 
   /**
+   * 新理論を提案する（HypothesisEngineから利用）
+   * 矛盾チェックは呼び出し側で実施済みの前提
+   */
+  proposeNew(opts: {
+    id: string;
+    axiom: string;
+    category: string;
+    keywords: string[];
+    source: TheorySource;
+    parentIds: string[];
+  }): EvolvedTheory | null {
+    if (this.evolved.has(opts.id)) return null; // 重複防止
+    const theory: EvolvedTheory = {
+      id: opts.id,
+      axiom: opts.axiom,
+      category: opts.category,
+      keywords: opts.keywords,
+      generation: this.generation,
+      parentIds: opts.parentIds,
+      confidence: 'ZERO',
+      usageCount: 0,
+      discoveredAt: Date.now(),
+      source: opts.source,
+      validated: false,
+    };
+    this.evolved.set(opts.id, theory);
+    return theory;
+  }
+
+  /**
    * 理論を手動で登録する
    */
   register(

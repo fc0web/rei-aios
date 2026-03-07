@@ -24,6 +24,9 @@ import { AxiomDiscoveryAgent } from '../../axiom-os/axiom-discovery-agent';
 import { DFUMTConsistencyChecker } from '../../axiom-os/dfumt-consistency-checker';
 import { ReiTaskQueue } from '../../axiom-os/rei-task-queue';
 import { AxiomAutoLearner } from '../../axiom-os/axiom-auto-learner';
+import { QuestionGenerator } from '../../axiom-os/question-generator';
+import { HypothesisEngine } from '../../axiom-os/hypothesis-engine';
+import { ConceptGenesisEngine } from '../../axiom-os/concept-genesis-engine';
 
 // ─── 型定義 ────────────────────────────────────────────
 
@@ -381,6 +384,80 @@ export function registerDefaultTasks(
         log(`[T-10] エラー: ${report.errors.join('; ')}`);
       }
       return `AutoLearner: scanned=${report.papersScanned} candidates=${report.candidatesFound} added=${report.proposalsAdded} blocked=${report.contradictionsBlocked}`;
+    },
+  });
+
+  // ─── T-11: QuestionGenerator 自律問い生成（12時間ごと）───
+  const questionGen = new QuestionGenerator({
+    dbPath: path.join(config.discoveryDataDir ?? config.dataDir, 'questions.db'),
+    log,
+  });
+
+  scheduler.register({
+    id: 'question-generator',
+    name: 'QuestionGenerator 自律問い生成',
+    trigger: { type: 'interval', intervalMs: 12 * 60 * 60 * 1000 }, // 12時間
+    enabled: true,
+    maxRetries: 2,
+    retryBaseMs: 10000,
+    timeoutMs: 60000,
+    fn: async () => {
+      const result = await questionGen.runAll();
+      log(`[T-11] 問い生成: 矛盾${result.contradictions}件 空白${result.gaps}件 境界${result.boundaries}件 合計${result.total}件`);
+      return `Questions: contradictions=${result.contradictions} gaps=${result.gaps} boundaries=${result.boundaries} total=${result.total}`;
+    },
+  });
+
+  // ─── T-12: HypothesisEngine 仮説パイプライン（24時間ごと）───
+  const hypothesisEngine = new HypothesisEngine({
+    dbPath: path.join(config.discoveryDataDir ?? config.dataDir, 'hypotheses.db'),
+    log,
+  });
+
+  scheduler.register({
+    id: 'hypothesis-pipeline',
+    name: 'HypothesisEngine 仮説パイプライン',
+    trigger: { type: 'interval', intervalMs: 24 * 60 * 60 * 1000 }, // 24時間
+    enabled: true,
+    maxRetries: 2,
+    retryBaseMs: 30000,
+    timeoutMs: 180000,
+    fn: async () => {
+      const questions = questionGen.getOpenQuestions(5);
+      if (questions.length === 0) {
+        log('[T-12] 未解決の問いなし。スキップ。');
+        return 'No open questions to process';
+      }
+      const result = await hypothesisEngine.runPipeline(questions);
+      log(`[T-12] 仮説: 生成${result.generated}件 検証${result.verified}件 昇格${result.promoted}件 却下${result.rejected}件`);
+      return `Hypotheses: generated=${result.generated} verified=${result.verified} promoted=${result.promoted} rejected=${result.rejected}`;
+    },
+  });
+
+  // ─── T-13: ConceptGenesisEngine 概念生成（毎週日曜）───
+  const conceptEngine = new ConceptGenesisEngine({
+    dbPath: path.join(config.discoveryDataDir ?? config.dataDir, 'concepts.db'),
+    log,
+  });
+
+  scheduler.register({
+    id: 'concept-genesis',
+    name: 'ConceptGenesisEngine 概念生成',
+    trigger: { type: 'cron', expression: '0 3 * * 0' }, // 毎週日曜3時
+    enabled: true,
+    maxRetries: 1,
+    retryBaseMs: 30000,
+    timeoutMs: 300000,
+    fn: async () => {
+      const questions = questionGen.getAllQuestions();
+      const hypotheses = hypothesisEngine.getAll();
+      const concept = await conceptEngine.runPipeline(questions, hypotheses);
+      if (concept) {
+        log(`[T-13] 新概念候補: "${concept.name}" (新規性: ${(concept.noveltyScore * 100).toFixed(0)}%)`);
+        return `Concept: "${concept.name}" novelty=${(concept.noveltyScore * 100).toFixed(0)}% status=${concept.status}`;
+      }
+      log('[T-13] 概念候補なし（萌芽不足または新規性不足）');
+      return 'No concept generated this cycle';
     },
   });
 
