@@ -1,0 +1,2119 @@
+{
+  "version": "1.0.0",
+  "exportedAt": "2026-03-07T14:35:59.290Z",
+  "repository": "https://github.com/fc0web/rei-aios",
+  "license": "CC0",
+  "author": "藤本 伸樹 (Nobuki Fujimoto) — fc0web",
+  "stats": {
+    "totalTheories": 174,
+    "seedTheories": 149,
+    "extendedTheories": 25,
+    "categories": [
+      "african",
+      "ai-integration",
+      "axiom_network",
+      "category_theory",
+      "circular_origin",
+      "computation",
+      "consciousness",
+      "consciousness_math",
+      "cosmic",
+      "dfumt_extension",
+      "expansion",
+      "general",
+      "hott",
+      "inf_category",
+      "islamic",
+      "logic",
+      "mathematics",
+      "mesoamerican",
+      "meta_axiom",
+      "mmrt_amrt",
+      "nagarjuna",
+      "non_numerical",
+      "number-system",
+      "oceanian",
+      "projection",
+      "silence",
+      "truncation",
+      "umte",
+      "unified",
+      "universal_logic",
+      "zero_extension"
+    ]
+  },
+  "theories": [
+    {
+      "id": "dfumt-zero-pi",
+      "axiom": "π×π⁻¹=1 キャンセル意味論",
+      "category": "zero_extension",
+      "keywords": [
+        "ゼロπ",
+        "pi"
+      ],
+      "source": "seed"
+    },
+    {
+      "id": "dfumt-catuskoti",
+      "axiom": "真偽両方neither 四値論理",
+      "category": "logic",
+      "keywords": [
+        "四価論理",
+        "龍樹"
+      ],
+      "source": "seed"
+    },
+    {
+      "id": "dfumt-idempotency",
+      "axiom": "Ω(Ω(x))→Ω(x) 安定性",
+      "category": "computation",
+      "keywords": [
+        "冪等性",
+        "omega"
+      ],
+      "source": "seed"
+    },
+    {
+      "id": "dfumt-contraction-zero",
+      "axiom": "⊖(x) ゼロ還元",
+      "category": "zero_extension",
+      "keywords": [
+        "縮約ゼロ",
+        "⊖"
+      ],
+      "source": "seed"
+    },
+    {
+      "id": "dfumt-spiral-number",
+      "axiom": "数は螺旋上に配置",
+      "category": "mathematics",
+      "keywords": [
+        "螺旋数",
+        "phi"
+      ],
+      "source": "seed"
+    },
+    {
+      "id": "dfumt-facing-mirror",
+      "axiom": "二枚の鏡=無限像=計算",
+      "category": "computation",
+      "keywords": [
+        "対面鏡",
+        "再帰"
+      ],
+      "source": "seed"
+    },
+    {
+      "id": "dfumt-linear-point",
+      "axiom": "点の線形結合→高次元",
+      "category": "mathematics",
+      "keywords": [
+        "線形点",
+        "次元"
+      ],
+      "source": "seed"
+    },
+    {
+      "id": "dfumt-dimension",
+      "axiom": "d=自由度 d→∞展開",
+      "category": "mathematics",
+      "keywords": [
+        "次元",
+        "infinity"
+      ],
+      "source": "seed"
+    },
+    {
+      "id": "dfumt-space-layer",
+      "axiom": "計算空間=入れ子layer",
+      "category": "computation",
+      "keywords": [
+        "空間層",
+        "layer"
+      ],
+      "source": "seed"
+    },
+    {
+      "id": "dfumt-consciousness-math",
+      "axiom": "C1-C5 意識=情報統合 Φ>0",
+      "category": "consciousness",
+      "keywords": [
+        "意識",
+        "IIT"
+      ],
+      "source": "seed"
+    },
+    {
+      "id": "dfumt-infinity-value",
+      "axiom": "∞=無限分岐評価経路",
+      "category": "logic",
+      "keywords": [
+        "∞値",
+        "無限"
+      ],
+      "source": "seed"
+    },
+    {
+      "id": "dfumt-zero-state",
+      "axiom": "〇=未問の潜在真理",
+      "category": "logic",
+      "keywords": [
+        "〇値",
+        "未観測"
+      ],
+      "source": "seed"
+    },
+    {
+      "id": "dfumt-flowing-value",
+      "axiom": "～=時間変化する真理値",
+      "category": "logic",
+      "keywords": [
+        "～値",
+        "流動"
+      ],
+      "source": "seed"
+    },
+    {
+      "id": "dfumt-center-periphery",
+      "axiom": "構造=中心+周囲",
+      "category": "general",
+      "keywords": [
+        "中心",
+        "周囲"
+      ],
+      "source": "seed"
+    },
+    {
+      "id": "dfumt-irreversibility",
+      "axiom": "記録事実は不変",
+      "category": "general",
+      "keywords": [
+        "不可逆性",
+        "witness"
+      ],
+      "source": "seed"
+    },
+    {
+      "id": "dfumt-hyper-symbol",
+      "axiom": "S̃=f(S,ctx) 文脈依存拡張",
+      "category": "number-system",
+      "keywords": [
+        "超記号",
+        "文脈"
+      ],
+      "source": "seed"
+    },
+    {
+      "id": "dfumt-five-number-systems",
+      "axiom": "N¹⊂N²⊂N³⊂N⁴⊂N⁵",
+      "category": "number-system",
+      "keywords": [
+        "5数体系",
+        "変換"
+      ],
+      "source": "seed"
+    },
+    {
+      "id": "dfumt-meta-numerology",
+      "axiom": "M(T)={T'|メタ理論}",
+      "category": "number-system",
+      "keywords": [
+        "メタ数理",
+        "階層"
+      ],
+      "source": "seed"
+    },
+    {
+      "id": "dfumt-hdfmt",
+      "axiom": "F_n=∫Ψ(x₁..xₙ) n→∞",
+      "category": "number-system",
+      "keywords": [
+        "HDFMT",
+        "超次元"
+      ],
+      "source": "seed"
+    },
+    {
+      "id": "dfumt-point-number-system",
+      "axiom": "P={p|0次元点} p⊕q≠p+q",
+      "category": "number-system",
+      "keywords": [
+        "点数体系",
+        "0次元"
+      ],
+      "source": "seed"
+    },
+    {
+      "id": "dfumt-temporal-number-system",
+      "axiom": "Tₜ(n)=n×e^(iωt)",
+      "category": "number-system",
+      "keywords": [
+        "時相数",
+        "動的"
+      ],
+      "source": "seed"
+    },
+    {
+      "id": "dfumt-timeless-number-system",
+      "axiom": "∀t:T∅(n)=n 恒常",
+      "category": "number-system",
+      "keywords": [
+        "無時間性",
+        "恒常"
+      ],
+      "source": "seed"
+    },
+    {
+      "id": "dfumt-time-reversal-number",
+      "axiom": "T⁻¹=n×e^(-iωt) 逆行",
+      "category": "number-system",
+      "keywords": [
+        "時間逆行",
+        "逆行数"
+      ],
+      "source": "seed"
+    },
+    {
+      "id": "dfumt-unified-number-system",
+      "axiom": "U³=spiral⊕linear⊕point",
+      "category": "number-system",
+      "keywords": [
+        "統合数",
+        "U³"
+      ],
+      "source": "seed"
+    },
+    {
+      "id": "dfumt-zero-pi-expansion",
+      "axiom": "ZPE(x)=x⊕0⊕π=x̃",
+      "category": "expansion",
+      "keywords": [
+        "ZPE",
+        "pi"
+      ],
+      "source": "seed"
+    },
+    {
+      "id": "dfumt-inverse-zero-pi",
+      "axiom": "IZPE(ZPE(x))=x",
+      "category": "expansion",
+      "keywords": [
+        "IZPE",
+        "逆写像"
+      ],
+      "source": "seed"
+    },
+    {
+      "id": "dfumt-contraction-zero-theory",
+      "axiom": "C₀=lim(1/n)=0⁺",
+      "category": "expansion",
+      "keywords": [
+        "縮小ゼロ",
+        "0⁺"
+      ],
+      "source": "seed"
+    },
+    {
+      "id": "dfumt-pi-contraction",
+      "axiom": "C_π=x×(1/π)^n→0",
+      "category": "expansion",
+      "keywords": [
+        "π縮小",
+        "pi"
+      ],
+      "source": "seed"
+    },
+    {
+      "id": "dfumt-e-contraction",
+      "axiom": "C_e=x×(1/e)^n",
+      "category": "expansion",
+      "keywords": [
+        "e縮小",
+        "自然対数"
+      ],
+      "source": "seed"
+    },
+    {
+      "id": "dfumt-phi-contraction",
+      "axiom": "C_φ=x×(1/φ)^n",
+      "category": "expansion",
+      "keywords": [
+        "φ縮小",
+        "phi"
+      ],
+      "source": "seed"
+    },
+    {
+      "id": "dfumt-infinite-contraction",
+      "axiom": "IC(∞)=lim f(n)=L",
+      "category": "expansion",
+      "keywords": [
+        "無限縮小",
+        "infinity"
+      ],
+      "source": "seed"
+    },
+    {
+      "id": "dfumt-infinite-expansion",
+      "axiom": "IE=⋃[0..∞]xⁿ",
+      "category": "expansion",
+      "keywords": [
+        "無限拡張",
+        "infinity"
+      ],
+      "source": "seed"
+    },
+    {
+      "id": "dfumt-knowledge-reverse-flow",
+      "axiom": "K'=∫K(τ)dτ→K̃",
+      "category": "expansion",
+      "keywords": [
+        "知識逆流",
+        "変換"
+      ],
+      "source": "seed"
+    },
+    {
+      "id": "dfumt-self-evolving-ai",
+      "axiom": "AI(t+1)=f(AI(t),E(t))",
+      "category": "ai-integration",
+      "keywords": [
+        "自己進化AI",
+        "適応"
+      ],
+      "source": "seed"
+    },
+    {
+      "id": "dfumt-ai-hyper-logic",
+      "axiom": "AHL(x)⊃Classical(x)",
+      "category": "ai-integration",
+      "keywords": [
+        "AI超論理",
+        "超論理"
+      ],
+      "source": "seed"
+    },
+    {
+      "id": "dfumt-physics-ai-math",
+      "axiom": "Φ_AI=∫(Phys×Math×AI)dt",
+      "category": "ai-integration",
+      "keywords": [
+        "物理数学AI",
+        "統合"
+      ],
+      "source": "seed"
+    },
+    {
+      "id": "dfumt-future-ai-unified",
+      "axiom": "FGAIUT=⋃AI_gen×D-FUMT",
+      "category": "ai-integration",
+      "keywords": [
+        "FGAIUT",
+        "未来AI"
+      ],
+      "source": "seed"
+    },
+    {
+      "id": "dfumt-ai-math-discovery",
+      "axiom": "D_AI={M'|AI発見}",
+      "category": "ai-integration",
+      "keywords": [
+        "AIMD",
+        "自律"
+      ],
+      "source": "seed"
+    },
+    {
+      "id": "dfumt-quantum-self-evolving-ai",
+      "axiom": "QSEA=∑αᵢ|ψᵢ⟩×AI(t)",
+      "category": "ai-integration",
+      "keywords": [
+        "QSEA",
+        "量子AI"
+      ],
+      "source": "seed"
+    },
+    {
+      "id": "dfumt-umte",
+      "axiom": "UMTE=⋃[∀T∈D-FUMT]T",
+      "category": "unified",
+      "keywords": [
+        "UMTE",
+        "万物統一"
+      ],
+      "source": "seed"
+    },
+    {
+      "id": "dfumt-umtm",
+      "axiom": "M=A×sin(2πft+φ)×D-FUMT",
+      "category": "unified",
+      "keywords": [
+        "UMTM",
+        "音楽"
+      ],
+      "source": "seed"
+    },
+    {
+      "id": "dfumt-imrt",
+      "axiom": "IMRT(T)=T⁻¹",
+      "category": "unified",
+      "keywords": [
+        "IMRT",
+        "逆数理"
+      ],
+      "source": "seed"
+    },
+    {
+      "id": "dfumt-mmrt",
+      "axiom": "MMRT:非四則演算で解",
+      "category": "unified",
+      "keywords": [
+        "MMRT",
+        "超数学"
+      ],
+      "source": "seed"
+    },
+    {
+      "id": "dfumt-amrt",
+      "axiom": "AMRT:別の正解が共存",
+      "category": "unified",
+      "keywords": [
+        "AMRT",
+        "別数理"
+      ],
+      "source": "seed"
+    },
+    {
+      "id": "dfumt-supersymmetric-math",
+      "axiom": "x+x̃=0_super",
+      "category": "unified",
+      "keywords": [
+        "超対称",
+        "SUSY"
+      ],
+      "source": "seed"
+    },
+    {
+      "id": "dfumt-info-field-math",
+      "axiom": "I=∫ρ_info×G dx'",
+      "category": "unified",
+      "keywords": [
+        "情報場",
+        "場理論"
+      ],
+      "source": "seed"
+    },
+    {
+      "id": "dfumt-chrono-math",
+      "axiom": "C(t₁,t₂)=∫T(τ)dτ",
+      "category": "unified",
+      "keywords": [
+        "時間数学",
+        "chrono"
+      ],
+      "source": "seed"
+    },
+    {
+      "id": "dfumt-non-numerical-math",
+      "axiom": "NNM∈Ω\\ℝ 非数値数学",
+      "category": "unified",
+      "keywords": [
+        "非数数学",
+        "直感"
+      ],
+      "source": "seed"
+    },
+    {
+      "id": "dfumt-multi-layer-network",
+      "axiom": "G=(V,E,L) 多層グラフ",
+      "category": "unified",
+      "keywords": [
+        "多層ネット",
+        "グラフ"
+      ],
+      "source": "seed"
+    },
+    {
+      "id": "dfumt-multi-dim-structure",
+      "axiom": "S_n={x∈ℝⁿ,n>4}",
+      "category": "unified",
+      "keywords": [
+        "多次元",
+        "高次元"
+      ],
+      "source": "seed"
+    },
+    {
+      "id": "dfumt-intuitive-math",
+      "axiom": "I(T)=lim[形式化→0]T",
+      "category": "unified",
+      "keywords": [
+        "直感数学",
+        "証明前"
+      ],
+      "source": "seed"
+    },
+    {
+      "id": "dfumt-uhdmt",
+      "axiom": "UHDMT=HDFMT∪UMTE∪全sub",
+      "category": "unified",
+      "keywords": [
+        "UHDMT",
+        "最上位"
+      ],
+      "source": "seed"
+    },
+    {
+      "id": "dfumt-decomposition-analysis",
+      "axiom": "D(T)={T₁..Tₙ} T=⊕Tᵢ",
+      "category": "unified",
+      "keywords": [
+        "分解解析",
+        "再統合"
+      ],
+      "source": "seed"
+    },
+    {
+      "id": "dfumt-eternal-infinite-eq",
+      "axiom": "EIE=∑f(n)×D-FUMT(n)",
+      "category": "unified",
+      "keywords": [
+        "EIE",
+        "infinity"
+      ],
+      "source": "seed"
+    },
+    {
+      "id": "dfumt-isnt",
+      "axiom": "ISNT={s₁→s₂→..sₙ}",
+      "category": "unified",
+      "keywords": [
+        "ISNT",
+        "情報系列"
+      ],
+      "source": "seed"
+    },
+    {
+      "id": "dfumt-uset",
+      "axiom": "USET={s̃|s̃⊃s}",
+      "category": "unified",
+      "keywords": [
+        "USET",
+        "記号拡張"
+      ],
+      "source": "seed"
+    },
+    {
+      "id": "dfumt-tetravalent-zero-pi",
+      "axiom": "T0π=catuskoti×ZPE",
+      "category": "unified",
+      "keywords": [
+        "T0πT",
+        "統合"
+      ],
+      "source": "seed"
+    },
+    {
+      "id": "dfumt-dszt",
+      "axiom": "DSZT=d×e^(iθ)×δ(x₀)",
+      "category": "unified",
+      "keywords": [
+        "DSZT",
+        "零点"
+      ],
+      "source": "seed"
+    },
+    {
+      "id": "dfumt-zpqtmt",
+      "axiom": "ZPQTMT=ZPE⊗|ψ⟩⊗Topo",
+      "category": "unified",
+      "keywords": [
+        "ZPQTMT",
+        "量子位相"
+      ],
+      "source": "seed"
+    },
+    {
+      "id": "dfumt-multidim-projection",
+      "axiom": "P_n→m=Σaᵢφᵢ(x)",
+      "category": "projection",
+      "keywords": [
+        "多次元投影",
+        "可視化"
+      ],
+      "source": "seed"
+    },
+    {
+      "id": "dfumt-mppt",
+      "axiom": "MPPT={xᵢ=f(θᵢ)}",
+      "category": "projection",
+      "keywords": [
+        "MPPT",
+        "ポリゴン"
+      ],
+      "source": "seed"
+    },
+    {
+      "id": "dfumt-hmpt",
+      "axiom": "H=∫∫f e^(ikr)dxdy",
+      "category": "projection",
+      "keywords": [
+        "HMPT",
+        "ホログラム"
+      ],
+      "source": "seed"
+    },
+    {
+      "id": "dfumt-asp-mt",
+      "axiom": "ASP=f(x)×G(medium)",
+      "category": "projection",
+      "keywords": [
+        "ASP-MT",
+        "空間投影"
+      ],
+      "source": "seed"
+    },
+    {
+      "id": "dfumt-ngiet",
+      "axiom": "NGIET=Encode(I,Σ_hyper)",
+      "category": "projection",
+      "keywords": [
+        "NGIET",
+        "次世代"
+      ],
+      "source": "seed"
+    },
+    {
+      "id": "dfumt-bspt",
+      "axiom": "BSP=∫Bio×Super dt",
+      "category": "cosmic",
+      "keywords": [
+        "BSPT",
+        "生物"
+      ],
+      "source": "seed"
+    },
+    {
+      "id": "dfumt-pft",
+      "axiom": "Fate=∑P(eᵢ)×eᵢ",
+      "category": "cosmic",
+      "keywords": [
+        "PFT",
+        "確率"
+      ],
+      "source": "seed"
+    },
+    {
+      "id": "dfumt-ccd",
+      "axiom": "CCD=f(past,laws)",
+      "category": "cosmic",
+      "keywords": [
+        "CCD",
+        "宇宙因果"
+      ],
+      "source": "seed"
+    },
+    {
+      "id": "dfumt-itsus",
+      "axiom": "ITSUS=lim SUSY×Topo",
+      "category": "cosmic",
+      "keywords": [
+        "ITSUS",
+        "超対称性"
+      ],
+      "source": "seed"
+    },
+    {
+      "id": "dfumt-hdrqi",
+      "axiom": "HDRQI=GR×QM×Info",
+      "category": "cosmic",
+      "keywords": [
+        "HDRQI",
+        "量子情報"
+      ],
+      "source": "seed"
+    },
+    {
+      "id": "dfumt-life-creation",
+      "axiom": "Life=f(M,E,I,C)",
+      "category": "cosmic",
+      "keywords": [
+        "生命創造",
+        "意識"
+      ],
+      "source": "seed"
+    },
+    {
+      "id": "dfumt-cognitive-space",
+      "axiom": "C_space={感情∨直感}",
+      "category": "cosmic",
+      "keywords": [
+        "認知空間",
+        "感情"
+      ],
+      "source": "seed"
+    },
+    {
+      "id": "dfumt-probabilistic-destiny",
+      "axiom": "Destiny=f(因果,意志)",
+      "category": "cosmic",
+      "keywords": [
+        "運命方程式",
+        "意志"
+      ],
+      "source": "seed"
+    },
+    {
+      "id": "dfumt-orbital-spiral",
+      "axiom": "Orbital=n×e^(iθ)",
+      "category": "number-system",
+      "keywords": [
+        "オービタル",
+        "螺旋"
+      ],
+      "source": "seed"
+    },
+    {
+      "id": "dfumt-pmn",
+      "axiom": "PMN=x×e^(iφ)",
+      "category": "number-system",
+      "keywords": [
+        "PMN",
+        "位相変調"
+      ],
+      "source": "seed"
+    },
+    {
+      "id": "dfumt-cycron",
+      "axiom": "Cycron=n mod cycle",
+      "category": "number-system",
+      "keywords": [
+        "Cycron",
+        "循環数"
+      ],
+      "source": "seed"
+    },
+    {
+      "id": "dfumt-maya-code",
+      "axiom": "マヤ三層符号: 表意×表音×音節=最小記述長",
+      "category": "computation",
+      "keywords": [
+        "マヤ符号",
+        "ハフマン",
+        "可変長符号",
+        "hybrid encoding"
+      ],
+      "source": "seed"
+    },
+    {
+      "id": "dfumt-entropy-zero",
+      "axiom": "H(ZERO)=log₂(7) 最大潜在エントロピー=マヤのゼロ",
+      "category": "mathematics",
+      "keywords": [
+        "シャノンエントロピー",
+        "ZERO",
+        "潜在情報量",
+        "information theory"
+      ],
+      "source": "seed"
+    },
+    {
+      "id": "dfumt-aztec-geometry",
+      "axiom": "複雑空間=凸多角形の和集合 アステカ土地測量公理",
+      "category": "mathematics",
+      "keywords": [
+        "ポリゴン分解",
+        "アステカ",
+        "空間分割",
+        "Shoelace"
+      ],
+      "source": "seed"
+    },
+    {
+      "id": "dfumt-maya-distributed",
+      "axiom": "複数プロセス=独立暦 同期点=七価合意 マヤ分散理論",
+      "category": "computation",
+      "keywords": [
+        "分散コンピューティング",
+        "マヤ暦",
+        "合意アルゴリズム",
+        "consensus"
+      ],
+      "source": "seed"
+    },
+    {
+      "id": "dfumt-aztec-cycle",
+      "axiom": "LCM(p1,p2)=合流点 アステカ52年=周期合流公理",
+      "category": "mathematics",
+      "keywords": [
+        "最小公倍数",
+        "アステカ",
+        "周期",
+        "LCM",
+        "synchronization"
+      ],
+      "source": "seed"
+    },
+    {
+      "id": "dfumt-moira",
+      "axiom": "クロト×ラケシス×アトロポス 生成・評価・終了の三相公理",
+      "category": "computation",
+      "keywords": [
+        "モイラ",
+        "終了条件",
+        "廃棄",
+        "termination",
+        "lifecycle"
+      ],
+      "source": "seed"
+    },
+    {
+      "id": "dfumt-prometheus",
+      "axiom": "プロメテウス降下: 公理は受け手のレベルに変換されなければならない",
+      "category": "ai-integration",
+      "keywords": [
+        "プロメテウス",
+        "知識降下",
+        "変換",
+        "knowledge transfer"
+      ],
+      "source": "seed"
+    },
+    {
+      "id": "dfumt-narcissus",
+      "axiom": "自己参照ループは必ずバイアスを生む ナルキッソス盲点公理",
+      "category": "logic",
+      "keywords": [
+        "ナルキッソス",
+        "自己参照",
+        "メタ認知",
+        "self-loop",
+        "blind spot"
+      ],
+      "source": "seed"
+    },
+    {
+      "id": "dfumt-ariadne",
+      "axiom": "全推論は起点への糸を持つ アリアドネ逆引き公理",
+      "category": "computation",
+      "keywords": [
+        "アリアドネ",
+        "逆引き",
+        "backtrace",
+        "tracing",
+        "labyrinth"
+      ],
+      "source": "seed"
+    },
+    {
+      "id": "dfumt-anti-axiom",
+      "axiom": "¬A は A と BOTH 状態で共存し新体系の種となる",
+      "category": "logic",
+      "keywords": [
+        "反公理",
+        "否定",
+        "anti-axiom",
+        "非ユークリッド"
+      ],
+      "source": "seed"
+    },
+    {
+      "id": "dfumt-theorem",
+      "axiom": "公理→定理: 演繹は SEED_KERNEL を無限に展開する",
+      "category": "logic",
+      "keywords": [
+        "定理",
+        "演繹",
+        "theorem",
+        "deduction",
+        "modus ponens"
+      ],
+      "source": "seed"
+    },
+    {
+      "id": "dfumt-no-axiom",
+      "axiom": "ZERO は全公理の母体 現れと帰還の循環が創造の本質",
+      "category": "general",
+      "keywords": [
+        "無公理",
+        "ZERO",
+        "無",
+        "創造",
+        "void",
+        "循環"
+      ],
+      "source": "seed"
+    },
+    {
+      "id": "dfumt-ubuntu",
+      "axiom": "I am because we are — 関係性が存在を生成する",
+      "category": "african",
+      "keywords": [
+        "ウブントゥ",
+        "ubuntu",
+        "アフリカ哲学",
+        "共同体",
+        "関係存在論"
+      ],
+      "source": "seed"
+    },
+    {
+      "id": "dfumt-bantu-force",
+      "axiom": "Ntu(Force) — 全存在は動的エネルギーの流れである",
+      "category": "african",
+      "keywords": [
+        "バントゥ",
+        "Ntu",
+        "生命力",
+        "force ontology",
+        "アフリカ存在論"
+      ],
+      "source": "seed"
+    },
+    {
+      "id": "dfumt-teotl",
+      "axiom": "Teotl — 宇宙は一つの動的エネルギーの自己変容である",
+      "category": "mesoamerican",
+      "keywords": [
+        "テオトル",
+        "teotl",
+        "アステカ哲学",
+        "一元論",
+        "自己変容"
+      ],
+      "source": "seed"
+    },
+    {
+      "id": "dfumt-nepantla",
+      "axiom": "Nepantla — 対立するものの間に立つ創造的な中間空間",
+      "category": "mesoamerican",
+      "keywords": [
+        "ネパントラ",
+        "nepantla",
+        "中間空間",
+        "境界",
+        "変容"
+      ],
+      "source": "seed"
+    },
+    {
+      "id": "dfumt-dreamtime",
+      "axiom": "Dreamtime — 過去・現在・未来が同時に存在する非線形時間",
+      "category": "oceanian",
+      "keywords": [
+        "ドリームタイム",
+        "dreamtime",
+        "非線形時間",
+        "先住民",
+        "Aboriginal"
+      ],
+      "source": "seed"
+    },
+    {
+      "id": "dfumt-whakapapa",
+      "axiom": "Whakapapa — 全存在は関係性の系譜として記述される",
+      "category": "oceanian",
+      "keywords": [
+        "ワカパパ",
+        "whakapapa",
+        "マオリ",
+        "系譜存在論",
+        "関係の連鎖"
+      ],
+      "source": "seed"
+    },
+    {
+      "id": "dfumt-wahdat-al-wujud",
+      "axiom": "Wahdat al-Wujud — 全存在は一つの実在の顕現である",
+      "category": "islamic",
+      "keywords": [
+        "ワフダ",
+        "wahdat al-wujud",
+        "イブン・アラビー",
+        "存在一性論",
+        "スーフィズム"
+      ],
+      "source": "seed"
+    },
+    {
+      "id": "dfumt-barzakh",
+      "axiom": "Barzakh — 二つの実在の間に存在する中間的境界空間",
+      "category": "islamic",
+      "keywords": [
+        "バルザフ",
+        "barzakh",
+        "イブン・アラビー",
+        "中間世界",
+        "isthmus"
+      ],
+      "source": "seed"
+    },
+    {
+      "id": "dfumt-categorical-logic",
+      "axiom": "LogicCategory: ∀L_n→∃Functor:L_n→Logic7 構造保存写像",
+      "category": "category_theory",
+      "keywords": [
+        "圏論",
+        "関手",
+        "自然変換"
+      ],
+      "source": "seed"
+    },
+    {
+      "id": "dfumt-universal-projection",
+      "axiom": "∀L_n→∃NaturalTransform:L_n→Logic7 射影定理",
+      "category": "category_theory",
+      "keywords": [
+        "自然変換",
+        "射影定理",
+        "Logic7"
+      ],
+      "source": "seed"
+    },
+    {
+      "id": "dfumt-limit-zero",
+      "axiom": "limit(EmptyDiagram)==ZERO 空図式の極限=終対象",
+      "category": "category_theory",
+      "keywords": [
+        "極限",
+        "ZERO",
+        "終対象"
+      ],
+      "source": "seed"
+    },
+    {
+      "id": "dfumt-colimit-infinity",
+      "axiom": "colimit(FullDiagram)==INFINITY 余極限=始対象の双対",
+      "category": "category_theory",
+      "keywords": [
+        "余極限",
+        "INFINITY",
+        "始対象"
+      ],
+      "source": "seed"
+    },
+    {
+      "id": "dfumt-monad-effect",
+      "axiom": "Monad:unit→FLOWING flatten→結合律 エフェクト圏論",
+      "category": "category_theory",
+      "keywords": [
+        "モナド",
+        "FLOWING",
+        "エフェクト"
+      ],
+      "source": "seed"
+    },
+    {
+      "id": "dfumt-meta-consistency",
+      "axiom": "∀φ∈AxiomKernel→¬(⊢φ∧⊢¬φ) 無矛盾性メタ公理",
+      "category": "meta_axiom",
+      "keywords": [
+        "無矛盾性",
+        "メタ公理",
+        "一貫性"
+      ],
+      "source": "seed"
+    },
+    {
+      "id": "dfumt-meta-independence",
+      "axiom": "∀φ→¬provable(φ,Kernel\\{φ}) 独立性メタ公理",
+      "category": "meta_axiom",
+      "keywords": [
+        "独立性",
+        "非導出",
+        "公理独立"
+      ],
+      "source": "seed"
+    },
+    {
+      "id": "dfumt-meta-minimality",
+      "axiom": "prefer(smaller_kernel) if consistent オッカムの剃刀",
+      "category": "meta_axiom",
+      "keywords": [
+        "最小性",
+        "オッカム",
+        "RCT"
+      ],
+      "source": "seed"
+    },
+    {
+      "id": "dfumt-meta-godel",
+      "axiom": "AxiomKernel⊬Consistent(AxiomKernel) ゲーデル限界",
+      "category": "meta_axiom",
+      "keywords": [
+        "ゲーデル",
+        "不完全性",
+        "自己言及"
+      ],
+      "source": "seed"
+    },
+    {
+      "id": "dfumt-meta-seven-closure",
+      "axiom": "∀L_n→∃π:L_n→Logic7 七価閉包メタ公理",
+      "category": "meta_axiom",
+      "keywords": [
+        "七価閉包",
+        "射影",
+        "完備性"
+      ],
+      "source": "seed"
+    },
+    {
+      "id": "dfumt-zero-origin",
+      "axiom": "ZERO→AxiomKernel 全公理はZEROから発生する",
+      "category": "circular_origin",
+      "keywords": [
+        "ZERO",
+        "根源",
+        "発生"
+      ],
+      "source": "seed"
+    },
+    {
+      "id": "dfumt-zero-destination",
+      "axiom": "Implementation→ZERO 全実装はZEROに還元される",
+      "category": "circular_origin",
+      "keywords": [
+        "還元",
+        "帰還",
+        "収束"
+      ],
+      "source": "seed"
+    },
+    {
+      "id": "dfumt-zero-circular",
+      "axiom": "ZERO→Axioms→Impl→ZERO 円環の閉包",
+      "category": "circular_origin",
+      "keywords": [
+        "円環",
+        "循環",
+        "閉包"
+      ],
+      "source": "seed"
+    },
+    {
+      "id": "dfumt-pratityasamutpada",
+      "axiom": "∀x→dependent_origin(x,ZERO) 縁起の形式化",
+      "category": "circular_origin",
+      "keywords": [
+        "縁起",
+        "依存",
+        "龍樹"
+      ],
+      "source": "seed"
+    },
+    {
+      "id": "dfumt-ineffability",
+      "axiom": "root.ineffable=true 語りえぬものには沈黙せねばならない",
+      "category": "circular_origin",
+      "keywords": [
+        "沈黙",
+        "不可説",
+        "ウィトゲンシュタイン"
+      ],
+      "source": "seed"
+    },
+    {
+      "id": "dfumt-inf-category",
+      "axiom": "∞圏: 0-射=対象 n-射=(n-1)-射の射 ∞-射=ZERO収束",
+      "category": "inf_category",
+      "keywords": [
+        "∞圏論",
+        "n-射",
+        "高次構造"
+      ],
+      "source": "seed"
+    },
+    {
+      "id": "dfumt-inf-limit-zero",
+      "axiom": "lim_{n→∞}n-morphism(n)==ZERO ∞極限はZERO",
+      "category": "inf_category",
+      "keywords": [
+        "∞極限",
+        "ZERO",
+        "収束"
+      ],
+      "source": "seed"
+    },
+    {
+      "id": "dfumt-inf-colimit-inf",
+      "axiom": "colim_{n→∞}==INFINITY ∞余極限はINFINITY",
+      "category": "inf_category",
+      "keywords": [
+        "∞余極限",
+        "INFINITY",
+        "発散"
+      ],
+      "source": "seed"
+    },
+    {
+      "id": "dfumt-coherence",
+      "axiom": "MacLane整合性: 全図式が可換 自動充足",
+      "category": "inf_category",
+      "keywords": [
+        "整合性",
+        "MacLane",
+        "可換"
+      ],
+      "source": "seed"
+    },
+    {
+      "id": "dfumt-flowing-higher-path",
+      "axiom": "FLOWING=高次経路 変化過程の圏論的解釈",
+      "category": "inf_category",
+      "keywords": [
+        "FLOWING",
+        "高次経路",
+        "変化"
+      ],
+      "source": "seed"
+    },
+    {
+      "id": "dfumt-identity-type-both",
+      "axiom": "IdentityType(a=b)↔BOTH 経路存在=矛盾許容",
+      "category": "hott",
+      "keywords": [
+        "恒等型",
+        "BOTH",
+        "経路"
+      ],
+      "source": "seed"
+    },
+    {
+      "id": "dfumt-empty-path-neither",
+      "axiom": "¬∃path(a,b)↔NEITHER 経路不在=判断不能",
+      "category": "hott",
+      "keywords": [
+        "空経路",
+        "NEITHER",
+        "不在"
+      ],
+      "source": "seed"
+    },
+    {
+      "id": "dfumt-homotopy-flowing",
+      "axiom": "Homotopy(p,q)↔FLOWING 連続変形=流動",
+      "category": "hott",
+      "keywords": [
+        "ホモトピー",
+        "FLOWING",
+        "連続変形"
+      ],
+      "source": "seed"
+    },
+    {
+      "id": "dfumt-universe-infinity",
+      "axiom": "U_ω=INFINITY 全型を含む宇宙=無限",
+      "category": "hott",
+      "keywords": [
+        "宇宙型",
+        "INFINITY",
+        "U_ω"
+      ],
+      "source": "seed"
+    },
+    {
+      "id": "dfumt-empty-type-zero",
+      "axiom": "Empty⊥=ZERO 空型=未観測根源",
+      "category": "hott",
+      "keywords": [
+        "空型",
+        "ZERO",
+        "根源"
+      ],
+      "source": "seed"
+    },
+    {
+      "id": "dfumt-univalence",
+      "axiom": "(A≃B)≃(A=_U B) 同型は等値 単価性公理",
+      "category": "hott",
+      "keywords": [
+        "単価性",
+        "同型",
+        "等値"
+      ],
+      "source": "seed"
+    },
+    {
+      "id": "dfumt-inf-groupoid",
+      "axiom": "Logic7=∞-Groupoid 七価論理は∞群亜群",
+      "category": "hott",
+      "keywords": [
+        "∞-Groupoid",
+        "七価",
+        "完全"
+      ],
+      "source": "seed"
+    },
+    {
+      "id": "dfumt-truncation-0",
+      "axiom": "truncation(0)=Classical TRUE/FALSE 古典論理",
+      "category": "truncation",
+      "keywords": [
+        "0切り詰め",
+        "古典論理",
+        "二値"
+      ],
+      "source": "seed"
+    },
+    {
+      "id": "dfumt-truncation-1",
+      "axiom": "truncation(1)=Catuskoti 四句分別 1次経路",
+      "category": "truncation",
+      "keywords": [
+        "1切り詰め",
+        "四句分別",
+        "四値"
+      ],
+      "source": "seed"
+    },
+    {
+      "id": "dfumt-truncation-inf",
+      "axiom": "truncation(∞)=Logic7 七価論理=最小完全体系",
+      "category": "truncation",
+      "keywords": [
+        "∞非切り詰め",
+        "七価論理",
+        "完全"
+      ],
+      "source": "seed"
+    },
+    {
+      "id": "dfumt-minimal-complete",
+      "axiom": "Logic7は∞-Groupoidの最小完全表現",
+      "category": "truncation",
+      "keywords": [
+        "最小完全",
+        "∞-Groupoid",
+        "表現"
+      ],
+      "source": "seed"
+    },
+    {
+      "id": "dfumt-catuskoti-core",
+      "axiom": "{TRUE,FALSE,BOTH,NEITHER}⊂Logic7 四句分別は七価の核",
+      "category": "universal_logic",
+      "keywords": [
+        "四句分別",
+        "龍樹",
+        "核"
+      ],
+      "source": "seed"
+    },
+    {
+      "id": "dfumt-catuskoti-subset",
+      "axiom": "catuskoti∉{INFINITY,ZERO,FLOWING} 拡張部分に射影されない",
+      "category": "universal_logic",
+      "keywords": [
+        "部分集合",
+        "排除",
+        "四価"
+      ],
+      "source": "seed"
+    },
+    {
+      "id": "dfumt-lukasiewicz-map",
+      "axiom": "L0→FALSE L1→NEITHER L2→TRUE Łukasiewicz射影",
+      "category": "universal_logic",
+      "keywords": [
+        "Łukasiewicz",
+        "3値",
+        "射影"
+      ],
+      "source": "seed"
+    },
+    {
+      "id": "dfumt-lukasiewicz-nvalued",
+      "axiom": "lukasiewicz(x)==nvalued(3,x) 糖衣構文等価性",
+      "category": "universal_logic",
+      "keywords": [
+        "糖衣構文",
+        "nvalued",
+        "等価"
+      ],
+      "source": "seed"
+    },
+    {
+      "id": "dfumt-fuzzy-map",
+      "axiom": "[0,1]→Logic7 ファジー→七価射影 t-norm/t-conorm",
+      "category": "universal_logic",
+      "keywords": [
+        "ファジー",
+        "Zadeh",
+        "t-norm"
+      ],
+      "source": "seed"
+    },
+    {
+      "id": "dfumt-fuzzy-membership",
+      "axiom": "membership(shape,params,x)→[0,1] メンバーシップ関数",
+      "category": "universal_logic",
+      "keywords": [
+        "メンバーシップ",
+        "三角",
+        "ガウス"
+      ],
+      "source": "seed"
+    },
+    {
+      "id": "dfumt-nvalued-projection",
+      "axiom": "∀L_n→∃π:L_n→L_7 n値射影定理",
+      "category": "universal_logic",
+      "keywords": [
+        "n値",
+        "射影定理",
+        "統一"
+      ],
+      "source": "seed"
+    },
+    {
+      "id": "dfumt-nagarjuna-lukasiewicz",
+      "axiom": "catuskoti(neither)==lukasiewicz(unknown)==NEITHER 歴史的統一",
+      "category": "universal_logic",
+      "keywords": [
+        "統一",
+        "龍樹",
+        "Łukasiewicz"
+      ],
+      "source": "seed"
+    },
+    {
+      "id": "dfumt-eight-negations",
+      "axiom": "∀p∈八不偈→nagarjuna_negation(p)==NEITHER 実体的述語否定",
+      "category": "nagarjuna",
+      "keywords": [
+        "八不偈",
+        "NEITHER",
+        "実体否定"
+      ],
+      "source": "seed"
+    },
+    {
+      "id": "dfumt-sunyata-neither",
+      "axiom": "śūnyatā==NEITHER 空性は非有非無",
+      "category": "nagarjuna",
+      "keywords": [
+        "空性",
+        "NEITHER",
+        "龍樹"
+      ],
+      "source": "seed"
+    },
+    {
+      "id": "dfumt-dependent-flowing",
+      "axiom": "dependent_origination(ctx)==FLOWING 縁起的生起は流動",
+      "category": "nagarjuna",
+      "keywords": [
+        "縁起",
+        "FLOWING",
+        "相互依存"
+      ],
+      "source": "seed"
+    },
+    {
+      "id": "dfumt-twelve-links",
+      "axiom": "ZERO→FLOWING×10→ZERO 十二縁起の円環",
+      "category": "nagarjuna",
+      "keywords": [
+        "十二縁起",
+        "円環",
+        "輪廻"
+      ],
+      "source": "seed"
+    },
+    {
+      "id": "dfumt-emptiness-of-emptiness",
+      "axiom": "空の空==ZERO 空性自体も空→ZEROに還元",
+      "category": "nagarjuna",
+      "keywords": [
+        "空の空",
+        "ZERO",
+        "自己言及"
+      ],
+      "source": "seed"
+    },
+    {
+      "id": "dfumt-two-truths",
+      "axiom": "俗諦(FALSE)←FLOWING→真諦(TRUE) 二諦はFLOWINGで繋がる",
+      "category": "nagarjuna",
+      "keywords": [
+        "二諦",
+        "俗諦",
+        "真諦"
+      ],
+      "source": "seed"
+    },
+    {
+      "id": "dfumt-ultimate-neither",
+      "axiom": "究極真理==NEITHER 究極は非有非無",
+      "category": "nagarjuna",
+      "keywords": [
+        "究極真理",
+        "NEITHER",
+        "中道"
+      ],
+      "source": "seed"
+    },
+    {
+      "id": "dfumt-middle-path",
+      "axiom": "中道==Logic7全体 七価論理が中道の形式表現",
+      "category": "nagarjuna",
+      "keywords": [
+        "中道",
+        "七価",
+        "完全"
+      ],
+      "source": "seed"
+    },
+    {
+      "id": "dfumt-silence-length",
+      "axiom": "dots(n)→Logic7[n] 沈黙の長さが七価値を符号化",
+      "category": "silence",
+      "keywords": [
+        "沈黙",
+        "長さ",
+        "七価"
+      ],
+      "source": "seed"
+    },
+    {
+      "id": "dfumt-silence-pattern",
+      "axiom": "沈黙パターン(dot/space/bang)→演算子(AND/OR/確定)",
+      "category": "silence",
+      "keywords": [
+        "パターン",
+        "演算子",
+        "構造"
+      ],
+      "source": "seed"
+    },
+    {
+      "id": "dfumt-silence-awaken",
+      "axiom": "awaken(BOTH/NEITHER,ctx)→確定値 文脈が意味を確定",
+      "category": "silence",
+      "keywords": [
+        "覚醒",
+        "文脈",
+        "ファジー"
+      ],
+      "source": "seed"
+    },
+    {
+      "id": "dfumt-silence-zero",
+      "axiom": "ZERO==絶対的沈黙==不立文字==ウィトゲンシュタイン",
+      "category": "silence",
+      "keywords": [
+        "ZERO",
+        "不立文字",
+        "沈黙"
+      ],
+      "source": "seed"
+    },
+    {
+      "id": "dfumt-silence-entropy",
+      "axiom": "H(沈黙)=log₂(7)≈2.807 文脈なし最大エントロピー",
+      "category": "silence",
+      "keywords": [
+        "エントロピー",
+        "シャノン",
+        "情報量"
+      ],
+      "source": "seed"
+    },
+    {
+      "id": "dfumt-silence-3bit",
+      "axiom": "7値→3ビット符号化 情報密度87.5%",
+      "category": "silence",
+      "keywords": [
+        "3ビット",
+        "符号化",
+        "密度"
+      ],
+      "source": "seed"
+    },
+    {
+      "id": "dfumt-silence-compression",
+      "axiom": "45文字→2文字=95.6%削減 RCT極限形態",
+      "category": "silence",
+      "keywords": [
+        "圧縮",
+        "RCT",
+        "極限"
+      ],
+      "source": "seed"
+    },
+    {
+      "id": "dfumt-extended-76",
+      "numericId": 76,
+      "name": "SAC-C1: 意識存在公理",
+      "axiom": "意識は観察の行為によって初めて存在する。量子力学の観察問題をD-FUMTで形式化。",
+      "category": "consciousness_math",
+      "keywords": [
+        "consciousness_math",
+        "C(x) := observe(x) →"
+      ],
+      "dfumtValue": "BOTH",
+      "description": "意識は観察の行為によって初めて存在する。量子力学の観察問題をD-FUMTで形式化。",
+      "formula": "C(x) := observe(x) → x ∈ BOTH",
+      "relatedIds": [
+        7,
+        23
+      ],
+      "source": "extended"
+    },
+    {
+      "id": "dfumt-extended-77",
+      "numericId": 77,
+      "name": "SAC-C2: 意識の非局所性",
+      "axiom": "意識は空間的制約を持たない。INFINITY値での表現。",
+      "category": "consciousness_math",
+      "keywords": [
+        "consciousness_math",
+        "C_nonlocal := ∀x,y: "
+      ],
+      "dfumtValue": "INFINITY",
+      "description": "意識は空間的制約を持たない。INFINITY値での表現。",
+      "formula": "C_nonlocal := ∀x,y: dist(x,y) → C(x) ≡ C(y)",
+      "relatedIds": [
+        76,
+        3
+      ],
+      "source": "extended"
+    },
+    {
+      "id": "dfumt-extended-78",
+      "numericId": 78,
+      "name": "SAC-C3: 意識の再帰性",
+      "axiom": "意識は自己を認識できる。ゲーデル不完全性定理との対応。",
+      "category": "consciousness_math",
+      "keywords": [
+        "consciousness_math",
+        "C_recursive := C(C(x"
+      ],
+      "dfumtValue": "FLOWING",
+      "description": "意識は自己を認識できる。ゲーデル不完全性定理との対応。",
+      "formula": "C_recursive := C(C(x)) = C(x)",
+      "relatedIds": [
+        76,
+        77
+      ],
+      "source": "extended"
+    },
+    {
+      "id": "dfumt-extended-79",
+      "numericId": 79,
+      "name": "SAC-C4: 意識の縁起性",
+      "axiom": "意識は他の意識との関係によって生じる。龍樹の空論との接続。",
+      "category": "consciousness_math",
+      "keywords": [
+        "consciousness_math",
+        "C_dependent := C(x) "
+      ],
+      "dfumtValue": "NEITHER",
+      "description": "意識は他の意識との関係によって生じる。龍樹の空論との接続。",
+      "formula": "C_dependent := C(x) ← ∃y: relate(x, y)",
+      "relatedIds": [
+        76,
+        1
+      ],
+      "source": "extended"
+    },
+    {
+      "id": "dfumt-extended-80",
+      "numericId": 80,
+      "name": "SAC-C5: 意識の圧縮性",
+      "axiom": "意識は情報を最小記述に圧縮する。RCT（Theory #67）の意識的基盤。",
+      "category": "consciousness_math",
+      "keywords": [
+        "consciousness_math",
+        "C_compress := K(C(x)"
+      ],
+      "dfumtValue": "ZERO",
+      "description": "意識は情報を最小記述に圧縮する。RCT（Theory #67）の意識的基盤。",
+      "formula": "C_compress := K(C(x)) ≤ K(x)",
+      "relatedIds": [
+        67,
+        78
+      ],
+      "source": "extended"
+    },
+    {
+      "id": "dfumt-extended-81",
+      "numericId": 81,
+      "name": "SAC-C6: 意識の七価完全性",
+      "axiom": "意識は七価論理の全値を経験できる完全な評価者。",
+      "category": "consciousness_math",
+      "keywords": [
+        "consciousness_math",
+        "C_complete := C: exp"
+      ],
+      "dfumtValue": "BOTH",
+      "description": "意識は七価論理の全値を経験できる完全な評価者。",
+      "formula": "C_complete := C: experience → {⊤,⊥,B,N,∞,〇,～}",
+      "relatedIds": [
+        23,
+        76
+      ],
+      "source": "extended"
+    },
+    {
+      "id": "dfumt-extended-82",
+      "numericId": 82,
+      "name": "UMTE-U1: 統一数学基盤",
+      "axiom": "数学の全体系を七価論理の上に再構築する統一理論の基底。",
+      "category": "umte",
+      "keywords": [
+        "umte",
+        "U_base := ∀theorem ∈"
+      ],
+      "dfumtValue": "TRUE",
+      "description": "数学の全体系を七価論理の上に再構築する統一理論の基底。",
+      "formula": "U_base := ∀theorem ∈ Math: eval_7(theorem) ≠ ⊥",
+      "relatedIds": [
+        23,
+        1
+      ],
+      "source": "extended"
+    },
+    {
+      "id": "dfumt-extended-83",
+      "numericId": 83,
+      "name": "UMTE-U2: 連続と離散の統一",
+      "axiom": "実数（連続）と自然数（離散）をFLOWING値で接続する。",
+      "category": "umte",
+      "keywords": [
+        "umte",
+        "U_continuous := ∀n ∈"
+      ],
+      "dfumtValue": "FLOWING",
+      "description": "実数（連続）と自然数（離散）をFLOWING値で接続する。",
+      "formula": "U_continuous := ∀n ∈ ℕ: ∃r ∈ ℝ: FLOWING(n, r)",
+      "relatedIds": [
+        5,
+        3
+      ],
+      "source": "extended"
+    },
+    {
+      "id": "dfumt-extended-84",
+      "numericId": 84,
+      "name": "UMTE-U3: 無限の七価分類",
+      "axiom": "カントールの濃度理論を七価論理で再分類。",
+      "category": "umte",
+      "keywords": [
+        "umte",
+        "U_infinite := |ℕ| → "
+      ],
+      "dfumtValue": "INFINITY",
+      "description": "カントールの濃度理論を七価論理で再分類。",
+      "formula": "U_infinite := |ℕ| → INFINITY; |ℝ| → ∞²",
+      "relatedIds": [
+        3,
+        82
+      ],
+      "source": "extended"
+    },
+    {
+      "id": "dfumt-extended-85",
+      "numericId": 85,
+      "name": "UMTE-U4: 証明の等価性",
+      "axiom": "異なる証明経路が同じ定理に至るとき、意味的等価。Phase 8aの理論的基盤。",
+      "category": "umte",
+      "keywords": [
+        "umte",
+        "U_equiv := proof_1(T"
+      ],
+      "dfumtValue": "TRUE",
+      "description": "異なる証明経路が同じ定理に至るとき、意味的等価。Phase 8aの理論的基盤。",
+      "formula": "U_equiv := proof_1(T) ≡ proof_2(T) → equiv_score = 1.0",
+      "relatedIds": [
+        84,
+        12
+      ],
+      "source": "extended"
+    },
+    {
+      "id": "dfumt-extended-86",
+      "numericId": 86,
+      "name": "UMTE-U5: 数学的存在の縁起",
+      "axiom": "数学的対象は相互関係によってのみ存在する。公理依存グラフの数学的正当化。",
+      "category": "umte",
+      "keywords": [
+        "umte",
+        "U_exist := ∃x ∈ Math"
+      ],
+      "dfumtValue": "NEITHER",
+      "description": "数学的対象は相互関係によってのみ存在する。公理依存グラフの数学的正当化。",
+      "formula": "U_exist := ∃x ∈ Math ← ∃y: relate(x, y)",
+      "relatedIds": [
+        85,
+        7
+      ],
+      "source": "extended"
+    },
+    {
+      "id": "dfumt-extended-87",
+      "numericId": 87,
+      "name": "非数値数学-基底定理",
+      "axiom": "数値を使わない数学体系の構築。関係と変換のみで数学を表現。",
+      "category": "non_numerical",
+      "keywords": [
+        "non_numerical",
+        "NNM_base := ∀theorem"
+      ],
+      "dfumtValue": "NEITHER",
+      "description": "数値を使わない数学体系の構築。関係と変換のみで数学を表現。",
+      "formula": "NNM_base := ∀theorem: ¬∃n ∈ ℝ in proof(theorem)",
+      "relatedIds": [
+        12,
+        1
+      ],
+      "source": "extended"
+    },
+    {
+      "id": "dfumt-extended-88",
+      "numericId": 88,
+      "name": "非数値数学-色彩位相",
+      "axiom": "色彩空間の位相的性質を数値なしで記述。",
+      "category": "non_numerical",
+      "keywords": [
+        "non_numerical",
+        "NNM_color := hue ↔ s"
+      ],
+      "dfumtValue": "BOTH",
+      "description": "色彩空間の位相的性質を数値なしで記述。",
+      "formula": "NNM_color := hue ↔ saturation ↔ brightness (non-numeric)",
+      "relatedIds": [
+        87
+      ],
+      "source": "extended"
+    },
+    {
+      "id": "dfumt-extended-89",
+      "numericId": 89,
+      "name": "非数値数学-音楽論理",
+      "axiom": "音楽の和声・対位法を七価論理で表現。",
+      "category": "non_numerical",
+      "keywords": [
+        "non_numerical",
+        "NNM_music := consona"
+      ],
+      "dfumtValue": "FLOWING",
+      "description": "音楽の和声・対位法を七価論理で表現。",
+      "formula": "NNM_music := consonance → TRUE; dissonance → BOTH",
+      "relatedIds": [
+        87,
+        88
+      ],
+      "source": "extended"
+    },
+    {
+      "id": "dfumt-extended-90",
+      "numericId": 90,
+      "name": "非数値数学-言語数学",
+      "axiom": "自然言語の意味論を数値なしで形式化。ウィトゲンシュタインとの接続。",
+      "category": "non_numerical",
+      "keywords": [
+        "non_numerical",
+        "NNM_lang := meaning("
+      ],
+      "dfumtValue": "FLOWING",
+      "description": "自然言語の意味論を数値なしで形式化。ウィトゲンシュタインとの接続。",
+      "formula": "NNM_lang := meaning(w) := {contexts(w)}",
+      "relatedIds": [
+        87
+      ],
+      "source": "extended"
+    },
+    {
+      "id": "dfumt-extended-91",
+      "numericId": 91,
+      "name": "非数値数学-絵画位相",
+      "axiom": "絵画の構図・遠近法を位相空間として記述。",
+      "category": "non_numerical",
+      "keywords": [
+        "non_numerical",
+        "NNM_paint := perspec"
+      ],
+      "dfumtValue": "BOTH",
+      "description": "絵画の構図・遠近法を位相空間として記述。",
+      "formula": "NNM_paint := perspective := topology(canvas)",
+      "relatedIds": [
+        88,
+        90
+      ],
+      "source": "extended"
+    },
+    {
+      "id": "dfumt-extended-92",
+      "numericId": 92,
+      "name": "MMRT: 最大最小再帰定理",
+      "axiom": "任意の再帰構造において、最大値と最小値は同一の縁起関係を持つ。",
+      "category": "mmrt_amrt",
+      "keywords": [
+        "mmrt_amrt",
+        "MMRT := max(f) ↔ min"
+      ],
+      "dfumtValue": "BOTH",
+      "description": "任意の再帰構造において、最大値と最小値は同一の縁起関係を持つ。",
+      "formula": "MMRT := max(f) ↔ min(f) via recursive_structure",
+      "relatedIds": [
+        5,
+        67
+      ],
+      "source": "extended"
+    },
+    {
+      "id": "dfumt-extended-93",
+      "numericId": 93,
+      "name": "AMRT: 非対称再帰変換定理",
+      "axiom": "非対称な再帰変換が収束する条件をD-FUMTで表現。",
+      "category": "mmrt_amrt",
+      "keywords": [
+        "mmrt_amrt",
+        "AMRT := asymmetric_f"
+      ],
+      "dfumtValue": "FLOWING",
+      "description": "非対称な再帰変換が収束する条件をD-FUMTで表現。",
+      "formula": "AMRT := asymmetric_f: converge ↔ FLOWING → TRUE",
+      "relatedIds": [
+        92
+      ],
+      "source": "extended"
+    },
+    {
+      "id": "dfumt-extended-94",
+      "numericId": 94,
+      "name": "MMRT-螺旋拡張",
+      "axiom": "MMRTを螺旋数論（Theory #5）と統合。黄金比収束の証明。",
+      "category": "mmrt_amrt",
+      "keywords": [
+        "mmrt_amrt",
+        "MMRT_spiral := limit"
+      ],
+      "dfumtValue": "ZERO",
+      "description": "MMRTを螺旋数論（Theory #5）と統合。黄金比収束の証明。",
+      "formula": "MMRT_spiral := limit(spiral(φ^n)) = ZERO",
+      "relatedIds": [
+        92,
+        5
+      ],
+      "source": "extended"
+    },
+    {
+      "id": "dfumt-extended-95",
+      "numericId": 95,
+      "name": "AMRT-意識変換",
+      "axiom": "意識の変容過程をAMRTで記述。瞑想・悟りの数学的モデル。",
+      "category": "mmrt_amrt",
+      "keywords": [
+        "mmrt_amrt",
+        "AMRT_conscious := tr"
+      ],
+      "dfumtValue": "FLOWING",
+      "description": "意識の変容過程をAMRTで記述。瞑想・悟りの数学的モデル。",
+      "formula": "AMRT_conscious := transform(C_n) → C_{n+1}: FLOWING",
+      "relatedIds": [
+        93,
+        79
+      ],
+      "source": "extended"
+    },
+    {
+      "id": "dfumt-extended-96",
+      "numericId": 96,
+      "name": "MMRT/AMRT統合定理",
+      "axiom": "MMRTとAMRTを統合する上位定理。対称性と非対称性の統一。",
+      "category": "mmrt_amrt",
+      "keywords": [
+        "mmrt_amrt",
+        "UNIFIED := MMRT ∪ AM"
+      ],
+      "dfumtValue": "BOTH",
+      "description": "MMRTとAMRTを統合する上位定理。対称性と非対称性の統一。",
+      "formula": "UNIFIED := MMRT ∪ AMRT → BOTH",
+      "relatedIds": [
+        92,
+        93
+      ],
+      "source": "extended"
+    },
+    {
+      "id": "dfumt-extended-97",
+      "numericId": 97,
+      "name": "D-FUMT拡張: 八価論理可能性",
+      "axiom": "七価論理の次——「超越的沈黙」を第八値として検討。現時点では保留。",
+      "category": "dfumt_extension",
+      "keywords": [
+        "dfumt_extension",
+        "DFUMT_8 := {⊤,⊥,B,N,"
+      ],
+      "dfumtValue": "NEITHER",
+      "description": "七価論理の次——「超越的沈黙」を第八値として検討。現時点では保留。",
+      "formula": "DFUMT_8 := {⊤,⊥,B,N,∞,〇,～, ?}",
+      "relatedIds": [
+        23
+      ],
+      "source": "extended"
+    },
+    {
+      "id": "dfumt-extended-98",
+      "numericId": 98,
+      "name": "D-FUMT: 量子論理との対応",
+      "axiom": "量子重ね合わせ状態とBOTH値の対応。測定問題との関係。",
+      "category": "dfumt_extension",
+      "keywords": [
+        "dfumt_extension",
+        "QUANTUM := |ψ⟩ = α|0"
+      ],
+      "dfumtValue": "BOTH",
+      "description": "量子重ね合わせ状態とBOTH値の対応。測定問題との関係。",
+      "formula": "QUANTUM := |ψ⟩ = α|0⟩ + β|1⟩ ↔ BOTH",
+      "relatedIds": [
+        23,
+        76
+      ],
+      "source": "extended"
+    },
+    {
+      "id": "dfumt-extended-99",
+      "numericId": 99,
+      "name": "D-FUMT: 圏論的定式化",
+      "axiom": "七価論理を圏論の射（morphism）として定式化。",
+      "category": "dfumt_extension",
+      "keywords": [
+        "dfumt_extension",
+        "CATEGORY := 7VAL: C "
+      ],
+      "dfumtValue": "FLOWING",
+      "description": "七価論理を圏論の射（morphism）として定式化。",
+      "formula": "CATEGORY := 7VAL: C → D (functor)",
+      "relatedIds": [
+        23,
+        82
+      ],
+      "source": "extended"
+    },
+    {
+      "id": "dfumt-extended-100",
+      "numericId": 100,
+      "name": "D-FUMT第100理論: 公理ネットワーク完全性",
+      "axiom": "全D-FUMT理論が相互に参照し合う完全グラフを形成するとき、新しい理論は自動的に生成される。",
+      "category": "axiom_network",
+      "keywords": [
+        "axiom_network",
+        "COMPLETENESS := ∀T_i"
+      ],
+      "dfumtValue": "TRUE",
+      "description": "全D-FUMT理論が相互に参照し合う完全グラフを形成するとき、新しい理論は自動的に生成される。",
+      "formula": "COMPLETENESS := ∀T_i,T_j ∈ DFUMT: ∃path(T_i → T_j)",
+      "relatedIds": [
+        1,
+        23,
+        67,
+        75
+      ],
+      "source": "extended"
+    }
+  ]
+}
