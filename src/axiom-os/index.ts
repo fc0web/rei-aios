@@ -253,3 +253,9 @@ export { UniverseHierarchyEngine } from './universe-hierarchy-engine';
 export type {
   Universe, HierarchyResult, FullHierarchyVerification,
 } from './universe-hierarchy-engine';
+
+// UniversalLogicEngine (Phase 6k)
+export { UniversalLogicEngine } from './universal-logic-engine';
+export type {
+  UniversalLogicType, MembershipShape,
+} from './universal-logic-engine';

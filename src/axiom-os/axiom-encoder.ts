@@ -40,6 +40,7 @@ const CATEGORY_MAP: Record<string, string> = {
   'inf_category': 'ic',
   'hott': 'ht',
   'truncation': 'tr',
+  'universal_logic': 'ul',
 };
 
 const CATEGORY_REVERSE: Record<string, string> = Object.fromEntries(

@@ -184,4 +184,24 @@ export const SEED_KERNEL: SeedTheory[] = [
   { id: 'dfumt-truncation-1', axiom: 'truncation(1)=Catuskoti 四句分別 1次経路', category: 'truncation', keywords: ['1切り詰め', '四句分別', '四値'] },
   { id: 'dfumt-truncation-inf', axiom: 'truncation(∞)=Logic7 七価論理=最小完全体系', category: 'truncation', keywords: ['∞非切り詰め', '七価論理', '完全'] },
   { id: 'dfumt-minimal-complete', axiom: 'Logic7は∞-Groupoidの最小完全表現', category: 'truncation', keywords: ['最小完全', '∞-Groupoid', '表現'] },
+
+  // ══════════════════════════════════════════════════════
+  // Phase 6k: 統一論理体系（Universal Logic System）
+  // ── 四句分別 (Theory #94) ──────────────────────────────
+  { id: 'dfumt-catuskoti-core', axiom: '{TRUE,FALSE,BOTH,NEITHER}⊂Logic7 四句分別は七価の核', category: 'universal_logic', keywords: ['四句分別', '龍樹', '核'] },
+  { id: 'dfumt-catuskoti-subset', axiom: 'catuskoti∉{INFINITY,ZERO,FLOWING} 拡張部分に射影されない', category: 'universal_logic', keywords: ['部分集合', '排除', '四価'] },
+
+  // ── Łukasiewicz3値論理 (Theory #94) ────────────────────
+  { id: 'dfumt-lukasiewicz-map', axiom: 'L0→FALSE L1→NEITHER L2→TRUE Łukasiewicz射影', category: 'universal_logic', keywords: ['Łukasiewicz', '3値', '射影'] },
+  { id: 'dfumt-lukasiewicz-nvalued', axiom: 'lukasiewicz(x)==nvalued(3,x) 糖衣構文等価性', category: 'universal_logic', keywords: ['糖衣構文', 'nvalued', '等価'] },
+
+  // ── ファジー論理 (Theory #94) ──────────────────────────
+  { id: 'dfumt-fuzzy-map', axiom: '[0,1]→Logic7 ファジー→七価射影 t-norm/t-conorm', category: 'universal_logic', keywords: ['ファジー', 'Zadeh', 't-norm'] },
+  { id: 'dfumt-fuzzy-membership', axiom: 'membership(shape,params,x)→[0,1] メンバーシップ関数', category: 'universal_logic', keywords: ['メンバーシップ', '三角', 'ガウス'] },
+
+  // ── n値論理 (Theory #94) ───────────────────────────────
+  { id: 'dfumt-nvalued-projection', axiom: '∀L_n→∃π:L_n→L_7 n値射影定理', category: 'universal_logic', keywords: ['n値', '射影定理', '統一'] },
+
+  // ── 統一定理 (Theory #94) ──────────────────────────────
+  { id: 'dfumt-nagarjuna-lukasiewicz', axiom: 'catuskoti(neither)==lukasiewicz(unknown)==NEITHER 歴史的統一', category: 'universal_logic', keywords: ['統一', '龍樹', 'Łukasiewicz'] },
 ];
