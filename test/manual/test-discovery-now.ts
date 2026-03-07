@@ -18,8 +18,8 @@ async function main() {
 
   const agent = new AxiomDiscoveryAgent(queue, {
     intervalMs: 0,          // 今すぐ実行
-    maxPerRun: 5,           // 最初は5件だけ
-    minScore: 0.3,          // スコア閾値を少し下げて取得しやすく
+    maxPerRun: 10,          // 10件まで
+    minScore: 0.2,          // 手動テスト時はさらに低く
     enabledSources: ['arxiv', 'wikipedia'],
   });
 

@@ -36,3 +36,7 @@ export {
   buildAgentSystemPrompt, buildStepPrompt, buildPlanPrompt,
   parseAgentResponse, REI_COMMAND_REFERENCE,
 } from './agent-prompts';
+
+// ReiAutomatorBridge (STEP 20)
+export { ReiAutomatorBridge } from './rei-automator-bridge';
+export type { ReiBridgeAction, BridgeConfig, ActionKind } from './rei-automator-bridge';

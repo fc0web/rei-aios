@@ -210,3 +210,7 @@ export type { NagarjunaProofResult, ProofStep } from './nagarjuna-proof';
 // DependentOrigination (STEP 19)
 export { DependentOrigination } from './dependent-origination';
 export type { OriginNode, OriginationResult, OriginationMap } from './dependent-origination';
+
+// SelfGenerationEngine (STEP 20)
+export { SelfGenerationEngine } from './self-generation-engine';
+export type { GeneratedAxiomSystem, GeneratedAxiom, GenerationReport } from './self-generation-engine';

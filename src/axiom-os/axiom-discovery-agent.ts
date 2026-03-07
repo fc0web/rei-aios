@@ -42,29 +42,39 @@ export interface DiscoveryConfig {
 }
 
 export const DEFAULT_CONFIG: DiscoveryConfig = {
-  minScore: 0.4,
+  minScore: 0.25,          // 0.4 → 0.25（より多く候補を拾う）
   maxPerRun: 10,
   intervalMs: 24 * 60 * 60 * 1000, // 24時間
   enabledSources: ['arxiv', 'wikipedia', 'github'],
   dfumtKeywords: [
-    // 東洋哲学
-    'catuskoti', '四値論理', '中論', 'nagarjuna', '龍樹', '縁起', 'dependent origination',
+    // ── D-FUMT 固有（最高優先）──
+    'seven-valued logic', 'seven valued logic', '七値論理',
+    'catuskoti', 'catuṣkoṭi', '四値論理', '四句否定',
+    'nagarjuna', '龍樹', '中論', 'mulamadhyamakakarika',
+    'dependent origination', 'pratityasamutpada', '縁起',
+    'sunyata', 'emptiness', '空', 'madhyamaka',
+    'paraconsistent logic', 'dialethism', 'Graham Priest',
+    // ── 東洋哲学 ──
     'buddhist logic', '仏教論理', 'nyaya', 'dharmakirti',
     'taoism', '道教', 'zen', '禅', 'confucianism', '儒教',
-    // 西洋哲学・論理
-    'paraconsistent logic', 'dialethism', 'Graham Priest',
+    // ── 西洋哲学・論理 ──
     'intuitionistic logic', 'constructive mathematics',
     'process philosophy', 'whitehead', 'peirce', 'pragmatism',
     'phenomenology', 'husserl', 'heidegger',
-    // 数学・物理
-    'seven-valued logic', 'many-valued logic', 'fuzzy logic',
+    // ── 数学・物理 ──
+    'many-valued logic', 'fuzzy logic',
     'quantum logic', 'topos theory', 'category theory',
     'information integration', 'IIT', 'phi consciousness',
     'spiral number', 'fractal dimension', 'strange attractor',
-    // 意識・AI
+    // ── 意識・AI ──
     'consciousness mathematics', 'integrated information',
     'self-organization', 'dissipative structure', 'prigogine',
     'strange loop', 'hofstadter', 'godel incompleteness',
+    // ── 情報科学との接点（新規追加）──
+    'axiom system', 'formal proof', 'proof assistant',
+    'type theory', 'dependent type', 'homotopy type theory',
+    'compression theory', 'kolmogorov complexity',
+    'minimum description length',
   ],
 };
 
