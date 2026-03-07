@@ -8,6 +8,7 @@
 
 import * as https from 'https';
 import { ArxivPaper, ArxivFetchOptions, ArxivState } from './types';
+import type { KnowledgeBudget } from './knowledge-budget';
 
 // XML解析（依存なし・軽量実装）
 function extractTag(xml: string, tag: string): string {
@@ -131,6 +132,12 @@ export class ArxivFetcher {
     | 'category-theory'
     | 'consciousness'
     | 'philosophy-math'
+    | 'quantum-computing'
+    | 'quantum-physics'
+    | 'ai-frontier'
+    | 'information-theory'
+    | 'complex-systems'
+    | 'formal-verification'
   ): Promise<ArxivPaper[]> {
     const presets: Record<string, { query: string; category: string; maxResults: number }> = {
       // ── 既存 ──────────────────────────────────────────────
@@ -165,6 +172,38 @@ export class ArxivFetcher {
         category: 'math.LO',
         maxResults: 10,
       },
+
+      // ── 追加: 最先端科学 ────────────────────────────────────
+      'quantum-computing': {
+        query: 'quantum computing algorithm error correction qubit',
+        category: 'quant-ph',
+        maxResults: 10,
+      },
+      'quantum-physics': {
+        query: 'quantum field theory string theory cosmology gravity',
+        category: 'hep-th',
+        maxResults: 10,
+      },
+      'ai-frontier': {
+        query: 'large language model transformer reasoning emergent',
+        category: 'cs.AI',
+        maxResults: 10,
+      },
+      'information-theory': {
+        query: 'information theory compression entropy coding bounds',
+        category: 'cs.IT',
+        maxResults: 10,
+      },
+      'complex-systems': {
+        query: 'complex systems emergence self-organization chaos',
+        category: 'nlin.AO',
+        maxResults: 10,
+      },
+      'formal-verification': {
+        query: 'formal verification type theory proof assistant theorem',
+        category: 'cs.LO',
+        maxResults: 10,
+      },
     };
 
     const opts = presets[preset];
@@ -181,12 +220,16 @@ export class ArxivFetcher {
       'sunyata', 'emptiness', 'dependent origination',
       'many-valued', 'lukasiewicz', 'paraconsistent',
       'homotopy type', 'infinity groupoid', '∞-groupoid',
+      'quantum logic', 'information entropy', 'kolmogorov complexity',
+      'emergence', 'self-organization', 'dependent type',
     ];
 
     const relatedKeywords = [
       'non-classical logic', 'fuzzy logic', 'modal logic',
       'category theory', 'topos', 'consciousness', 'qualia',
       'buddhist', 'eastern philosophy', 'formal ontology',
+      'quantum', 'information theory', 'complexity', 'verification',
+      'proof assistant', 'type system', 'compression',
     ];
 
     const coreMatches = coreKeywords.filter(k => text.includes(k)).length;
@@ -197,6 +240,58 @@ export class ArxivFetcher {
     if (relatedMatches === 2) return 'BOTH';
     if (relatedMatches === 1) return 'NEITHER';
     return 'ZERO';
+  }
+
+  /** 最先端科学プリセット一括取得（容量管理付き） */
+  async fetchScienceAll(budget?: KnowledgeBudget): Promise<(ArxivPaper & { dfumtRelevance: string })[]> {
+    const sciencePresets = [
+      'quantum-computing',
+      'quantum-physics',
+      'ai-frontier',
+      'information-theory',
+      'complex-systems',
+      'formal-verification',
+    ] as const;
+
+    const results: (ArxivPaper & { dfumtRelevance: string })[] = [];
+
+    for (const preset of sciencePresets) {
+      // 容量チェック
+      if (budget) {
+        const check = budget.canFetch(preset);
+        if (!check.allowed) {
+          console.warn(`[ArxivFetcher] ${preset}: ${check.reason}`);
+          if (check.suggestion) console.warn(`   ${check.suggestion}`);
+          continue;
+        }
+      }
+
+      try {
+        console.log(`[ArxivFetcher] ${preset} を取得中...`);
+        const papers = await this.fetchByPreset(preset);
+        for (const paper of papers) {
+          const withRelevance = {
+            ...paper,
+            dfumtRelevance: this.evaluateDfumtRelevance(paper),
+          };
+          results.push(withRelevance);
+
+          // 容量に登録
+          budget?.register({
+            id:        paper.id,
+            category:  preset,
+            relevance: withRelevance.dfumtRelevance,
+            sizeBytes: JSON.stringify(paper).length,
+          });
+        }
+      } catch (e: any) {
+        console.warn(`[ArxivFetcher] ${preset} 取得失敗: ${e.message}`);
+      }
+    }
+
+    const order = ['TRUE', 'FLOWING', 'BOTH', 'NEITHER', 'ZERO', 'FALSE'];
+    results.sort((a, b) => order.indexOf(a.dfumtRelevance) - order.indexOf(b.dfumtRelevance));
+    return results;
   }
 
   /** D-FUMT関連度付きで哲学論文を全プリセット取得 */
