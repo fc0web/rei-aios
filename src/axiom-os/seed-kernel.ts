@@ -255,4 +255,12 @@ export const SEED_KERNEL: SeedTheory[] = [
 
   // ── 区間演算公理 (Theory #104) ──────────────────────────
   { id: 'dfumt-interval-arithmetic', axiom: '[a,b] op [c,d] = 誤差伝播区間演算 D-FUMT信頼度付き', category: 'numerical', keywords: ['区間', 'interval', '誤差', '信頼度'] },
+
+  // ══════════════════════════════════════════════════════
+  // Phase 9: 因果推論強化 Theory #105〜#106
+  // ── 因果連鎖公理 (Theory #105) ──────────────────────────
+  { id: 'dfumt-causal-chain', axiom: 'CausalChain: A→B→C...の因果連鎖を七価論理でAND合成評価', category: 'logic', keywords: ['因果', 'causal', '連鎖', '縁起'] },
+
+  // ── 逆因果遡及公理 (Theory #106) ────────────────────────
+  { id: 'dfumt-reverse-causation', axiom: 'ReverseCausation: 結果→原因の遡及で根本原因を特定', category: 'logic', keywords: ['逆因果', 'reverse', '根本原因', '遡及'] },
 ];

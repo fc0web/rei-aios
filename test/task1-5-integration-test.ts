@@ -303,8 +303,8 @@ test('SEED_KERNEL: 量子論理3理論が含まれる', () => {
   }
 });
 
-test(`SEED_KERNEL: 総理論数 155 (149+3+3)`, () => {
-  assert(SEED_KERNEL.length === 155, `expected 155, got ${SEED_KERNEL.length}`);
+test(`SEED_KERNEL: 総理論数 157 (149+3+3)`, () => {
+  assert(SEED_KERNEL.length === 157, `expected 157, got ${SEED_KERNEL.length}`);
 });
 
 // ── 結果 ──
