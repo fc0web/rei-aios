@@ -30,6 +30,13 @@ const CATEGORY_MAP: Record<string, string> = {
   'unified': 'un',
   'projection': 'pr',
   'cosmic': 'co',
+  'african': 'af',
+  'mesoamerican': 'ms',
+  'oceanian': 'oc',
+  'islamic': 'is',
+  'category_theory': 'ct',
+  'meta_axiom': 'mx',
+  'circular_origin': 'cr',
 };
 
 const CATEGORY_REVERSE: Record<string, string> = Object.fromEntries(

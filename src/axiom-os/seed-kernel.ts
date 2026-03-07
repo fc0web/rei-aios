@@ -137,4 +137,27 @@ export const SEED_KERNEL: SeedTheory[] = [
   // ── イスラム哲学・スーフィズム ────────────────────────
   { id: 'dfumt-wahdat-al-wujud', axiom: 'Wahdat al-Wujud — 全存在は一つの実在の顕現である', category: 'islamic', keywords: ['ワフダ', 'wahdat al-wujud', 'イブン・アラビー', '存在一性論', 'スーフィズム'] },
   { id: 'dfumt-barzakh', axiom: 'Barzakh — 二つの実在の間に存在する中間的境界空間', category: 'islamic', keywords: ['バルザフ', 'barzakh', 'イブン・アラビー', '中間世界', 'isthmus'] },
+
+  // ══════════════════════════════════════════════════════
+  // Phase 6k: メタ公理層・根源層・圏論 統合
+  // ── 圏論的論理統一 (Theory #88) ──────────────────────
+  { id: 'dfumt-categorical-logic', axiom: 'LogicCategory: ∀L_n→∃Functor:L_n→Logic7 構造保存写像', category: 'category_theory', keywords: ['圏論', '関手', '自然変換'] },
+  { id: 'dfumt-universal-projection', axiom: '∀L_n→∃NaturalTransform:L_n→Logic7 射影定理', category: 'category_theory', keywords: ['自然変換', '射影定理', 'Logic7'] },
+  { id: 'dfumt-limit-zero', axiom: 'limit(EmptyDiagram)==ZERO 空図式の極限=終対象', category: 'category_theory', keywords: ['極限', 'ZERO', '終対象'] },
+  { id: 'dfumt-colimit-infinity', axiom: 'colimit(FullDiagram)==INFINITY 余極限=始対象の双対', category: 'category_theory', keywords: ['余極限', 'INFINITY', '始対象'] },
+  { id: 'dfumt-monad-effect', axiom: 'Monad:unit→FLOWING flatten→結合律 エフェクト圏論', category: 'category_theory', keywords: ['モナド', 'FLOWING', 'エフェクト'] },
+
+  // ── メタ公理体系 (Theory #89) ──────────────────────────
+  { id: 'dfumt-meta-consistency', axiom: '∀φ∈AxiomKernel→¬(⊢φ∧⊢¬φ) 無矛盾性メタ公理', category: 'meta_axiom', keywords: ['無矛盾性', 'メタ公理', '一貫性'] },
+  { id: 'dfumt-meta-independence', axiom: '∀φ→¬provable(φ,Kernel\\{φ}) 独立性メタ公理', category: 'meta_axiom', keywords: ['独立性', '非導出', '公理独立'] },
+  { id: 'dfumt-meta-minimality', axiom: 'prefer(smaller_kernel) if consistent オッカムの剃刀', category: 'meta_axiom', keywords: ['最小性', 'オッカム', 'RCT'] },
+  { id: 'dfumt-meta-godel', axiom: 'AxiomKernel⊬Consistent(AxiomKernel) ゲーデル限界', category: 'meta_axiom', keywords: ['ゲーデル', '不完全性', '自己言及'] },
+  { id: 'dfumt-meta-seven-closure', axiom: '∀L_n→∃π:L_n→Logic7 七価閉包メタ公理', category: 'meta_axiom', keywords: ['七価閉包', '射影', '完備性'] },
+
+  // ── 円環根源論 (Theory #90) ────────────────────────────
+  { id: 'dfumt-zero-origin', axiom: 'ZERO→AxiomKernel 全公理はZEROから発生する', category: 'circular_origin', keywords: ['ZERO', '根源', '発生'] },
+  { id: 'dfumt-zero-destination', axiom: 'Implementation→ZERO 全実装はZEROに還元される', category: 'circular_origin', keywords: ['還元', '帰還', '収束'] },
+  { id: 'dfumt-zero-circular', axiom: 'ZERO→Axioms→Impl→ZERO 円環の閉包', category: 'circular_origin', keywords: ['円環', '循環', '閉包'] },
+  { id: 'dfumt-pratityasamutpada', axiom: '∀x→dependent_origin(x,ZERO) 縁起の形式化', category: 'circular_origin', keywords: ['縁起', '依存', '龍樹'] },
+  { id: 'dfumt-ineffability', axiom: 'root.ineffable=true 語りえぬものには沈黙せねばならない', category: 'circular_origin', keywords: ['沈黙', '不可説', 'ウィトゲンシュタイン'] },
 ];

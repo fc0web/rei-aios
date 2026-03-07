@@ -214,3 +214,23 @@ export type { OriginNode, OriginationResult, OriginationMap } from './dependent-
 // SelfGenerationEngine (STEP 20)
 export { SelfGenerationEngine } from './self-generation-engine';
 export type { GeneratedAxiomSystem, GeneratedAxiom, GenerationReport } from './self-generation-engine';
+
+// CategoryTheoryEngine (Phase 6k)
+export { CategoryTheoryEngine } from './category-theory-engine';
+export type {
+  CategoryObject, Morphism, Category, Functor,
+  NaturalTransform, Diagram, FunctorVerification, NaturalityVerification,
+} from './category-theory-engine';
+
+// MetaAxiomValidator (Phase 6k)
+export { MetaAxiomValidator } from './meta-axiom-validator';
+export type {
+  MetaAxiomName, MetaAxiom, ValidationResult, GodelLimit,
+} from './meta-axiom-validator';
+
+// CircularOriginEngine (Phase 6k)
+export { CircularOriginEngine } from './circular-origin-engine';
+export type {
+  OntologyTradition, OntologyMapping, ZeroCycleResult,
+  DependentOriginResult, RootPrinciple,
+} from './circular-origin-engine';

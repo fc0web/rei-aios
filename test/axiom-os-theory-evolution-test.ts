@@ -17,7 +17,7 @@ console.log('\n=== TheoryEvolution Tests ===\n');
 const te = new TheoryEvolution();
 
 test('全理論数=75（進化前）', () => {
-  assertEq(te.getAllTheories().length, 75, 'Should start with 75');
+  assertEq(te.getAllTheories().length, SEED_KERNEL.length, `Should start with ${SEED_KERNEL.length}`);
 });
 
 test('使用履歴の記録', () => {
@@ -35,7 +35,7 @@ test('手動登録で理論数が増える', () => {
     category: 'general',
     keywords: ['test'],
   });
-  assert(te.getAllTheories().length > 75, 'Should have more than 75');
+  assert(te.getAllTheories().length > SEED_KERNEL.length, `Should have more than ${SEED_KERNEL.length}`);
   assert(te.getEvolved().length === 1, 'Should have 1 evolved');
 });
 
@@ -108,7 +108,7 @@ test('nextGeneration で世代が進む', () => {
 
 test('summarize の構造確認', () => {
   const s = te.summarize();
-  assertEq(s.baseCount, 75, 'base should be 75');
+  assertEq(s.baseCount, SEED_KERNEL.length, `base should be ${SEED_KERNEL.length}`);
   assert(s.evolvedCount > 0, 'evolved should be > 0');
   assert(s.generation >= 1, 'generation >= 1');
 });

@@ -22,7 +22,7 @@ test('エクスポート: SeedPackageが生成される', () => {
   assert(pkg.checksum.length === 64, `checksum length=${pkg.checksum.length}`);
   assert(pkg.compressed.length > 0, 'compressed should not be empty');
   assertEq(pkg.metadata.source, 'test-source', 'source');
-  assertEq(pkg.metadata.theoryCount, 75, 'theoryCount');
+  assertEq(pkg.metadata.theoryCount, SEED_KERNEL.length, 'theoryCount');
 });
 
 test('エクスポート: バージョン指定', () => {
@@ -52,11 +52,11 @@ test('serialize/deserialize ラウンドトリップ', () => {
 });
 
 // ── インポート ──
-test('インポート: 75理論を正常にインポート', () => {
+test('インポート: 全理論を正常にインポート', () => {
   const pkg = stp.export();
   const result = stp.import(pkg);
   assert(result.success, `import failed: ${result.error}`);
-  assertEq(result.theoryCount, 75, 'theoryCount');
+  assertEq(result.theoryCount, SEED_KERNEL.length, 'theoryCount');
   assertEq(result.checksum, pkg.checksum, 'checksum');
 });
 
@@ -109,7 +109,7 @@ test('inspect: パッケージ概要が返る', () => {
   const pkg = stp.export({ version: '1.2.3' });
   const info = stp.inspect(pkg);
   assertEq(info.version, '1.2.3', 'version');
-  assertEq(info.theories, 75, 'theories');
+  assertEq(info.theories, SEED_KERNEL.length, 'theories');
   assert(info.size > 0, 'size > 0');
   assert(info.checksumShort.length === 12, 'checksum short');
   assert(!info.isDelta, 'not a delta');
