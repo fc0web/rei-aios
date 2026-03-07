@@ -94,3 +94,23 @@ export function getReiAIOSDeps(): ReiAIOSDeps {
 export function resetReiAIOSDeps(): void {
   _deps = null;
 }
+
+// ─── Code Generation API ─────────────────────────────────
+
+/** Rei-PLコード生成関数の型 */
+export type ReiCodeGenerator = (theory: { id: string; axiom: string; category: string }) => string;
+
+/** コード生成ファクトリ */
+export interface ReiCodeGenDeps {
+  generateCode: ReiCodeGenerator;
+}
+
+let _codeGenDeps: ReiCodeGenDeps | null = null;
+
+export function initReiCodeGenDeps(deps: ReiCodeGenDeps): void {
+  _codeGenDeps = deps;
+}
+
+export function getCodeGenerator(): ReiCodeGenerator | null {
+  return _codeGenDeps?.generateCode ?? null;
+}

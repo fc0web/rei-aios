@@ -43,6 +43,7 @@ const CATEGORY_MAP: Record<string, string> = {
   'universal_logic': 'ul',
   'nagarjuna': 'ng',
   'silence': 'sl',
+  'quantum': 'qu',
 };
 
 const CATEGORY_REVERSE: Record<string, string> = Object.fromEntries(

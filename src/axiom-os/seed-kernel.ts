@@ -233,4 +233,15 @@ export const SEED_KERNEL: SeedTheory[] = [
   { id: 'dfumt-silence-entropy', axiom: 'H(沈黙)=log₂(7)≈2.807 文脈なし最大エントロピー', category: 'silence', keywords: ['エントロピー', 'シャノン', '情報量'] },
   { id: 'dfumt-silence-3bit', axiom: '7値→3ビット符号化 情報密度87.5%', category: 'silence', keywords: ['3ビット', '符号化', '密度'] },
   { id: 'dfumt-silence-compression', axiom: '45文字→2文字=95.6%削減 RCT極限形態', category: 'silence', keywords: ['圧縮', 'RCT', '極限'] },
+
+  // ══════════════════════════════════════════════════════
+  // Phase 7: 量子論理 (quantum) Theory #99〜#101
+  // ── 量子重ね合わせ公理 (Theory #99) ───────────────────
+  { id: 'dfumt-quantum-superposition', axiom: 'alpha|0>+beta|1>=BOTH (|alpha|^2+|beta|^2=1)', category: 'quantum', keywords: ['量子', 'superposition', '重ね合わせ', 'BOTH'] },
+
+  // ── 射影測定公理 (Theory #100) ────────────────────────
+  { id: 'dfumt-quantum-measurement', axiom: '測定: alpha|0>+beta|1> -> |0>or|1> = FLOWING', category: 'quantum', keywords: ['測定', 'measurement', '波束収縮', 'FLOWING'] },
+
+  // ── 量子非分配律 (Theory #101) ────────────────────────
+  { id: 'dfumt-quantum-non-distributivity', axiom: 'A AND (B OR C) != (A AND B) OR (A AND C) 量子命題論理', category: 'quantum', keywords: ['非分配律', 'quantum logic', 'NEITHER'] },
 ];
