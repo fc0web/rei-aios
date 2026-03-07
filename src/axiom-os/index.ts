@@ -198,3 +198,11 @@ export { NoAxiomVoid } from './no-axiom-void';
 export type {
   VoidSnapshot, EmergenceEvent, ReturnEvent, ZeroCycle,
 } from './no-axiom-void';
+
+// ReiTaskQueue (STEP 18)
+export { ReiTaskQueue } from './rei-task-queue';
+export type { ReiTask, TaskState, ScheduleStrategy, TaskQueueStats } from './rei-task-queue';
+
+// NagarjunaProof (STEP 18)
+export { NagarjunaProof } from './nagarjuna-proof';
+export type { NagarjunaProofResult, ProofStep } from './nagarjuna-proof';
