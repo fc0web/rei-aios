@@ -51,6 +51,7 @@
     "export:theories": "tsx scripts/export-theories.ts",
     "test:github-fetcher": "tsx test/github-axiom-fetcher-test.ts",
     "test:nostr-live": "tsx test/nostr-live-test.ts",
+    "test:nostr-philosophy": "tsx test/nostr-philosophy-test.ts",
     "test:real": "tsx test/real-file-extraction-test.ts",
     "extract": "tsx src/cli/rei-extract.ts",
     "extract:self": "tsx src/cli/rei-extract.ts ./src --verbose",
