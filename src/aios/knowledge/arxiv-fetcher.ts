@@ -121,14 +121,115 @@ export class ArxivFetcher {
   }
 
   /** カテゴリ別プリセット */
-  async fetchByPreset(preset: 'general' | 'number-theory' | 'ai-math' | 'topology'): Promise<ArxivPaper[]> {
-    const presets = {
-      'general':      { query: 'mathematical theory framework', category: 'math.GM', maxResults: 8 },
-      'number-theory':{ query: 'prime fibonacci golden ratio',  category: 'math.NT', maxResults: 8 },
-      'ai-math':      { query: 'neural network mathematics topology', category: 'cs.LG', maxResults: 8 },
-      'topology':     { query: 'topology manifold dimension',   category: 'math.GT', maxResults: 8 },
+  async fetchByPreset(preset:
+    | 'general'
+    | 'number-theory'
+    | 'ai-math'
+    | 'topology'
+    | 'buddhist-logic'
+    | 'many-valued-logic'
+    | 'category-theory'
+    | 'consciousness'
+    | 'philosophy-math'
+  ): Promise<ArxivPaper[]> {
+    const presets: Record<string, { query: string; category: string; maxResults: number }> = {
+      // ── 既存 ──────────────────────────────────────────────
+      'general':       { query: 'mathematical theory framework',          category: 'math.GM', maxResults: 8 },
+      'number-theory': { query: 'prime fibonacci golden ratio',           category: 'math.NT', maxResults: 8 },
+      'ai-math':       { query: 'neural network mathematics topology',    category: 'cs.LG',   maxResults: 8 },
+      'topology':      { query: 'topology manifold dimension',            category: 'math.GT', maxResults: 8 },
+
+      // ── 追加: 哲学・仏教・論理学 ─────────────────────────
+      'buddhist-logic': {
+        query: 'Buddhist logic Nagarjuna Madhyamaka paraconsistent tetralemma catuskoti emptiness',
+        category: 'math.LO',
+        maxResults: 10,
+      },
+      'many-valued-logic': {
+        query: 'many-valued logic Lukasiewicz fuzzy paraconsistent non-classical',
+        category: 'math.LO',
+        maxResults: 10,
+      },
+      'category-theory': {
+        query: 'category theory homotopy type theory infinity groupoid topos',
+        category: 'math.CT',
+        maxResults: 10,
+      },
+      'consciousness': {
+        query: 'consciousness integrated information theory qualia panpsychism phenomenology',
+        category: 'q-bio.NC',
+        maxResults: 10,
+      },
+      'philosophy-math': {
+        query: 'philosophy mathematics formal ontology axiomatic incompleteness Godel',
+        category: 'math.LO',
+        maxResults: 10,
+      },
     };
-    return this.fetch(presets[preset]);
+
+    const opts = presets[preset];
+    if (!opts) throw new Error(`未知のプリセット: ${preset}`);
+    return this.fetch(opts);
+  }
+
+  /** 論文タイトル・サマリーからD-FUMT七価論理値を評価 */
+  evaluateDfumtRelevance(paper: ArxivPaper): string {
+    const text = (paper.title + ' ' + paper.summary).toLowerCase();
+
+    const coreKeywords = [
+      'nagarjuna', 'madhyamaka', 'catuskoti', 'tetralemma',
+      'sunyata', 'emptiness', 'dependent origination',
+      'many-valued', 'lukasiewicz', 'paraconsistent',
+      'homotopy type', 'infinity groupoid', '∞-groupoid',
+    ];
+
+    const relatedKeywords = [
+      'non-classical logic', 'fuzzy logic', 'modal logic',
+      'category theory', 'topos', 'consciousness', 'qualia',
+      'buddhist', 'eastern philosophy', 'formal ontology',
+    ];
+
+    const coreMatches = coreKeywords.filter(k => text.includes(k)).length;
+    const relatedMatches = relatedKeywords.filter(k => text.includes(k)).length;
+
+    if (coreMatches >= 2) return 'TRUE';
+    if (coreMatches === 1 || relatedMatches >= 3) return 'FLOWING';
+    if (relatedMatches === 2) return 'BOTH';
+    if (relatedMatches === 1) return 'NEITHER';
+    return 'ZERO';
+  }
+
+  /** D-FUMT関連度付きで哲学論文を全プリセット取得 */
+  async fetchPhilosophyAll(): Promise<(ArxivPaper & { dfumtRelevance: string })[]> {
+    const philosophyPresets = [
+      'buddhist-logic',
+      'many-valued-logic',
+      'category-theory',
+      'consciousness',
+      'philosophy-math',
+    ] as const;
+
+    const results: (ArxivPaper & { dfumtRelevance: string })[] = [];
+
+    for (const preset of philosophyPresets) {
+      try {
+        console.log(`[ArxivFetcher] 📚 ${preset} を取得中...`);
+        const papers = await this.fetchByPreset(preset);
+        for (const paper of papers) {
+          results.push({
+            ...paper,
+            dfumtRelevance: this.evaluateDfumtRelevance(paper),
+          });
+        }
+      } catch (e: any) {
+        console.warn(`[ArxivFetcher] ${preset} 取得失敗: ${e.message}`);
+      }
+    }
+
+    const order = ['TRUE', 'FLOWING', 'BOTH', 'NEITHER', 'ZERO', 'FALSE'];
+    results.sort((a, b) => order.indexOf(a.dfumtRelevance) - order.indexOf(b.dfumtRelevance));
+
+    return results;
   }
 }
 

@@ -53,6 +53,7 @@
     "test:nostr-live": "tsx test/nostr-live-test.ts",
     "test:nostr-philosophy": "tsx test/nostr-philosophy-test.ts",
     "test:real": "tsx test/real-file-extraction-test.ts",
+    "test:knowledge-philosophy": "tsx test/knowledge-philosophy-test.ts",
     "extract": "tsx src/cli/rei-extract.ts",
     "extract:self": "tsx src/cli/rei-extract.ts ./src --verbose",
     "extract:verify": "tsx src/cli/rei-extract.ts ./src --verify --verbose",

@@ -38,6 +38,32 @@ export interface ArxivState {
 }
 
 // ============================================================
+// Wikipedia
+// ============================================================
+
+export interface WikipediaArticle {
+  title:      string;
+  summary:    string;   // 冒頭300文字
+  url:        string;
+  categories: string[];
+  dfumtValue: string;   // 七価論理値による関連度評価
+}
+
+export interface WikipediaSearchOptions {
+  query:      string;
+  language?:  'en' | 'ja';
+  maxResults?: number;
+}
+
+export interface WikipediaState {
+  articles:   WikipediaArticle[];
+  query:      string;
+  fetchedAt:  number;
+  isLoading:  boolean;
+  error?:     string;
+}
+
+// ============================================================
 // OEIS
 // ============================================================
 
@@ -128,6 +154,7 @@ export interface SimResult {
 export interface KnowledgeState {
   arxiv:  ArxivState;
   oeis:   OeisState;
+  wikipedia: WikipediaState;
   sim:    SimResult | null;
   /** 直近のD-FUMTエンジン実行結果サマリー */
   lastDfumtSummary: string;
