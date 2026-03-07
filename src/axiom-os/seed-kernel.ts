@@ -304,4 +304,7 @@ export const SEED_KERNEL: SeedTheory[] = [
   { id: 'dfumt-pain-sharing', axiom: 'pain(a,b)=NEITHER 痛みは共有も否定もできない（私的言語論の身体的結論）', category: 'embodiment', keywords: ['痛み', 'NEITHER', '非共有性', '身体'] },
   // ── 死の公理 (Theory #173) ────────────────────────────────
   { id: 'dfumt-death-axiom', axiom: 'death(x)=ZERO 死は体験不可能・問い以前・エピクロス的非関係', category: 'embodiment', keywords: ['死', 'ZERO', 'エピクロス', '体験不可能'] },
+
+  // ── 未来知性（future_intelligence）Theory #174 ──────────────
+  { id: 'dfumt-future-temporal', axiom: 'F(t)=lim_{τ→∞}Ψ(t+τ)·FLOWING(τ) 未来人の時間認識=全方向FLOWING', category: 'future_intelligence', keywords: ['未来人', 'FLOWING', '時間', '想起'] },
 ];

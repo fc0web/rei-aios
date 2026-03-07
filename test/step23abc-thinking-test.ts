@@ -245,7 +245,7 @@ async function main() {
   }
 
   // E-2: SEED_KERNELとの整合性
-  assert(SEED_KERNEL.length === 173, `E-2: SEED_KERNEL still has 173 theories (got ${SEED_KERNEL.length})`);
+  assert(SEED_KERNEL.length === 174, `E-2: SEED_KERNEL still has 174 theories (got ${SEED_KERNEL.length})`);
 
   qg.close();
   he.close();

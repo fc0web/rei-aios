@@ -278,8 +278,8 @@ test('SEED_KERNEL: numerical カテゴリが3件', () => {
   assert(numerical.length === 3, `expected 3, got ${numerical.length}`);
 });
 
-test(`SEED_KERNEL: 総理論数 173 (152+3)`, () => {
-  assert(SEED_KERNEL.length === 173, `expected 173, got ${SEED_KERNEL.length}`);
+test(`SEED_KERNEL: 総理論数 174`, () => {
+  assert(SEED_KERNEL.length === 174, `expected 174, got ${SEED_KERNEL.length}`);
 });
 
 test('NumericalReasoningEngine: getSeedKernelEntries() → 3件', () => {

@@ -228,12 +228,12 @@ const f3 = new PaperFullTextFetcher({
 assert(logs.length === 0 || logs.every(l => l.includes('[Paper]')), 'I-1: ログフォーマット');
 f3.close();
 
-// ─── J. SEED_KERNEL 173理論確認 ─────────────────────────────
+// ─── J. SEED_KERNEL 174理論確認 ─────────────────────────────
 
-console.log('\n=== J. SEED_KERNEL 173理論確認 ===');
+console.log('\n=== J. SEED_KERNEL 174理論確認 ===');
 
 import { SEED_KERNEL } from '../src/axiom-os/seed-kernel';
-assert(SEED_KERNEL.length === 173, `J-1: SEED_KERNEL=${SEED_KERNEL.length}理論`);
+assert(SEED_KERNEL.length === 174, `J-1: SEED_KERNEL=${SEED_KERNEL.length}理論`);
 
 // ─── 結果 ──────────────────────────────────────────────────
 
