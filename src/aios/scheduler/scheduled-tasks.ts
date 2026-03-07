@@ -22,6 +22,7 @@ import type { AIOSUpdater } from '../auto-update/updater';
 import { AxiomProposalQueue } from '../../axiom-os/axiom-proposal-queue';
 import { AxiomDiscoveryAgent } from '../../axiom-os/axiom-discovery-agent';
 import { DFUMTConsistencyChecker } from '../../axiom-os/dfumt-consistency-checker';
+import { ReiTaskQueue } from '../../axiom-os/rei-task-queue';
 
 // ─── 型定義 ────────────────────────────────────────────
 
@@ -333,6 +334,28 @@ export function registerDefaultTasks(
     });
     log('T-06 (auto-update-check) registered with AIOSUpdater');
   }
+
+  // ─── T-09: ReiTaskQueue 自動ティック（10秒ごと）───────
+  const globalQueue = ReiTaskQueue.getInstance();
+  globalQueue.startAutoTick(10_000); // 10秒間隔
+
+  scheduler.register({
+    id: 'rei-task-queue-report',
+    name: 'ReiTaskQueue 状態レポート',
+    trigger: { type: 'interval', intervalMs: 60 * 60 * 1000 }, // 1時間ごと
+    enabled: true,
+    maxRetries: 1,
+    retryBaseMs: 1000,
+    timeoutMs: 5000,
+    fn: async () => {
+      const stats = globalQueue.getStats();
+      log(`[T-09] TaskQueue状態: 合計${stats.total}件 ` +
+          `実行中${stats.byState['RUNNING'] ?? 0}件 ` +
+          `完了${stats.byState['DONE'] ?? 0}件 ` +
+          `エラー${stats.byState['ERROR'] ?? 0}件`);
+      return stats;
+    },
+  });
 
   log(`Registered ${scheduler.getAllTaskInfo().length} default tasks.`);
 }

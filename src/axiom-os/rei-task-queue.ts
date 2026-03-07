@@ -218,4 +218,37 @@ export class ReiTaskQueue {
   getPending(): ReiTask[] { return [...this.queue]; }
   getRunning(): ReiTask[] { return [...this.running.values()]; }
   getHistory(limit = 20): ReiTask[] { return this.history.slice(-limit); }
+
+  // ── 自動実行ループ（Lv2）────────────────────────────
+
+  private _autoTimer: ReturnType<typeof setInterval> | null = null;
+
+  startAutoTick(intervalMs = 1000): void {
+    if (this._autoTimer) return; // 多重起動防止
+    this._autoTimer = setInterval(() => {
+      this.tick().catch(err => console.error('[ReiTaskQueue] tick error:', err));
+    }, intervalMs);
+    console.log(`[ReiTaskQueue] 自動実行開始 (interval: ${intervalMs}ms)`);
+  }
+
+  stopAutoTick(): void {
+    if (this._autoTimer) {
+      clearInterval(this._autoTimer);
+      this._autoTimer = null;
+      console.log('[ReiTaskQueue] 自動実行停止');
+    }
+  }
+
+  // ── グローバルシングルトン ─────────────────────────
+
+  static _instance: ReiTaskQueue | null = null;
+  static getInstance(): ReiTaskQueue {
+    if (!ReiTaskQueue._instance) {
+      ReiTaskQueue._instance = new ReiTaskQueue({
+        strategy: 'PRIORITY',
+        maxConcurrent: 3,
+      });
+    }
+    return ReiTaskQueue._instance;
+  }
 }

@@ -206,3 +206,7 @@ export type { ReiTask, TaskState, ScheduleStrategy, TaskQueueStats } from './rei
 // NagarjunaProof (STEP 18)
 export { NagarjunaProof } from './nagarjuna-proof';
 export type { NagarjunaProofResult, ProofStep } from './nagarjuna-proof';
+
+// DependentOrigination (STEP 19)
+export { DependentOrigination } from './dependent-origination';
+export type { OriginNode, OriginationResult, OriginationMap } from './dependent-origination';
