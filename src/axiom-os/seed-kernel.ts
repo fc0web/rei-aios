@@ -244,4 +244,15 @@ export const SEED_KERNEL: SeedTheory[] = [
 
   // ── 量子非分配律 (Theory #101) ────────────────────────
   { id: 'dfumt-quantum-non-distributivity', axiom: 'A AND (B OR C) != (A AND B) OR (A AND C) 量子命題論理', category: 'quantum', keywords: ['非分配律', 'quantum logic', 'NEITHER'] },
+
+  // ══════════════════════════════════════════════════════
+  // Phase 8: 数値処理 (numerical) Theory #102〜#104
+  // ── D-FUMT螺旋数 (Theory #102) ─────────────────────────
+  { id: 'dfumt-spiral-number', axiom: 'SpiralNumber: r*e^(i*theta)*layer = D-FUMT数値螺旋写像', category: 'numerical', keywords: ['螺旋', 'spiral', '複素数', '七価分類'] },
+
+  // ── ゼロπ数値変換 (Theory #103) ─────────────────────────
+  { id: 'dfumt-zero-pi-transform', axiom: 'ZeroPi: f(0)=pi, f(pi)=0, x mod pi = ゼロ原点射影', category: 'numerical', keywords: ['ゼロ', 'pi', '射影', '対称変換'] },
+
+  // ── 区間演算公理 (Theory #104) ──────────────────────────
+  { id: 'dfumt-interval-arithmetic', axiom: '[a,b] op [c,d] = 誤差伝播区間演算 D-FUMT信頼度付き', category: 'numerical', keywords: ['区間', 'interval', '誤差', '信頼度'] },
 ];

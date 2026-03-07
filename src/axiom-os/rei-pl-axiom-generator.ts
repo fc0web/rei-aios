@@ -83,6 +83,13 @@ let zero_ext_${sanitizeId(t.id)} = (x: logic7) =>
   else { x }
 `.trim(),
 
+  numerical: (t) => `
+// ${t.id}: ${t.axiom}
+// D-FUMT数値処理: 螺旋数・区間演算
+let numerical_${sanitizeId(t.id)} = (x: f64) =>
+  x |> (n => n * 3.14159265) |> (n => if n > 0.0 { TRUE } else { ZERO })
+`.trim(),
+
   general: (t) => `
 // ${t.id}: ${t.axiom}
 let theory_${sanitizeId(t.id)} = (x: i64) => x

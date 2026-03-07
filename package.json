@@ -57,6 +57,7 @@
     "test:knowledge-budget": "tsx test/knowledge-budget-test.ts",
     "test:task1-5": "tsx test/task1-5-integration-test.ts",
     "test:bidirectional": "tsx test/rei-pl-bidirectional-test.ts",
+    "test:step22": "tsx test/step22-numerical-multiagent-test.ts",
     "extract": "tsx src/cli/rei-extract.ts",
     "extract:self": "tsx src/cli/rei-extract.ts ./src --verbose",
     "extract:verify": "tsx src/cli/rei-extract.ts ./src --verify --verbose",

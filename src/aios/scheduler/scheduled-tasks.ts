@@ -23,6 +23,7 @@ import { AxiomProposalQueue } from '../../axiom-os/axiom-proposal-queue';
 import { AxiomDiscoveryAgent } from '../../axiom-os/axiom-discovery-agent';
 import { DFUMTConsistencyChecker } from '../../axiom-os/dfumt-consistency-checker';
 import { ReiTaskQueue } from '../../axiom-os/rei-task-queue';
+import { AxiomAutoLearner } from '../../axiom-os/axiom-auto-learner';
 
 // ─── 型定義 ────────────────────────────────────────────
 
@@ -354,6 +355,32 @@ export function registerDefaultTasks(
           `完了${stats.byState['DONE'] ?? 0}件 ` +
           `エラー${stats.byState['ERROR'] ?? 0}件`);
       return stats;
+    },
+  });
+
+  // ─── T-10: AxiomAutoLearner 自律学習ループ（24時間ごと）───
+  const autoLearner = new AxiomAutoLearner({
+    dataDir: config.discoveryDataDir ?? config.dataDir,
+    minConfidence: 0.45,
+    maxNewAxiomsPerRun: 5,
+    log,
+  });
+
+  scheduler.register({
+    id: 'axiom-auto-learner',
+    name: 'AxiomAutoLearner 自律学習ループ',
+    trigger: { type: 'interval', intervalMs: 24 * 60 * 60 * 1000 }, // 24時間
+    enabled: true,
+    maxRetries: 2,
+    retryBaseMs: 30000,
+    timeoutMs: 180000,
+    fn: async () => {
+      const report = await autoLearner.run();
+      log(`[T-10] 論文: ${report.papersScanned}件 候補: ${report.candidatesFound}件 追加: ${report.proposalsAdded}件 ブロック: ${report.contradictionsBlocked}件`);
+      if (report.errors.length > 0) {
+        log(`[T-10] エラー: ${report.errors.join('; ')}`);
+      }
+      return `AutoLearner: scanned=${report.papersScanned} candidates=${report.candidatesFound} added=${report.proposalsAdded} blocked=${report.contradictionsBlocked}`;
     },
   });
 

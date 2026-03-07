@@ -44,6 +44,7 @@ const CATEGORY_MAP: Record<string, string> = {
   'nagarjuna': 'ng',
   'silence': 'sl',
   'quantum': 'qu',
+  'numerical': 'nm',
 };
 
 const CATEGORY_REVERSE: Record<string, string> = Object.fromEntries(
