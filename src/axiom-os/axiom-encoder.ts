@@ -41,6 +41,7 @@ const CATEGORY_MAP: Record<string, string> = {
   'hott': 'ht',
   'truncation': 'tr',
   'universal_logic': 'ul',
+  'nagarjuna': 'ng',
 };
 
 const CATEGORY_REVERSE: Record<string, string> = Object.fromEntries(

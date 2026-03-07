@@ -204,4 +204,20 @@ export const SEED_KERNEL: SeedTheory[] = [
 
   // ── 統一定理 (Theory #94) ──────────────────────────────
   { id: 'dfumt-nagarjuna-lukasiewicz', axiom: 'catuskoti(neither)==lukasiewicz(unknown)==NEITHER 歴史的統一', category: 'universal_logic', keywords: ['統一', '龍樹', 'Łukasiewicz'] },
+
+  // ══════════════════════════════════════════════════════
+  // Phase 6k-nagarjuna: 龍樹中論形式証明
+  // ── 龍樹八不偈形式証明 (Theory #94) ────────────────────
+  { id: 'dfumt-eight-negations', axiom: '∀p∈八不偈→nagarjuna_negation(p)==NEITHER 実体的述語否定', category: 'nagarjuna', keywords: ['八不偈', 'NEITHER', '実体否定'] },
+  { id: 'dfumt-sunyata-neither', axiom: 'śūnyatā==NEITHER 空性は非有非無', category: 'nagarjuna', keywords: ['空性', 'NEITHER', '龍樹'] },
+  { id: 'dfumt-dependent-flowing', axiom: 'dependent_origination(ctx)==FLOWING 縁起的生起は流動', category: 'nagarjuna', keywords: ['縁起', 'FLOWING', '相互依存'] },
+
+  // ── 縁起円環論 (Theory #95) ────────────────────────────
+  { id: 'dfumt-twelve-links', axiom: 'ZERO→FLOWING×10→ZERO 十二縁起の円環', category: 'nagarjuna', keywords: ['十二縁起', '円環', '輪廻'] },
+  { id: 'dfumt-emptiness-of-emptiness', axiom: '空の空==ZERO 空性自体も空→ZEROに還元', category: 'nagarjuna', keywords: ['空の空', 'ZERO', '自己言及'] },
+
+  // ── 二諦論 (Theory #96) ────────────────────────────────
+  { id: 'dfumt-two-truths', axiom: '俗諦(FALSE)←FLOWING→真諦(TRUE) 二諦はFLOWINGで繋がる', category: 'nagarjuna', keywords: ['二諦', '俗諦', '真諦'] },
+  { id: 'dfumt-ultimate-neither', axiom: '究極真理==NEITHER 究極は非有非無', category: 'nagarjuna', keywords: ['究極真理', 'NEITHER', '中道'] },
+  { id: 'dfumt-middle-path', axiom: '中道==Logic7全体 七価論理が中道の形式表現', category: 'nagarjuna', keywords: ['中道', '七価', '完全'] },
 ];

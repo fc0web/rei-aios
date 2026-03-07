@@ -259,3 +259,11 @@ export { UniversalLogicEngine } from './universal-logic-engine';
 export type {
   UniversalLogicType, MembershipShape,
 } from './universal-logic-engine';
+
+// NagarjunaEngine (Phase 6k-nagarjuna)
+export { NagarjunaEngine } from './nagarjuna-engine';
+export type {
+  SubstantialPredicate, NegationResult, EightNegationsResult,
+  TwelveLinkEntry, TwelveLinksResult, TwoTruthsResult,
+  Logic7Correspondence, SunyataResult,
+} from './nagarjuna-engine';

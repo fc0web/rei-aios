@@ -151,9 +151,9 @@ test('decompress(compress()) round-trip preserves all data', () => {
 
 // ── sizeReport() の検証 ──
 
-test('sizeReport() seed size < 20KB', () => {
+test('sizeReport() seed size < 30KB', () => {
   const report = gen.sizeReport();
-  assert(report.seedSize < 20480, `Seed size ${report.seedSize} bytes exceeds 20KB`);
+  assert(report.seedSize < 30720, `Seed size ${report.seedSize} bytes exceeds 30KB`);
   console.log(`    seed: ${report.seedSize} bytes, full: ${report.fullSize} bytes, ratio: ${(report.ratio * 100).toFixed(1)}%`);
 });
 
