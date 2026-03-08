@@ -49,6 +49,7 @@ const CATEGORY_MAP: Record<string, string> = {
   'embodiment': 'em',
   'future_intelligence': 'fi',
   'unsolved_problems': 'up',
+  'philosophy_formalization': 'pf',
 };
 
 const CATEGORY_REVERSE: Record<string, string> = Object.fromEntries(

@@ -315,4 +315,9 @@ export const SEED_KERNEL: SeedTheory[] = [
   { id: 'dfumt-bridge-structure', axiom: '主要な数学的予想は領域A↔Bの橋渡し構造を持ち七価論理的性質が必要概念を決定する', category: 'unsolved_problems', keywords: ['橋渡し構造', 'NEITHER', '領域間対応', '七価論理'] },
   { id: 'dfumt-goedel-both', axiom: '真であり証明不可能(ゲーデル)=BOTH状態 コラッツ・ABC予想はこの候補', category: 'unsolved_problems', keywords: ['ゲーデル', 'BOTH', '不完全性', '証明不可能'] },
   { id: 'dfumt-empirical-flowing', axiom: '膨大な数値確認(リーマン1兆・ゴールドバッハ4×10^18)は命題をTRUEにしない 証明なき確信はFLOWING', category: 'unsolved_problems', keywords: ['経験的確信', 'FLOWING', '数値計算', '証明'] },
+
+  // ── 哲学形式化の構造的公理（philosophy_formalization）Theory #181〜#183 ──
+  { id: 'dfumt-philosophy-math-isomorphism', axiom: '偉大な哲学的直観は数百年後に発明される数学と構造的同型(龍樹→圏論1700年 ライプニッツ→非標準解析280年)', category: 'philosophy_formalization', keywords: ['哲学', '数学', '同型', 'FLOWING'] },
+  { id: 'dfumt-language-mathematics-gap', axiom: '哲学的真実T⊄言語L 数学的真実⊄証明可能命題 哲学と数学は同じ限界を異なる言語で発見した', category: 'philosophy_formalization', keywords: ['言語限界', 'NEITHER', 'ゲーデル', 'ウィトゲンシュタイン'] },
+  { id: 'dfumt-flowing-formalization', axiom: '深い思想はFLOWING状態——完全形式化でも完全非形式でもない中間 形式化は思想を固定するが固定された思想は死ぬ', category: 'philosophy_formalization', keywords: ['FLOWING', '形式化', '思想', '生死'] },
 ];

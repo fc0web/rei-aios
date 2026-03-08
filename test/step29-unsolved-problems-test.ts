@@ -1,6 +1,6 @@
 /**
  * STEP 29 — UnsolvedProblemEngine テスト
- * 数学未解決問題の七価論理分析 + SEED_KERNEL 180理論確認
+ * 数学未解決問題の七価論理分析 + SEED_KERNEL 183理論確認
  */
 
 import {
@@ -161,11 +161,11 @@ for (const prob of all) {
   );
 }
 
-// ─── N. SEED_KERNEL 180理論 ──────────────────────────────
+// ─── N. SEED_KERNEL 183理論 ──────────────────────────────
 
-console.log('\n=== N. SEED_KERNEL 180理論 ===');
+console.log('\n=== N. SEED_KERNEL 183理論 ===');
 
-assert(SEED_KERNEL.length === 180, `N-1: SEED_KERNEL=${SEED_KERNEL.length}理論（期待: 180）`);
+assert(SEED_KERNEL.length === 183, `N-1: SEED_KERNEL=${SEED_KERNEL.length}理論（期待: 183）`);
 
 // Theory #175-#180 の存在確認
 const newTheories = [

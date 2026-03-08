@@ -7,7 +7,7 @@
  *   3. generateModule — モジュール生成
  *   4. メモリ保存結合テスト（dryRunなし、実行はrei-pl経由）
  *   5. ReiPLAxiomGenerator 全カテゴリ網羅
- *   6. SEED_KERNEL 180理論全生成
+ *   6. SEED_KERNEL 183理論全生成
  */
 
 import { ReiPLBidirectionalBridge } from '../src/aios/rei-runtime/rei-pl-bidirectional-bridge';
@@ -123,7 +123,7 @@ async function main() {
   // ── 6. 全180理論のコード生成 ───────────────────────────
   await test('全180理論のコード生成が成功する', () => {
     const codes = gen.generateBatch(SEED_KERNEL);
-    assert(codes.length === 180, `expected 180, got ${codes.length}`);
+    assert(codes.length === 183, `expected 183, got ${codes.length}`);
     const emptyIds = codes.filter(c => c.reiCode.length === 0).map(c => c.theoryId);
     assert(emptyIds.length === 0, `empty codes: ${emptyIds.join(', ')}`);
 
