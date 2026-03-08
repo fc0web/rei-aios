@@ -48,6 +48,7 @@ const CATEGORY_MAP: Record<string, string> = {
   'language_limit': 'll',
   'embodiment': 'em',
   'future_intelligence': 'fi',
+  'unsolved_problems': 'up',
 };
 
 const CATEGORY_REVERSE: Record<string, string> = Object.fromEntries(

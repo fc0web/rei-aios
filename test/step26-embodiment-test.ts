@@ -18,7 +18,7 @@ console.log('\n═══ STEP 26 — 身体性の公理化テスト ═══\n'
 // ─── 1: SEED_KERNEL ─────────────────────────────────────
 console.log('── 1: SEED_KERNEL ──');
 
-assert(SEED_KERNEL.length === 174, `1-1: SEED_KERNEL = ${SEED_KERNEL.length}理論（期待: 174）`);
+assert(SEED_KERNEL.length === 180, `1-1: SEED_KERNEL = ${SEED_KERNEL.length}理論（期待: 180）`);
 
 const embodimentTheories = SEED_KERNEL.filter(t => t.category === 'embodiment');
 assert(embodimentTheories.length === 8, `1-2: embodiment カテゴリ: ${embodimentTheories.length}理論`);

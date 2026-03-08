@@ -65,6 +65,7 @@
     "test:step26": "tsx test/step26-embodiment-test.ts",
     "test:step27": "tsx test/step27-paper-fetcher-test.ts",
     "test:step28": "tsx test/step28-future-persona-test.ts",
+    "test:step29": "tsx test/step29-unsolved-problems-test.ts",
     "paper:view": "tsx src/aios/knowledge/paper-viewer.ts",
     "extract": "tsx src/cli/rei-extract.ts",
     "extract:self": "tsx src/cli/rei-extract.ts ./src --verbose",

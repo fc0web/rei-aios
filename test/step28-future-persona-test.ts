@@ -76,11 +76,11 @@ assert(theory174?.category === 'future_intelligence', 'E-2: \u30ab\u30c6\u30b4\u
 assert(theory174?.axiom.includes('FLOWING'), 'E-3: axiom\u306bFLOWING');
 assert(theory174?.keywords.includes('\u672a\u6765\u4eba'), 'E-4: keywords\u306b\u672a\u6765\u4eba');
 
-// ─── F. SEED_KERNEL 174理論 ──────────────────────────────
+// ─── F. SEED_KERNEL 180理論 ──────────────────────────────
 
 console.log('\n=== F. SEED_KERNEL 174\u7406\u8ad6 ===');
 
-assert(SEED_KERNEL.length === 174, `F-1: SEED_KERNEL=${SEED_KERNEL.length}\u7406\u8ad6`);
+assert(SEED_KERNEL.length === 180, `F-1: SEED_KERNEL=${SEED_KERNEL.length}\u7406\u8ad6`);
 
 // ─── G. AxiomEncoder カテゴリコード ──────────────────────
 

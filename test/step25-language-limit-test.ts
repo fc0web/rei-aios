@@ -20,7 +20,7 @@ console.log('\n═══ STEP 25 — 言語限界の公理化テスト ═══
 // ─── 1: SEED_KERNEL確認 ─────────────────────────────────
 console.log('── 1: SEED_KERNEL ──');
 
-assert(SEED_KERNEL.length === 174, `1-1: SEED_KERNEL = ${SEED_KERNEL.length}理論（期待: 174）`);
+assert(SEED_KERNEL.length === 180, `1-1: SEED_KERNEL = ${SEED_KERNEL.length}理論（期待: 180）`);
 
 const langLimitTheories = SEED_KERNEL.filter(t => t.category === 'language_limit');
 assert(langLimitTheories.length === 8, `1-2: language_limit カテゴリ: ${langLimitTheories.length}理論`);
